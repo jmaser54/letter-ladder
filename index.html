@@ -181,7 +181,7 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785268576"></script>
+<script src="data/puzzles.js?v=1785271069"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -301,7 +301,7 @@ function getTodaysPuzzle(tier){
   return day[tier] || null;
 }
 
-function render(){
+function render(focusInput = false){
   document.querySelectorAll('.tab').forEach(t=>{
     t.classList.toggle('active', t.dataset.tier === activeTier);
   });
@@ -388,7 +388,7 @@ function render(){
   });
 
   const freshInput = document.getElementById('guess-input');
-  if(freshInput) freshInput.focus();
+  if(freshInput && focusInput) freshInput.focus();
 }
 
 function showErrors(errors){
@@ -441,7 +441,7 @@ function handleGuess(guess, startingWord, finalWord, steps){
   const guesses = loadGuesses(activeTier);
   guesses[guess.length] = guess;
   saveGuesses(activeTier, guesses);
-  render();
+  render(true);
 }
 
 document.getElementById('tabs').addEventListener('click', (e)=>{
