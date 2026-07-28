@@ -184,6 +184,7 @@
     <div class="top-links">
       <a href="about.html">How to play</a>
       <a href="about.html#about">About</a>
+      <a href="solutions.html">Past solutions</a>
     </div>
   </header>
 
@@ -208,7 +209,7 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785279536"></script>
+<script src="data/puzzles.js?v=1785280766"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -357,11 +358,11 @@ function render(focusInput = false){
       feedback = "🎉 You win! Nicely climbed.";
       feedbackClass = 'win';
     } else {
-      feedback = "❌ Your guesses aren't a valid progression. Try adjusting a step.";
+      feedback = "❌ Your guesses aren't a valid progression.";
       feedbackClass = 'error';
       details = invalidSteps.map(s => {
         if(s.reason === 'missing_letters'){
-          return `"${s.to}" is missing ${lettersPhrase(s.letters)} from "${s.from}".`;
+          return `"${s.to}" is missing the "${s.letters.length === 1 ? s.letters[0] : joinAnd(s.letters)}" from "${s.from}".`;
         }
         return `"${s.from}" → "${s.to}" isn't a valid one-letter step.`;
       });
