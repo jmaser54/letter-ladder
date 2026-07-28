@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
 <title>Letter Ladder</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -208,7 +208,7 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785278573"></script>
+<script src="data/puzzles.js?v=1785279082"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -386,7 +386,7 @@ function render(focusInput = false){
   panel.className = `panel ${sizeTier}`;
   panel.innerHTML = `
     <div class="level-label">${activeTier} puzzle</div>
-    <div class="ladder-scroll"><div class="ladder">${rungsHtml.join('')}</div></div>
+    <div class="ladder-scroll" id="ladder-scroll"><div class="ladder">${rungsHtml.join('')}</div></div>
     ${feedbackClass === 'win' ? '' : `
     <form class="guess-form" id="guess-form" autocomplete="off">
       <input type="text" id="guess-input" placeholder="Enter a word...">
@@ -416,6 +416,24 @@ function render(focusInput = false){
 
   const freshInput = document.getElementById('guess-input');
   if(freshInput && focusInput) freshInput.focus({ preventScroll: true });
+
+  const ladderScroll = document.getElementById('ladder-scroll');
+  if(ladderScroll && freshInput){
+    let wasFocused = false;
+    let refocusTimer = null;
+    ladderScroll.addEventListener('touchstart', ()=>{
+      wasFocused = document.activeElement === freshInput;
+    }, { passive: true });
+    ladderScroll.addEventListener('scroll', ()=>{
+      if(!wasFocused) return;
+      clearTimeout(refocusTimer);
+      refocusTimer = setTimeout(()=>{
+        if(document.activeElement !== freshInput){
+          freshInput.focus({ preventScroll: true });
+        }
+      }, 120);
+    }, { passive: true });
+  }
 }
 
 function showErrors(errors){
