@@ -147,28 +147,6 @@
     body{ padding: 20px 12px 60px; }
     .panel{ padding: 18px 16px 18px; }
   }
-
-  /* Applied while the on-screen keyboard is detected as open (see the
-     visualViewport script below), to reclaim as much vertical space as
-     possible for the ladder itself while the person is typing a guess. */
-  body.keyboard-active .tagline,
-  body.keyboard-active .top-links,
-  body.keyboard-active .date-row{
-    display: none;
-  }
-  body.keyboard-active header{ margin-bottom: 8px; }
-  body.keyboard-active .brand{ font-size: 1.4rem; }
-  body.keyboard-active .tabs{ margin-bottom: 10px; padding: 3px; }
-  body.keyboard-active .tab{ padding: 6px 0; font-size: 0.8rem; }
-  body.keyboard-active .panel{
-    padding: 12px 14px 14px !important;
-    --rung-font: 0.85rem;
-    --rung-pad: 5px 8px;
-    --rung-minw: 88px;
-    --rung-gap: 4px;
-  }
-  body.keyboard-active .level-label{ margin-bottom: 8px; font-size: 0.7rem; }
-  body.keyboard-active{ padding-top: 10px; }
 </style>
 </head>
 <body>
@@ -203,7 +181,7 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785272549"></script>
+<script src="data/puzzles.js?v=1785278103"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -384,7 +362,7 @@ function render(focusInput = false){
     <div class="ladder">${rungsHtml.join('')}</div>
     ${feedbackClass === 'win' ? '' : `
     <form class="guess-form" id="guess-form" autocomplete="off">
-      <input type="text" id="guess-input" placeholder="Enter a word..." autofocus>
+      <input type="text" id="guess-input" placeholder="Enter a word...">
       <button type="submit" class="btn-primary">Guess</button>
     </form>`}
     <div class="feedback ${feedbackClass}">${feedback}</div>
@@ -411,9 +389,15 @@ function render(focusInput = false){
 
   const freshInput = document.getElementById('guess-input');
   if(freshInput){
-    if(focusInput) freshInput.focus();
-    freshInput.addEventListener('focus', ()=> document.body.classList.add('keyboard-active'));
-    freshInput.addEventListener('blur', ()=> document.body.classList.remove('keyboard-active'));
+    if(focusInput) freshInput.focus({ preventScroll: true });
+    // The browser auto-scrolls a focused input above the on-screen keyboard,
+    // which can push the ladder out of view. We don't resize anything here
+    // (that caused a nasty bug where tapping "Guess" shifted the layout
+    // mid-tap and ate the click) - just nudge the scroll position back up
+    // once the keyboard's own scroll has settled, so the ladder stays visible.
+    freshInput.addEventListener('focus', ()=>{
+      setTimeout(()=> window.scrollTo({ top: 0, behavior: 'smooth' }), 300);
+    });
   }
 }
 
