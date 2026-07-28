@@ -208,7 +208,7 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785279082"></script>
+<script src="data/puzzles.js?v=1785279536"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -440,6 +440,13 @@ function showErrors(errors){
   const fb = document.querySelector('.feedback');
   fb.innerHTML = `<div class="error-list-wrap"><ul class="error-list">${errors.map(e => `<li>${e}</li>`).join('')}</ul></div>`;
   fb.className = 'feedback error';
+
+  // Submitting via the phone's on-screen "Go"/Return key can blur the input
+  // as part of the keyboard's own native behavior, even though nothing in
+  // our code asked for that. Bring focus straight back so a wrong guess
+  // doesn't force the person to tap back into the box themselves.
+  const input = document.getElementById('guess-input');
+  if(input) input.focus({ preventScroll: true });
 }
 
 function handleGuess(guess, startingWord, finalWord, steps){
