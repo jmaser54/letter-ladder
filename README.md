@@ -1,7 +1,7 @@
 # Letter Ladder
 
 A daily word puzzle game — three puzzles a day (Easy / Medium / Hard).
-Everything runs entirely in the visitor's browser (no server needed).
+Everything runs within the visitor's browser.
 
 ## Folder guide
 
