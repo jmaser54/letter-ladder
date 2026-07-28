@@ -203,7 +203,7 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785272134"></script>
+<script src="data/puzzles.js?v=1785272549"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -410,7 +410,11 @@ function render(focusInput = false){
   });
 
   const freshInput = document.getElementById('guess-input');
-  if(freshInput && focusInput) freshInput.focus();
+  if(freshInput){
+    if(focusInput) freshInput.focus();
+    freshInput.addEventListener('focus', ()=> document.body.classList.add('keyboard-active'));
+    freshInput.addEventListener('blur', ()=> document.body.classList.remove('keyboard-active'));
+  }
 }
 
 function showErrors(errors){
@@ -474,21 +478,6 @@ document.getElementById('tabs').addEventListener('click', (e)=>{
 });
 
 render();
-// On mobile, the on-screen keyboard can eat up nearly half the visible
-// screen. visualViewport reports the ACTUAL visible height (unlike
-// window.innerHeight, which stays the same even when the keyboard is up),
-// so a big gap between the two means the keyboard is open - and we shrink
-// the surrounding chrome to give the ladder as much room as possible.
-if(window.visualViewport){
-  const vv = window.visualViewport;
-  function checkKeyboard(){
-    const shrink = window.innerHeight - vv.height;
-    document.body.classList.toggle('keyboard-active', shrink > 120);
-  }
-  vv.addEventListener('resize', checkKeyboard);
-  vv.addEventListener('scroll', checkKeyboard);
-  checkKeyboard();
-}
 
 </script>
 </body>
