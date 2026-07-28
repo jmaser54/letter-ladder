@@ -116,7 +116,12 @@
   .btn-primary{ background: var(--amber); color:#1B2A41; }
   .btn-ghost{ background: rgba(245,239,224,0.08); color: var(--ink); }
 
-  .feedback{ margin-top:18px; text-align:center; font-weight:600; min-height: 24px; white-space: pre-line; }
+  .feedback{ margin-top:18px; text-align:center; font-weight:600; min-height: 24px; }
+  .feedback.win, .feedback.ok{ text-align:center; }
+  .error-list{ list-style:none; margin: 18px 0 0; padding:0; text-align:left; display:inline-block; }
+  .error-list li{ position:relative; padding-left:18px; margin-bottom:8px; font-weight:600; color: var(--red); }
+  .error-list li::before{ content:"●"; color: var(--red); position:absolute; left:0; font-size:0.6rem; top:5px; }
+  .error-list-wrap{ display:flex; justify-content:center; }
   .feedback.win{ color: var(--green); }
   .feedback.error{ color: var(--red); }
   .feedback.ok{ color: var(--ink-dim); font-weight:500; }
@@ -365,14 +370,9 @@ function render(){
   if(freshInput) freshInput.focus();
 }
 
-function showError(msg){
-  const fb = document.querySelector('.feedback');
-  fb.textContent = msg;
-  fb.className = 'feedback error';
-}
 function showErrors(errors){
   const fb = document.querySelector('.feedback');
-  fb.textContent = errors.join('\n');
+  fb.innerHTML = `<div class="error-list-wrap"><ul class="error-list">${errors.map(e => `<li>${e}</li>`).join('')}</ul></div>`;
   fb.className = 'feedback error';
 }
 
@@ -381,7 +381,7 @@ function handleGuess(guess, startingWord, finalWord, steps){
   // check word-validity, letters, or length against garbage input), so this
   // one still short-circuits on its own.
   if(!/^[a-z]+$/.test(guess)){
-    showError("Guess must be letters only.");
+    showErrors(["Guess must be letters only."]);
     return;
   }
 
@@ -394,18 +394,22 @@ function handleGuess(guess, startingWord, finalWord, steps){
   const letterCheck = checkGuessLetters(guess, startingWord, finalWord);
   if(!letterCheck.ok){
     if(letterCheck.reason === 'missing_starting_letters'){
-      errors.push(`That guess doesn't include every letter from the starting word (missing ${lettersPhrase(letterCheck.letters)}).`);
+      errors.push(`Guess doesn't include every letter from the starting word (missing ${lettersPhrase(letterCheck.letters)}).`);
     } else if(letterCheck.reason === 'letter_not_in_final'){
       const isPlural = letterCheck.letters.length > 1;
-      errors.push(`That guess uses ${isPlural ? "letters that aren't" : "a letter that isn't"} in the final word: ${joinAnd(letterCheck.letters)}.`);
+      errors.push(`Guess uses ${isPlural ? "letters that aren't" : "a letter that isn't"} in the final word: ${joinAnd(letterCheck.letters)}.`);
     } else if(letterCheck.reason === 'too_many_repeats'){
       const parts = letterCheck.details.map(d => `"${d.ch}" too many times — it's only in the final word ${timesText(d.fCount)}`);
-      errors.push(`That guess uses ${parts.join('; ')}.`);
+      errors.push(`Guess uses ${parts.join('; ')}.`);
     }
   }
 
-  if(!steps.includes(guess.length)){
-    errors.push(`Guess must be one of these lengths: ${steps.join(', ')}`);
+  const minLen = startingWord.length + 1;
+  const maxLen = finalWord.length - 1;
+  if(guess.length < minLen){
+    errors.push("Guess is too short.");
+  } else if(guess.length > maxLen){
+    errors.push("Guess is too long.");
   }
 
   if(errors.length > 0){
