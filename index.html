@@ -147,6 +147,28 @@
     body{ padding: 20px 12px 60px; }
     .panel{ padding: 18px 16px 18px; }
   }
+
+  /* Applied while the on-screen keyboard is detected as open (see the
+     visualViewport script below), to reclaim as much vertical space as
+     possible for the ladder itself while the person is typing a guess. */
+  body.keyboard-active .tagline,
+  body.keyboard-active .top-links,
+  body.keyboard-active .date-row{
+    display: none;
+  }
+  body.keyboard-active header{ margin-bottom: 8px; }
+  body.keyboard-active .brand{ font-size: 1.4rem; }
+  body.keyboard-active .tabs{ margin-bottom: 10px; padding: 3px; }
+  body.keyboard-active .tab{ padding: 6px 0; font-size: 0.8rem; }
+  body.keyboard-active .panel{
+    padding: 12px 14px 14px !important;
+    --rung-font: 0.85rem;
+    --rung-pad: 5px 8px;
+    --rung-minw: 88px;
+    --rung-gap: 4px;
+  }
+  body.keyboard-active .level-label{ margin-bottom: 8px; font-size: 0.7rem; }
+  body.keyboard-active{ padding-top: 10px; }
 </style>
 </head>
 <body>
@@ -181,7 +203,7 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785271069"></script>
+<script src="data/puzzles.js?v=1785271903"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -444,14 +466,25 @@ function handleGuess(guess, startingWord, finalWord, steps){
   render(true);
 }
 
-document.getElementById('tabs').addEventListener('click', (e)=>{
-  const tab = e.target.closest('.tab');
-  if(!tab) return;
-  activeTier = tab.dataset.tier;
-  render();
-});
-
 render();
+
+// ---------- keyboard-space reclaim ----------
+// On mobile, the on-screen keyboard can eat up nearly half the visible
+// screen. visualViewport reports the ACTUAL visible height (unlike
+// window.innerHeight, which stays the same even when the keyboard is up),
+// so a big gap between the two means the keyboard is open - and we shrink
+// the surrounding chrome to give the ladder as much room as possible.
+if(window.visualViewport){
+  const vv = window.visualViewport;
+  function checkKeyboard(){
+    const shrink = window.innerHeight - vv.height;
+    document.body.classList.toggle('keyboard-active', shrink > 120);
+  }
+  vv.addEventListener('resize', checkKeyboard);
+  vv.addEventListener('scroll', checkKeyboard);
+  checkKeyboard();
+}
+
 </script>
 </body>
 </html>
