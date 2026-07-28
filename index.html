@@ -394,7 +394,7 @@ function handleGuess(guess, startingWord, finalWord, steps){
   const letterCheck = checkGuessLetters(guess, startingWord, finalWord);
   if(!letterCheck.ok){
     if(letterCheck.reason === 'missing_starting_letters'){
-      errors.push(`Guess doesn't include every letter from the starting word (missing ${lettersPhrase(letterCheck.letters)}).`);
+      errors.push(`Guess doesn't include every letter from the starting word (missing ${joinAnd(letterCheck.letters)}).`);
     } else if(letterCheck.reason === 'letter_not_in_final'){
       const isPlural = letterCheck.letters.length > 1;
       errors.push(`Guess uses ${isPlural ? "letters that aren't" : "a letter that isn't"} in the final word: ${joinAnd(letterCheck.letters)}.`);
