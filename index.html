@@ -30,7 +30,7 @@
   }
   .wrap{ max-width: 560px; margin: 0 auto; }
 
-  header{ text-align:center; margin-bottom: 22px; }
+  header{ text-align:center; margin-bottom: 16px; }
   .brand{
     font-family:'Fraunces', serif;
     font-weight:700;
@@ -41,18 +41,18 @@
   .brand .rung-i{ color: var(--amber); }
   .tagline{ color: var(--ink-dim); font-size: 0.95rem; margin-top: 4px; }
   .top-links{
-    display:flex; justify-content:center; gap:18px; margin-top:10px; font-size: 0.85rem;
+    display:flex; justify-content:center; gap:18px; margin-top:8px; font-size: 0.85rem;
   }
   .top-links a{ color: var(--ink-dim); text-decoration:none; border-bottom: 1px dotted var(--ink-dim); }
   .top-links a:hover{ color: var(--amber); border-color: var(--amber); }
 
   .date-row{
-    text-align:center; color: var(--ink-dim); font-size: 0.85rem; margin-bottom: 18px;
+    text-align:center; color: var(--ink-dim); font-size: 0.85rem; margin-bottom: 12px;
     letter-spacing: 0.03em; text-transform: uppercase;
   }
 
   .tabs{
-    display:flex; background: rgba(0,0,0,0.2); border-radius: 999px; padding: 4px; margin-bottom: 28px;
+    display:flex; background: rgba(0,0,0,0.2); border-radius: 999px; padding: 4px; margin-bottom: 18px;
   }
   .tab{
     flex:1; text-align:center; padding: 10px 0; border-radius: 999px; cursor:pointer;
@@ -65,28 +65,28 @@
   .panel{
     background: var(--bg-panel);
     border-radius: 18px;
-    padding: 28px 24px 26px;
+    padding: 24px 22px 22px;
     box-shadow: 0 20px 50px rgba(0,0,0,0.35);
   }
 
   .level-label{
     text-align:center; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.12em;
-    color: var(--amber); font-weight:700; margin-bottom: 18px;
+    color: var(--amber); font-weight:700; margin-bottom: 14px;
   }
 
-  .ladder{ display:flex; flex-direction:column; align-items:center; gap:10px; }
+  .ladder{ display:flex; flex-direction:column; align-items:center; gap: var(--rung-gap, 10px); }
   .rung-row{ display:flex; align-items:center; gap:12px; width:100%; justify-content:center; }
   .rung-count{ width: 22px; text-align:right; color: var(--ink-dim); font-size: 0.75rem; font-variant-numeric: tabular-nums; }
   .rung{
     font-family:'Fraunces', serif;
-    font-size: 1.35rem;
+    font-size: var(--rung-font, 1.35rem);
     font-weight:600;
     letter-spacing: 0.06em;
     background: var(--rung);
     color: #1B2A41;
-    padding: 10px 18px;
+    padding: var(--rung-pad, 10px 18px);
     border-radius: 10px;
-    min-width: 140px;
+    min-width: var(--rung-minw, 140px);
     text-align:center;
     text-transform: uppercase;
   }
@@ -96,6 +96,13 @@
     border: 1.5px dashed rgba(245,239,224,0.25);
   }
   .rung.anchor{ background: var(--amber); }
+
+  /* Ladders get taller the more rungs a puzzle has, so these tiers shrink
+     things down automatically to keep long puzzles from requiring endless
+     scrolling - short puzzles stay at full comfortable size. */
+  .panel.rungs-md{ --rung-font: 1.15rem; --rung-pad: 8px 14px; --rung-minw: 120px; --rung-gap: 7px; }
+  .panel.rungs-lg{ --rung-font: 1rem; --rung-pad: 7px 12px; --rung-minw: 105px; --rung-gap: 6px; }
+  .panel.rungs-xl{ --rung-font: 0.88rem; --rung-pad: 6px 10px; --rung-minw: 95px; --rung-gap: 5px; }
 
   form.guess-form{ display:flex; gap:10px; margin-top: 22px; }
   input[type=text]{
@@ -134,8 +141,11 @@
   footer{ text-align:center; margin-top: 30px; color: var(--ink-dim); font-size: 0.8rem; }
 
   @media (max-width: 420px){
-    .rung{ font-size: 1.1rem; min-width: 110px; padding: 9px 12px; }
-    .brand{ font-size: 2rem; }
+    .rung{ min-width: calc(var(--rung-minw, 140px) * 0.8); }
+    .brand{ font-size: 1.9rem; }
+    .tagline{ font-size: 0.85rem; }
+    body{ padding: 20px 12px 60px; }
+    .panel{ padding: 18px 16px 18px; }
   }
 </style>
 </head>
@@ -167,8 +177,11 @@
   </footer>
 </div>
 
-<script src="data/words.js"></script>
-<script src="data/puzzles.js"></script>
+<!-- Bump the ?v= number below any time you update puzzles.js or the game logic,
+     so returning visitors' browsers are guaranteed to fetch the new version
+     instead of a cached copy. -->
+<script src="data/words.js?v=1"></script>
+<script src="data/puzzles.js?v=1785268576"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -295,6 +308,7 @@ function render(){
 
   const puzzle = getTodaysPuzzle(activeTier);
   if(!puzzle){
+    panel.className = 'panel';
     panel.innerHTML = `<div class="empty-state">No ${activeTier} puzzle scheduled for today yet — check back soon!</div>`;
     return;
   }
@@ -336,6 +350,13 @@ function render(){
   }
   rungsHtml.push(`<div class="rung-row"><div class="rung-count">${startingWord.length}</div><div class="rung anchor">${startingWord}</div></div>`);
 
+  const totalRungs = steps.length + 2;
+  let sizeTier = '';
+  if(totalRungs >= 9) sizeTier = 'rungs-xl';
+  else if(totalRungs >= 7) sizeTier = 'rungs-lg';
+  else if(totalRungs >= 5) sizeTier = 'rungs-md';
+
+  panel.className = `panel ${sizeTier}`;
   panel.innerHTML = `
     <div class="level-label">${activeTier} puzzle</div>
     <div class="ladder">${rungsHtml.join('')}</div>
@@ -394,7 +415,7 @@ function handleGuess(guess, startingWord, finalWord, steps){
   const letterCheck = checkGuessLetters(guess, startingWord, finalWord);
   if(!letterCheck.ok){
     if(letterCheck.reason === 'missing_starting_letters'){
-      errors.push(`Guess doesn't include every letter from the starting word (missing ${joinAnd(letterCheck.letters)}).`);
+      errors.push(`Guess doesn't include every letter from the starting word: ${joinAnd(letterCheck.letters)}.`);
     } else if(letterCheck.reason === 'letter_not_in_final'){
       const isPlural = letterCheck.letters.length > 1;
       errors.push(`Guess uses ${isPlural ? "letters that aren't" : "a letter that isn't"} in the final word: ${joinAnd(letterCheck.letters)}.`);
