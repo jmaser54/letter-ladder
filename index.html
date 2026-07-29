@@ -113,16 +113,16 @@
   .ladder{
     display:flex; flex-direction:column; align-items:center; gap: var(--rung-gap, 10px);
     position: relative;
-    padding: 6px 26px;
+    padding: 10px 26px;
   }
   .ladder::before, .ladder::after{
     content: "";
     position: absolute;
-    top: 4px; bottom: 4px;
-    width: 11px;
+    top: 0; bottom: 0;
+    width: 13px;
     border-radius: 7px;
-    background: linear-gradient(180deg, #E0A055, #B87730);
-    box-shadow: inset -2px 0 0 rgba(255,255,255,0.2), inset 2px 0 0 rgba(0,0,0,0.18), 0 2px 5px rgba(0,0,0,0.3);
+    background: linear-gradient(90deg, #C97F3D, #E8A055 45%, #C97F3D);
+    box-shadow: inset -2px 0 0 rgba(255,255,255,0.25), inset 2px 0 0 rgba(0,0,0,0.2), 0 2px 5px rgba(0,0,0,0.3);
   }
   .ladder::before{ left: 6px; }
   .ladder::after{ right: 6px; }
@@ -131,18 +131,21 @@
     display:flex; align-items:center; gap:12px; width:100%; justify-content:center;
     position: relative;
   }
-  .rung-row::before, .rung-row::after{
+  .rung-row::before{
+    /* the actual rung: a horizontal plank spanning between the two side
+       rails, sitting BEHIND the word box so it reads as one continuous
+       crossbar the word is written on */
     content: "";
     position: absolute;
+    left: -20px; right: -20px;
     top: 50%; transform: translateY(-50%);
-    width: 15px; height: 15px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #F6D190, #8A5A22 85%);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.35);
-    z-index: 2;
+    height: 13px;
+    border-radius: 6px;
+    background: linear-gradient(180deg, #E8A055, #C97F3D);
+    box-shadow: inset 0 -2px 0 rgba(0,0,0,0.2), inset 0 2px 0 rgba(255,255,255,0.25), 0 2px 4px rgba(0,0,0,0.3);
+    z-index: 0;
   }
-  .rung-row::before{ left: 1px; }
-  .rung-row::after{ right: 1px; }
+  .rung-row > *{ position: relative; z-index: 1; }
   .rung-count{ width: 22px; text-align:right; color: var(--ink-dim); font-size: 0.75rem; font-variant-numeric: tabular-nums; }
   .rung{
     font-family:'Fraunces', serif;
@@ -293,8 +296,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785352670"></script>
-<script src="data/hints.js?v=1785352670"></script>
+<script src="data/puzzles.js?v=1785353564"></script>
+<script src="data/hints.js?v=1785353564"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -604,19 +607,27 @@ function render(focusInput = false, pendingErrors = null){
     feedbackClassFinal = 'error';
   }
 
+  function rungWidthStyle(L){
+    // Sized to that specific rung's own letter count (not a single blanket
+    // size for the whole puzzle) so a 9-letter word gets a wider box than
+    // a 4-letter one in the same puzzle, while still respecting the
+    // size-tier's baseline minimum for short words.
+    return `width:max(var(--rung-minw), calc(${L}ch + ${(L*0.08).toFixed(2)}em + 2.4em));`;
+  }
+
   const rungsHtml = [];
-  rungsHtml.push(`<div class="rung-row"><div class="rung-count">${finalWord.length}</div><div class="rung anchor">${finalWord}</div></div>`);
+  rungsHtml.push(`<div class="rung-row"><div class="rung-count">${finalWord.length}</div><div class="rung anchor" style="${rungWidthStyle(finalWord.length)}">${finalWord}</div></div>`);
   for(let i = steps.length-1; i>=0; i--){
     const L = steps[i];
     const g = guesses[L];
     if(!isWon && activeLength === L){
-      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><input type="text" class="rung rung-input" id="rung-input-${L}" data-length="${L}" maxlength="${L}" value="${g ? g : ''}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done"></div>`);
+      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><input type="text" class="rung rung-input" id="rung-input-${L}" data-length="${L}" maxlength="${L}" value="${g ? g : ''}" style="${rungWidthStyle(L)}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done"></div>`);
     } else {
       const clickableClass = isWon ? '' : 'clickable';
-      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><div class="rung ${g?'':'empty'} ${clickableClass}" data-length="${L}">${g ? g : '&nbsp;'.repeat(L)}</div></div>`);
+      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><div class="rung ${g?'':'empty'} ${clickableClass}" data-length="${L}" style="${rungWidthStyle(L)}">${g ? g : '&nbsp;'.repeat(L)}</div></div>`);
     }
   }
-  rungsHtml.push(`<div class="rung-row"><div class="rung-count">${startingWord.length}</div><div class="rung anchor">${startingWord}</div></div>`);
+  rungsHtml.push(`<div class="rung-row"><div class="rung-count">${startingWord.length}</div><div class="rung anchor" style="${rungWidthStyle(startingWord.length)}">${startingWord}</div></div>`);
 
   const totalRungs = steps.length + 2;
   let sizeTier = '';
