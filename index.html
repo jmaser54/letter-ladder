@@ -250,8 +250,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785293889"></script>
-<script src="data/hints.js?v=1785293889"></script>
+<script src="data/puzzles.js?v=1785294844"></script>
+<script src="data/hints.js?v=1785294844"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -287,11 +287,14 @@ function lettersPhrase(letters){
   return letters.length === 1 ? `the letter ${letters[0]}` : `the letters ${joinAnd(letters)}`;
 }
 function checkGuessLetters(guess, startingWord, finalWord){
+  const problems = [];
+
   const startingLetters = new Set(startingWord);
   const missingStarting = [...startingLetters].filter(ch => !guess.includes(ch));
   if(missingStarting.length > 0){
-    return { ok:false, reason:'missing_starting_letters', letters: missingStarting };
+    problems.push({ reason:'missing_starting_letters', letters: missingStarting });
   }
+
   const guessCounter = counter(guess);
   const finalCounter = counter(finalWord);
   const notInFinal = [];
@@ -306,12 +309,12 @@ function checkGuessLetters(guess, startingWord, finalWord){
     }
   }
   if(notInFinal.length > 0){
-    return { ok:false, reason:'letter_not_in_final', letters: notInFinal };
+    problems.push({ reason:'letter_not_in_final', letters: notInFinal });
   }
   if(tooMany.length > 0){
-    return { ok:false, reason:'too_many_repeats', details: tooMany };
+    problems.push({ reason:'too_many_repeats', details: tooMany });
   }
-  return { ok:true };
+  return problems;
 }
 function isStepValid(word1, word2){
   if(word2.length !== word1.length + 1){
@@ -440,7 +443,7 @@ function render(focusInput = false, pendingErrors = null){
       feedbackClass = 'win';
       checkAndCelebrateIfAllComplete();
     } else {
-      feedback = "❌ Your guesses aren't a valid progression.";
+      feedback = "❌ Guesses aren't a valid progression.";
       feedbackClass = 'error';
       details = invalidSteps.map(s => {
         if(s.reason === 'missing_letters'){
@@ -561,19 +564,24 @@ function render(focusInput = false, pendingErrors = null){
       }
 
       const errs = [];
+
+      if(raw.length !== L){
+        errs.push(`Guess must be ${L} letters long.`);
+      }
+
       if(!/^[a-z]+$/.test(raw)){
         errs.push("Guess must be letters only.");
       } else {
         if(!WORD_SET.has(raw)) errs.push("Not a valid English word.");
-        const letterCheck = checkGuessLetters(raw, startingWord, finalWord);
-        if(!letterCheck.ok){
-          if(letterCheck.reason === 'missing_starting_letters'){
-            errs.push(`Guess doesn't include every letter from the starting word: ${joinAnd(letterCheck.letters)}.`);
-          } else if(letterCheck.reason === 'letter_not_in_final'){
-            const isPlural = letterCheck.letters.length > 1;
-            errs.push(`Guess uses ${isPlural ? "letters that aren't" : "a letter that isn't"} in the final word: ${joinAnd(letterCheck.letters)}.`);
-          } else if(letterCheck.reason === 'too_many_repeats'){
-            const parts = letterCheck.details.map(d => `"${d.ch}" too many times — it's only in the final word ${timesText(d.fCount)}`);
+        const letterProblems = checkGuessLetters(raw, startingWord, finalWord);
+        for(const problem of letterProblems){
+          if(problem.reason === 'missing_starting_letters'){
+            errs.push(`Guess doesn't include every letter from the starting word: ${joinAnd(problem.letters)}`);
+          } else if(problem.reason === 'letter_not_in_final'){
+            const isPlural = problem.letters.length > 1;
+            errs.push(`Guess uses ${isPlural ? "letters that aren't" : "a letter that isn't"} in the final word: ${joinAnd(problem.letters)}`);
+          } else if(problem.reason === 'too_many_repeats'){
+            const parts = problem.details.map(d => `"${d.ch}" too many times — it's only in the final word ${timesText(d.fCount)}`);
             errs.push(`Guess uses ${parts.join('; ')}.`);
           }
         }
