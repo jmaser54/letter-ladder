@@ -174,6 +174,43 @@
     .rung{ min-width: calc(var(--rung-minw, 140px) * 0.8); }
     .brand{ font-size: 1.7rem; }
   }
+
+  .confetti-piece{
+    position: fixed;
+    top: -12px;
+    width: 8px;
+    height: 14px;
+    opacity: 0.95;
+    pointer-events: none;
+    z-index: 999;
+    animation: confetti-fall linear forwards;
+  }
+  @keyframes confetti-fall{
+    to{ transform: translateY(110vh) rotate(360deg); opacity: 0.4; }
+  }
+
+  .summit-banner{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--bg-panel);
+    color: var(--amber);
+    padding: 22px 28px;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    text-align: center;
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    z-index: 1000;
+    max-width: 320px;
+    animation: summit-pop 0.3s ease;
+  }
+  @keyframes summit-pop{
+    from{ transform: translate(-50%, -50%) scale(0.85); opacity: 0; }
+    to{ transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  }
 </style>
 </head>
 <body>
@@ -209,7 +246,7 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785280766"></script>
+<script src="data/puzzles.js?v=1785285574"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -329,6 +366,44 @@ function getTodaysPuzzle(tier){
   return day[tier] || null;
 }
 
+function isTierComplete(tier){
+  const puzzle = getTodaysPuzzle(tier);
+  if(!puzzle) return true; // no puzzle scheduled for this tier today - don't block the celebration on it
+  const steps = [];
+  for(let L = puzzle.start.length+1; L < puzzle.final.length; L++) steps.push(L);
+  const guesses = loadGuesses(tier);
+  if(!steps.every(L => guesses[L])) return false;
+  const { valid } = isValidChain(puzzle.start, guesses, puzzle.final);
+  return valid;
+}
+
+function triggerSummitCelebration(){
+  const colors = ['#E8A33D', '#6FBF8B', '#F5EFE0', '#D9705F'];
+  for(let i=0; i<70; i++){
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = (Math.random()*100) + 'vw';
+    piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+    piece.style.animationDuration = (2.2 + Math.random()*1.6) + 's';
+    piece.style.animationDelay = (Math.random()*0.4) + 's';
+    document.body.appendChild(piece);
+    setTimeout(()=> piece.remove(), 4200);
+  }
+  const banner = document.createElement('div');
+  banner.className = 'summit-banner';
+  banner.textContent = "Well done! You've reached the summit of today's letter ladder!";
+  document.body.appendChild(banner);
+  setTimeout(()=> banner.remove(), 4000);
+}
+
+function checkAndCelebrateIfAllComplete(){
+  if(!TIERS.every(isTierComplete)) return;
+  const flagKey = `letterladder:${dateKey}:summitShown`;
+  if(localStorage.getItem(flagKey)) return;
+  localStorage.setItem(flagKey, '1');
+  triggerSummitCelebration();
+}
+
 function render(focusInput = false){
   document.querySelectorAll('.tab').forEach(t=>{
     t.classList.toggle('active', t.dataset.tier === activeTier);
@@ -357,6 +432,7 @@ function render(focusInput = false){
     if(valid){
       feedback = "🎉 You win! Nicely climbed.";
       feedbackClass = 'win';
+      checkAndCelebrateIfAllComplete();
     } else {
       feedback = "❌ Your guesses aren't a valid progression.";
       feedbackClass = 'error';
