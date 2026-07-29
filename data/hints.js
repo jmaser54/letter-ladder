@@ -93,16 +93,15 @@ const HINTS_SCHEDULE = {
       ]
     },
     "hard": {
-      "start": "go",
-      "final": "gorgeous",
+      "start": "tuna",
+      "final": "debutante",
       "solution": [
-        "go",
-        "ego",
-        "gore",
-        "rogue",
-        "grouse",
-        "gougers",
-        "gorgeous"
+        "tuna",
+        "taunt",
+        "attune",
+        "attuned",
+        "unbatted",
+        "debutante"
       ]
     }
   },

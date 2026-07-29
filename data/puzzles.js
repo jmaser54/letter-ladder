@@ -38,8 +38,8 @@ const PUZZLE_SCHEDULE = {
       "final": "bygone"
     },
     "hard": {
-      "start": "go",
-      "final": "gorgeous"
+      "start": "tuna",
+      "final": "debutante"
     }
   },
   "2026-07-30": {
