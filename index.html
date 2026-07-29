@@ -152,10 +152,10 @@
   .rung-row > .rung{ justify-self: center; }
   .rung-count{ width: 22px; text-align:right; color: var(--ink-dim); font-size: 0.75rem; font-variant-numeric: tabular-nums; }
   .delete-guess-btn{
-    width: 22px; height: 34px;
+    width: 24px; height: 38px;
     border: none; background: none;
-    color: var(--red);
-    font-size: 1.6rem;
+    color: #FF5A45;
+    font-size: 1.9rem;
     font-weight: 700;
     line-height: 1;
     cursor: pointer;
@@ -163,7 +163,7 @@
     padding: 0;
     transition: transform 0.1s ease, filter 0.1s ease;
   }
-  .delete-guess-btn:hover{ filter: brightness(1.2); }
+  .delete-guess-btn:hover{ filter: brightness(1.15); }
   .delete-guess-btn:active{ transform: scale(0.85); }
   .rung{
     font-family:'Fraunces', serif;
@@ -314,8 +314,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785359156"></script>
-<script src="data/hints.js?v=1785359156"></script>
+<script src="data/puzzles.js?v=1785359571"></script>
+<script src="data/hints.js?v=1785359571"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -642,7 +642,7 @@ function render(focusInput = false, pendingErrors = null){
       rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><input type="text" class="rung rung-input" id="rung-input-${L}" data-length="${L}" maxlength="${L}" value="${g ? g : ''}" style="${rungWidthStyle(L)}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done"></div>`);
     } else {
       const clickableClass = isWon ? '' : 'clickable';
-      const deleteBtn = (g && !isWon) ? `<button type="button" class="delete-guess-btn" data-length="${L}" aria-label="Delete this guess">×</button>` : '';
+      const deleteBtn = g ? `<button type="button" class="delete-guess-btn" data-length="${L}" aria-label="Delete this guess">×</button>` : '';
       rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><div class="rung ${g?'':'empty'} ${clickableClass}" data-length="${L}" style="${rungWidthStyle(L)}">${g ? g : '&nbsp;'.repeat(L)}</div>${deleteBtn}</div>`);
     }
   }
@@ -704,17 +704,17 @@ function render(focusInput = false, pendingErrors = null){
         render(true);
       });
     });
-    panel.querySelectorAll('.delete-guess-btn').forEach(btn => {
-      btn.addEventListener('click', (e)=>{
-        e.stopPropagation();
-        const L = Number(btn.dataset.length);
-        const currentGuesses = loadGuesses(activeTier);
-        delete currentGuesses[L];
-        saveGuesses(activeTier, currentGuesses);
-        render();
-      });
-    });
   }
+  panel.querySelectorAll('.delete-guess-btn').forEach(btn => {
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const L = Number(btn.dataset.length);
+      const currentGuesses = loadGuesses(activeTier);
+      delete currentGuesses[L];
+      saveGuesses(activeTier, currentGuesses);
+      render();
+    });
+  });
 
   let activeInput = null;
   if(!isWon && activeLength != null){
