@@ -250,8 +250,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785296072"></script>
-<script src="data/hints.js?v=1785296072"></script>
+<script src="data/puzzles.js?v=1785296665"></script>
+<script src="data/hints.js?v=1785296665"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -549,13 +549,23 @@ function render(focusInput = false, pendingErrors = null){
       activeInput.scrollIntoView({ block: 'nearest' });
     }
 
+    let lastNonEmptyValue = activeInput.value || '';
     let committed = false;
     function commit(viaEnter){
       if(committed) return;
       committed = true;
 
       const L = activeLength;
-      const raw = activeInput.value.replace(/\s+/g,'').toLowerCase().slice(0, L);
+      let liveValue = activeInput.value;
+      // On some iPhones, the field's value can appear to already be
+      // cleared by the moment an Enter-style submit is processed (before
+      // our code gets to read it), which would otherwise look identical
+      // to an abandoned/empty attempt and silently close with no error.
+      // Fall back to the last thing they actually typed in that case.
+      if(viaEnter && (!liveValue || liveValue.trim() === '') && lastNonEmptyValue){
+        liveValue = lastNonEmptyValue;
+      }
+      const raw = liveValue.replace(/\s+/g,'').toLowerCase().slice(0, L);
 
       if(raw === ''){
         // Nothing typed (or it was cleared) - just close without changing
@@ -611,14 +621,10 @@ function render(focusInput = false, pendingErrors = null){
       newGuesses[L] = raw;
       saveGuesses(activeTier, newGuesses);
 
-      if(viaEnter){
-        // Keep the flow going - jump straight to the next empty rung.
-        const nextStep = steps.find(s => s !== L && !newGuesses[s]);
-        activeLength = nextStep !== undefined ? nextStep : null;
-      } else {
-        activeLength = null;
-      }
-      render(true);
+      // No auto-advance - the person always has to click into whichever
+      // box they want to guess next, on purpose.
+      activeLength = null;
+      render();
     }
 
     function tryCommitViaEnter(){
@@ -633,6 +639,9 @@ function render(focusInput = false, pendingErrors = null){
       if(e.key === 'Enter'){ e.preventDefault(); tryCommitViaEnter(); }
     });
     activeInput.addEventListener('input', (e)=>{
+      if(activeInput.value && activeInput.value.trim() !== ''){
+        lastNonEmptyValue = activeInput.value;
+      }
       // Mobile keyboards don't always fire a proper keydown for
       // Return/Go on a plain input - but the 'input' event's inputType
       // reliably reflects it when they do commit a line break, so this
