@@ -45,6 +45,7 @@
   .stat-box{ text-align:center; }
   .stat-value{ font-family:'Fraunces',serif; font-weight:700; font-size:1.6rem; color: var(--amber); }
   .stat-label{ font-size:0.72rem; color: var(--ink-dim); text-transform:uppercase; letter-spacing:0.06em; margin-top:2px; }
+  .streak-note{ margin-top:12px; font-size:0.72rem; color: var(--ink-dim); font-style:italic; text-align:center; }
 
   .empty-state{ text-align:center; color: var(--ink-dim); padding: 40px 20px; background: var(--bg-panel); border-radius:18px; }
 </style>
@@ -87,6 +88,7 @@ if(totalEverPlayed === 0){
     return stat.played === 0 ? 0 : Math.round((stat.solved / stat.played) * 100);
   }
   function renderCard(label, dotClass, stat, isTotal){
+    const streakNote = isTotal ? `<div class="streak-note">Complete all 3 puzzles to maintain this streak</div>` : '';
     return `
       <div class="stat-card ${isTotal ? 'total' : ''}">
         <div class="stat-title"><span class="tier-dot ${dotClass}"></span>${label}</div>
@@ -97,11 +99,12 @@ if(totalEverPlayed === 0){
           <div class="stat-box"><div class="stat-value">${stat.maxStreak}</div><div class="stat-label">Max Streak</div></div>
           <div class="stat-box" style="grid-column: span 2;"><div class="stat-value">${stat.score}</div><div class="stat-label">Score</div></div>
         </div>
+        ${streakNote}
       </div>`;
   }
 
   container.innerHTML = [
-    renderCard('Total (all 3 completed same day for streak)', 'total', stats.total, true),
+    renderCard('Total', 'total', stats.total, true),
     renderCard('Easy', 'easy', stats.easy, false),
     renderCard('Medium', 'medium', stats.medium, false),
     renderCard('Hard', 'hard', stats.hard, false),

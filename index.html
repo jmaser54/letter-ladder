@@ -260,8 +260,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785301155"></script>
-<script src="data/hints.js?v=1785301155"></script>
+<script src="data/puzzles.js?v=1785302518"></script>
+<script src="data/hints.js?v=1785302518"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -538,6 +538,11 @@ function render(focusInput = false, pendingErrors = null){
   let details = [];
 
   if(allFilled){
+    // Guarantee "played" is always counted before "solved" ever can be -
+    // this covers puzzles that were already fully filled in from before
+    // stats tracking existed, which would otherwise count as solved
+    // without ever having been marked as played.
+    markPlayedIfNeeded(activeTier);
     const { valid, invalidSteps } = isValidChain(startingWord, guesses, finalWord);
     if(valid){
       feedback = "🎉 You win! Nicely climbed.";
