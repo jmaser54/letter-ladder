@@ -131,7 +131,7 @@
   .ladder::after{ right: 6px; }
 
   .rung-row{
-    display:flex; align-items:center; gap:12px; width:100%; justify-content:center;
+    display:grid; grid-template-columns: 22px 1fr 22px; align-items:center; column-gap:12px; width:100%;
     position: relative;
   }
   .rung-row::before{
@@ -149,6 +149,7 @@
     z-index: 0;
   }
   .rung-row > *{ position: relative; z-index: 1; }
+  .rung-row > .rung{ justify-self: center; }
   .rung-count{ width: 22px; text-align:right; color: var(--ink-dim); font-size: 0.75rem; font-variant-numeric: tabular-nums; }
   .rung{
     font-family:'Fraunces', serif;
@@ -299,8 +300,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785356432"></script>
-<script src="data/hints.js?v=1785356432"></script>
+<script src="data/puzzles.js?v=1785356824"></script>
+<script src="data/hints.js?v=1785356824"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
