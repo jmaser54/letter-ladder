@@ -130,6 +130,21 @@
   .ladder::before{ left: 6px; }
   .ladder::after{ right: 6px; }
 
+  @keyframes crumble-rail{
+    0%{ transform: translateY(0) rotate(0deg); opacity:1; }
+    100%{ transform: translateY(50px) rotate(var(--crumble-rail-rot, 8deg)); opacity:0; }
+  }
+  @keyframes crumble-rung{
+    0%{ transform: translateY(0) rotate(0deg); opacity:1; }
+    100%{ transform: translateY(45px) rotate(var(--crumble-rot, 12deg)); opacity:0; }
+  }
+  .ladder.crumbling::before, .ladder.crumbling::after{
+    animation: crumble-rail 0.6s ease-in forwards;
+  }
+  .ladder.crumbling .rung-row{
+    animation: crumble-rung 0.55s ease-in forwards;
+  }
+
   .rung-row{
     display:grid; grid-template-columns: 22px 1fr 22px; align-items:center; column-gap:12px; width:100%;
     position: relative;
@@ -215,6 +230,7 @@
   button:active{ transform: scale(0.97); }
   .btn-primary{ background: var(--amber); color:#1B2A41; }
   .btn-ghost{ background: rgba(245,239,224,0.08); color: var(--ink); }
+  #hint-btn{ display:inline-flex; align-items:center; justify-content:center; padding: 10px 14px; }
 
   .feedback{ margin-top:12px; text-align:center; font-weight:600; min-height: 24px; flex-shrink:0; }
   .feedback.win, .feedback.ok{ text-align:center; }
@@ -314,8 +330,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785359571"></script>
-<script src="data/hints.js?v=1785359571"></script>
+<script src="data/puzzles.js?v=1785360462"></script>
+<script src="data/hints.js?v=1785360462"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -415,6 +431,10 @@ let activeTier = 'easy';
 let activeLength = null; // which rung (by word length) is currently being typed into
 let lastEnterCommitAt = 0; // guards against iOS sometimes firing two separate
                             // "Enter was pressed" signals for one keypress
+let lastFeedback = {}; // per-tier: the last shown error, so it survives a
+                        // re-render triggered by opening a different box
+                        // (e.g. the keyboard appearing) instead of vanishing
+let lastHint = {}; // per-tier: same idea, for the hint display
 const dateKey = todayKey();
 
 function storageKey(tier){ return `letterladder:${dateKey}:${tier}`; }
@@ -623,6 +643,17 @@ function render(focusInput = false, pendingErrors = null){
   if(pendingErrors){
     feedbackHtml = `<div class="error-list-wrap"><ul class="error-list">${pendingErrors.map(e => `<li>${e}</li>`).join('')}</ul></div>`;
     feedbackClassFinal = 'error';
+    lastFeedback[activeTier] = { html: feedbackHtml, className: feedbackClassFinal };
+  } else if(feedback !== ''){
+    // A fresh win or invalid-chain result naturally takes priority and
+    // supersedes any older single-guess error.
+    lastFeedback[activeTier] = null;
+  } else if(lastFeedback[activeTier]){
+    // Nothing new to show this render (e.g. we're just opening a
+    // different box to type the next guess) - keep showing whatever was
+    // last displayed instead of letting it silently vanish.
+    feedbackHtml = lastFeedback[activeTier].html;
+    feedbackClassFinal = lastFeedback[activeTier].className;
   }
 
   function rungWidthStyle(L){
@@ -662,15 +693,39 @@ function render(focusInput = false, pendingErrors = null){
     ${details.map(d=>`<div class="details">${d}</div>`).join('')}
     <div class="actions-row">
       <button class="btn-ghost" id="clear-btn" type="button">Clear guesses</button>
-      ${isWon ? '' : `<button class="btn-ghost" id="hint-btn" type="button">Hint</button>`}
+      ${isWon ? '' : `<button class="btn-ghost" id="hint-btn" type="button" aria-label="Hint"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg></button>`}
     </div>
     <div class="hint-display" id="hint-display"></div>
   `;
 
+  if(lastHint[activeTier]){
+    const hd = document.getElementById('hint-display');
+    if(hd) hd.innerHTML = lastHint[activeTier];
+  }
+
   document.getElementById('clear-btn').addEventListener('click', ()=>{
-    activeLength = null;
-    clearGuesses(activeTier);
-    render();
+    const ladderEl = panel.querySelector('.ladder');
+    if(ladderEl){
+      const rows = ladderEl.querySelectorAll('.rung-row');
+      rows.forEach((row, i) => {
+        row.style.setProperty('--crumble-rot', (Math.random()*30 - 15) + 'deg');
+        row.style.animationDelay = (i * 0.05) + 's';
+      });
+      ladderEl.classList.add('crumbling');
+      setTimeout(()=>{
+        activeLength = null;
+        clearGuesses(activeTier);
+        lastFeedback[activeTier] = null;
+        lastHint[activeTier] = null;
+        render();
+      }, 650);
+    } else {
+      activeLength = null;
+      clearGuesses(activeTier);
+      lastFeedback[activeTier] = null;
+      lastHint[activeTier] = null;
+      render();
+    }
   });
 
   const hintBtn = document.getElementById('hint-btn');
@@ -692,7 +747,9 @@ function render(focusInput = false, pendingErrors = null){
         return;
       }
       const letters = joinAnd(targetWord.split('').sort().map(ch => ch.toUpperCase()));
-      hintDisplay.innerHTML = `${targetLength}-letter word uses: <span class="hint-letters">${letters}</span>`;
+      const hintHtml = `${targetLength}-letter word uses: <span class="hint-letters">${letters}</span>`;
+      hintDisplay.innerHTML = hintHtml;
+      lastHint[activeTier] = hintHtml;
       recordHintUsed(activeTier);
     });
   }
@@ -809,6 +866,7 @@ function render(focusInput = false, pendingErrors = null){
       const newGuesses = loadGuesses(activeTier);
       newGuesses[L] = raw;
       saveGuesses(activeTier, newGuesses);
+      lastFeedback[activeTier] = null;
 
       // No auto-advance - the person always has to click into whichever
       // box they want to guess next, on purpose.
