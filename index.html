@@ -250,8 +250,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785295432"></script>
-<script src="data/hints.js?v=1785295432"></script>
+<script src="data/puzzles.js?v=1785296072"></script>
+<script src="data/hints.js?v=1785296072"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -349,6 +349,8 @@ function isValidChain(startingWord, guessesObj, finalWord){
 const TIERS = ['easy','medium','hard'];
 let activeTier = 'easy';
 let activeLength = null; // which rung (by word length) is currently being typed into
+let lastEnterCommitAt = 0; // guards against iOS sometimes firing two separate
+                            // "Enter was pressed" signals for one keypress
 const dateKey = todayKey();
 
 function storageKey(tier){ return `letterladder:${dateKey}:${tier}`; }
@@ -619,15 +621,25 @@ function render(focusInput = false, pendingErrors = null){
       render(true);
     }
 
+    function tryCommitViaEnter(){
+      const now = Date.now();
+      if(now - lastEnterCommitAt < 60) return; // a duplicate signal for the
+                                                 // same keypress - ignore it
+      lastEnterCommitAt = now;
+      commit(true);
+    }
+
     activeInput.addEventListener('keydown', (e)=>{
-      if(e.key === 'Enter'){ e.preventDefault(); commit(true); }
+      if(e.key === 'Enter'){ e.preventDefault(); tryCommitViaEnter(); }
     });
     activeInput.addEventListener('input', (e)=>{
       // Mobile keyboards don't always fire a proper keydown for
       // Return/Go on a plain input - but the 'input' event's inputType
       // reliably reflects it when they do commit a line break, so this
-      // catches Enter presses that keydown alone might miss.
-      if(e.inputType === 'insertLineBreak'){ commit(true); }
+      // catches Enter presses that keydown alone might miss. The debounce
+      // above keeps this from double-firing alongside keydown for the
+      // exact same keypress.
+      if(e.inputType === 'insertLineBreak'){ tryCommitViaEnter(); }
     });
     activeInput.addEventListener('blur', ()=> commit(false));
   }
