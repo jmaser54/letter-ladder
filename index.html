@@ -252,6 +252,19 @@
 
   .empty-state{ text-align:center; color: var(--ink-dim); padding: 30px 0; }
 
+  .confirm-overlay{
+    position: fixed; inset: 0; background: rgba(10,16,26,0.6);
+    display: flex; align-items:center; justify-content:center;
+    z-index: 1000; padding: 20px;
+  }
+  .confirm-card{
+    background: var(--bg-panel); border-radius: 16px; padding: 24px 22px;
+    max-width: 340px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .confirm-message{ font-size: 1rem; margin-bottom: 20px; text-align:center; }
+  .confirm-actions{ display:flex; gap:10px; justify-content:center; }
+  .confirm-actions button{ flex:1; }
+
   footer{ text-align:center; margin-top: 8px; color: var(--ink-dim); font-size: 0.7rem; flex-shrink:0; }
 
   @media (max-width: 420px){
@@ -330,8 +343,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785361224"></script>
-<script src="data/hints.js?v=1785361224"></script>
+<script src="data/puzzles.js?v=1785361693"></script>
+<script src="data/hints.js?v=1785361693"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -358,6 +371,29 @@ function timesText(n){
   if(n === 2) return 'twice';
   return `${n} times`;
 }
+function showConfirmModal(message, onConfirm){
+  const overlay = document.createElement('div');
+  overlay.className = 'confirm-overlay';
+  overlay.innerHTML = `
+    <div class="confirm-card">
+      <div class="confirm-message">${message}</div>
+      <div class="confirm-actions">
+        <button type="button" class="btn-ghost confirm-cancel">Cancel</button>
+        <button type="button" class="btn-primary confirm-ok">Confirm</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  function close(){ overlay.remove(); }
+  overlay.querySelector('.confirm-cancel').addEventListener('click', close);
+  overlay.addEventListener('click', (e)=>{ if(e.target === overlay) close(); });
+  overlay.querySelector('.confirm-ok').addEventListener('click', ()=>{
+    close();
+    onConfirm();
+  });
+}
+
 function joinAnd(items){
   if(items.length === 1) return items[0];
   if(items.length === 2) return `${items[0]} and ${items[1]}`;
@@ -693,7 +729,7 @@ function render(focusInput = false, pendingErrors = null){
     ${details.map(d=>`<div class="details">${d}</div>`).join('')}
     <div class="actions-row">
       <button class="btn-ghost" id="clear-btn" type="button">Clear guesses</button>
-      ${isWon ? '' : `<button class="btn-ghost" id="hint-btn" type="button" aria-label="Hint"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5" stroke-width="2.6"></circle><path d="M15.8 15.8L21 21" stroke-width="3.2"></path><path d="M7.3 8.6C7.9 7.2 9.2 6.5 10.6 6.5" stroke-width="1.4" opacity="0.55"></path></svg></button>`}
+      ${isWon ? '' : `<button class="btn-ghost" id="hint-btn" type="button" aria-label="Hint"><svg width="27" height="27" viewBox="0 0 24 24"><circle cx="10" cy="10" r="7.2" fill="rgba(245,239,224,0.18)" stroke="currentColor" stroke-width="2.8"></circle><circle cx="7.5" cy="7.5" r="2" fill="rgba(255,255,255,0.55)"></circle><line x1="15.6" y1="15.6" x2="21.8" y2="21.8" stroke="currentColor" stroke-width="4" stroke-linecap="round"></line></svg></button>`}
     </div>
     <div class="hint-display" id="hint-display"></div>
   `;
@@ -751,15 +787,13 @@ function render(focusInput = false, pendingErrors = null){
         return;
       }
 
-      if(!confirm("Are you sure you'd like to use a hint?")){
-        return;
-      }
-
-      const letters = joinAnd(targetWord.split('').sort().map(ch => ch.toUpperCase()));
-      const hintHtml = `${targetLength}-letter word uses: <span class="hint-letters">${letters}</span>`;
-      hintDisplay.innerHTML = hintHtml;
-      lastHint[activeTier] = hintHtml;
-      recordHintUsed(activeTier);
+      showConfirmModal("Are you sure you'd like to use a hint?", ()=>{
+        const letters = joinAnd(targetWord.split('').sort().map(ch => ch.toUpperCase()));
+        const hintHtml = `${targetLength}-letter word uses: <span class="hint-letters">${letters}</span>`;
+        hintDisplay.innerHTML = hintHtml;
+        lastHint[activeTier] = hintHtml;
+        recordHintUsed(activeTier);
+      });
     });
   }
 
