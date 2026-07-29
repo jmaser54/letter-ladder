@@ -61,7 +61,7 @@
   .brand .rung-i{ color: var(--amber); }
   .tagline{ color: var(--ink-dim); font-size: 0.85rem; margin-top: 4px; }
   .top-links{
-    display:flex; justify-content:center; gap:18px; margin-top:6px; font-size: 0.8rem;
+    display:flex; flex-wrap:wrap; justify-content:center; gap:8px 16px; margin-top:6px; font-size: 0.8rem;
   }
   .top-links a{ color: var(--ink-dim); text-decoration:none; border-bottom: 1px dotted var(--ink-dim); }
   .top-links a:hover{ color: var(--amber); border-color: var(--amber); }
@@ -235,6 +235,7 @@
     <div class="top-links">
       <a href="about.html">How to play</a>
       <a href="solutions.html">Yesterday's solution</a>
+      <a href="stats.html">Your stats</a>
     </div>
   </header>
 
@@ -259,8 +260,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785300029"></script>
-<script src="data/hints.js?v=1785300029"></script>
+<script src="data/puzzles.js?v=1785301155"></script>
+<script src="data/hints.js?v=1785301155"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -376,6 +377,95 @@ function clearGuesses(tier){
   try{ localStorage.removeItem(storageKey(tier)); }catch(e){}
 }
 
+// ---------- stats, streaks & score (all local to this device/browser -
+// there are no accounts, so none of this follows you to another device) ----------
+const STATS_KEY = 'letterladder:stats';
+const HINT_PENALTY_PER_USE = 5; // tweak this to make hints cost more/less
+
+function blankStat(){
+  return { played:0, solved:0, currentStreak:0, maxStreak:0, lastSolvedDate:null, score:0 };
+}
+function loadStats(){
+  try{
+    const raw = localStorage.getItem(STATS_KEY);
+    if(raw){
+      const parsed = JSON.parse(raw);
+      // guard against a corrupted/partial object from an older version
+      for(const key of ['easy','medium','hard','total']){
+        parsed[key] = Object.assign(blankStat(), parsed[key] || {});
+      }
+      return parsed;
+    }
+  }catch(e){}
+  return { easy: blankStat(), medium: blankStat(), hard: blankStat(), total: blankStat() };
+}
+function saveStats(stats){
+  try{ localStorage.setItem(STATS_KEY, JSON.stringify(stats)); }catch(e){}
+}
+function dateKeyMinusOneDay(key){
+  const [y,m,d] = key.split('-').map(Number);
+  const dt = new Date(y, m-1, d);
+  dt.setDate(dt.getDate()-1);
+  return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+}
+function bumpStreak(stat, todayKeyStr){
+  if(stat.lastSolvedDate === todayKeyStr) return; // already counted today, don't double-bump
+  const wasYesterday = stat.lastSolvedDate === dateKeyMinusOneDay(todayKeyStr);
+  stat.currentStreak = wasYesterday ? stat.currentStreak + 1 : 1;
+  stat.maxStreak = Math.max(stat.maxStreak, stat.currentStreak);
+  stat.lastSolvedDate = todayKeyStr;
+}
+
+function markPlayedIfNeeded(tier){
+  const flagKey = `letterladder:${dateKey}:${tier}:playedCounted`;
+  if(localStorage.getItem(flagKey)) return;
+  localStorage.setItem(flagKey, '1');
+  const stats = loadStats();
+  stats[tier].played += 1;
+  stats.total.played += 1;
+  saveStats(stats);
+}
+
+function recordHintUsed(tier){
+  const key = `letterladder:${dateKey}:${tier}:hintsUsed`;
+  const current = parseInt(localStorage.getItem(key) || '0', 10);
+  localStorage.setItem(key, String(current + 1));
+}
+function getHintsUsed(tier){
+  return parseInt(localStorage.getItem(`letterladder:${dateKey}:${tier}:hintsUsed`) || '0', 10);
+}
+
+function markSolvedIfNeeded(tier, guesses){
+  const flagKey = `letterladder:${dateKey}:${tier}:solvedCounted`;
+  if(localStorage.getItem(flagKey)) return;
+  localStorage.setItem(flagKey, '1');
+
+  const stats = loadStats();
+  const stat = stats[tier];
+  stat.solved += 1;
+  stats.total.solved += 1;
+  bumpStreak(stat, dateKey);
+
+  // Score: reward the length of every word the person actually had to
+  // guess (the start/final words are given to you, so they don't count),
+  // minus a small penalty for each hint used on this specific puzzle.
+  const guessedWords = Object.values(guesses);
+  const basePoints = guessedWords.reduce((sum, w) => sum + w.length, 0);
+  const penalty = getHintsUsed(tier) * HINT_PENALTY_PER_USE;
+  stat.score += Math.max(0, basePoints - penalty);
+  stats.total.score = stats.easy.score + stats.medium.score + stats.hard.score;
+
+  // If this solve completes all three tiers for today, the "total" streak
+  // (a separate concept from the per-tier ones - it tracks consecutive
+  // days you completed EVERY puzzle, tying into the summit celebration)
+  // gets its own bump.
+  if(TIERS.every(isTierComplete)){
+    bumpStreak(stats.total, dateKey);
+  }
+
+  saveStats(stats);
+}
+
 // ---------- rendering ----------
 const panel = document.getElementById('panel');
 document.getElementById('date-row').textContent = prettyDate(dateKey);
@@ -452,6 +542,7 @@ function render(focusInput = false, pendingErrors = null){
     if(valid){
       feedback = "🎉 You win! Nicely climbed.";
       feedbackClass = 'win';
+      markSolvedIfNeeded(activeTier, guesses);
       checkAndCelebrateIfAllComplete();
     } else {
       feedback = "❌ Guesses aren't a valid progression.";
@@ -534,6 +625,7 @@ function render(focusInput = false, pendingErrors = null){
       }
       const letters = joinAnd(targetWord.split('').sort().map(ch => ch.toUpperCase()));
       hintDisplay.innerHTML = `${targetLength}-letter word uses: <span class="hint-letters">${letters}</span>`;
+      recordHintUsed(activeTier);
     });
   }
 
@@ -593,6 +685,7 @@ function render(focusInput = false, pendingErrors = null){
         return;
       }
 
+      markPlayedIfNeeded(activeTier);
       const errs = [];
 
       if(raw.length !== L){
