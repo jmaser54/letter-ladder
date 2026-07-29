@@ -250,8 +250,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785294844"></script>
-<script src="data/hints.js?v=1785294844"></script>
+<script src="data/puzzles.js?v=1785295432"></script>
+<script src="data/hints.js?v=1785295432"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -447,9 +447,9 @@ function render(focusInput = false, pendingErrors = null){
       feedbackClass = 'error';
       details = invalidSteps.map(s => {
         if(s.reason === 'missing_letters'){
-          return `"${s.to}" is missing the "${s.letters.length === 1 ? s.letters[0] : joinAnd(s.letters)}" from "${s.from}".`;
+          return `"${s.to.toUpperCase()}" is missing the "${s.letters.length === 1 ? s.letters[0].toUpperCase() : joinAnd(s.letters.map(l => l.toUpperCase()))}" from "${s.from.toUpperCase()}".`;
         }
-        return `"${s.from}" → "${s.to}" isn't a valid one-letter step.`;
+        return `"${s.from.toUpperCase()}" → "${s.to.toUpperCase()}" isn't a valid one-letter step.`;
       });
     }
   }
@@ -521,8 +521,8 @@ function render(focusInput = false, pendingErrors = null){
         hintDisplay.innerHTML = `No hint available for this puzzle yet.`;
         return;
       }
-      const letters = targetWord.split('').sort().join(', ').toUpperCase();
-      hintDisplay.innerHTML = `Your ${targetLength}-letter word uses: <span class="hint-letters">${letters}</span>`;
+      const letters = joinAnd(targetWord.split('').sort().map(ch => ch.toUpperCase()));
+      hintDisplay.innerHTML = `${targetLength}-letter word uses: <span class="hint-letters">${letters}</span>`;
     });
   }
 
@@ -576,12 +576,12 @@ function render(focusInput = false, pendingErrors = null){
         const letterProblems = checkGuessLetters(raw, startingWord, finalWord);
         for(const problem of letterProblems){
           if(problem.reason === 'missing_starting_letters'){
-            errs.push(`Guess doesn't include every letter from the starting word: ${joinAnd(problem.letters)}`);
+            errs.push(`Guess doesn't include every letter from the starting word: ${joinAnd(problem.letters.map(l => l.toUpperCase()))}`);
           } else if(problem.reason === 'letter_not_in_final'){
             const isPlural = problem.letters.length > 1;
-            errs.push(`Guess uses ${isPlural ? "letters that aren't" : "a letter that isn't"} in the final word: ${joinAnd(problem.letters)}`);
+            errs.push(`Guess uses ${isPlural ? "letters that aren't" : "a letter that isn't"} in the final word: ${joinAnd(problem.letters.map(l => l.toUpperCase()))}`);
           } else if(problem.reason === 'too_many_repeats'){
-            const parts = problem.details.map(d => `"${d.ch}" too many times — it's only in the final word ${timesText(d.fCount)}`);
+            const parts = problem.details.map(d => `"${d.ch.toUpperCase()}" too many times — it's only in the final word ${timesText(d.fCount)}`);
             errs.push(`Guess uses ${parts.join('; ')}.`);
           }
         }
