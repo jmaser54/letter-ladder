@@ -250,8 +250,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785296665"></script>
-<script src="data/hints.js?v=1785296665"></script>
+<script src="data/puzzles.js?v=1785297684"></script>
+<script src="data/hints.js?v=1785297684"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -472,7 +472,7 @@ function render(focusInput = false, pendingErrors = null){
     const L = steps[i];
     const g = guesses[L];
     if(!isWon && activeLength === L){
-      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><input type="text" class="rung rung-input" id="rung-input-${L}" data-length="${L}" maxlength="${L}" value="${g ? g : ''}" autocomplete="off"></div>`);
+      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><input type="text" class="rung rung-input" id="rung-input-${L}" data-length="${L}" maxlength="${L}" value="${g ? g : ''}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done"></div>`);
     } else {
       const clickableClass = isWon ? '' : 'clickable';
       rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><div class="rung ${g?'':'empty'} ${clickableClass}" data-length="${L}">${g ? g : '&nbsp;'.repeat(L)}</div></div>`);
@@ -629,7 +629,7 @@ function render(focusInput = false, pendingErrors = null){
 
     function tryCommitViaEnter(){
       const now = Date.now();
-      if(now - lastEnterCommitAt < 60) return; // a duplicate signal for the
+      if(now - lastEnterCommitAt < 700) return; // a duplicate signal for the
                                                  // same keypress - ignore it
       lastEnterCommitAt = now;
       commit(true);
