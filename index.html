@@ -152,19 +152,19 @@
   .rung-row > .rung{ justify-self: center; }
   .rung-count{ width: 22px; text-align:right; color: var(--ink-dim); font-size: 0.75rem; font-variant-numeric: tabular-nums; }
   .delete-guess-btn{
-    width: 22px; height: 22px;
-    border: none; border-radius: 50%;
-    background: rgba(217,112,95,0.18);
+    width: 22px; height: 34px;
+    border: none; background: none;
     color: var(--red);
-    font-size: 0.85rem;
+    font-size: 1.6rem;
+    font-weight: 700;
     line-height: 1;
     cursor: pointer;
     display: flex; align-items:center; justify-content:center;
     padding: 0;
-    transition: background 0.1s ease, transform 0.1s ease;
+    transition: transform 0.1s ease, filter 0.1s ease;
   }
-  .delete-guess-btn:hover{ background: rgba(217,112,95,0.32); }
-  .delete-guess-btn:active{ transform: scale(0.9); }
+  .delete-guess-btn:hover{ filter: brightness(1.2); }
+  .delete-guess-btn:active{ transform: scale(0.85); }
   .rung{
     font-family:'Fraunces', serif;
     font-size: var(--rung-font, 1.35rem);
@@ -314,8 +314,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785358834"></script>
-<script src="data/hints.js?v=1785358834"></script>
+<script src="data/puzzles.js?v=1785359156"></script>
+<script src="data/hints.js?v=1785359156"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
