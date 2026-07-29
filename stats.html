@@ -94,7 +94,7 @@ const container = document.getElementById('stats-list');
 const totalEverPlayed = stats.easy.played + stats.medium.played + stats.hard.played;
 
 if(totalEverPlayed === 0){
-  container.innerHTML = `<div class="empty-state">No puzzles played yet on this device - go make a guess!</div>`;
+  container.innerHTML = `<div class="empty-state">No puzzles played yet on this device.</div>`;
 } else {
   function solvePct(stat){
     return stat.played === 0 ? 0 : Math.round((stat.solved / stat.played) * 100);

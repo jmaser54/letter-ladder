@@ -151,6 +151,20 @@
   .rung-row > *{ position: relative; z-index: 1; }
   .rung-row > .rung{ justify-self: center; }
   .rung-count{ width: 22px; text-align:right; color: var(--ink-dim); font-size: 0.75rem; font-variant-numeric: tabular-nums; }
+  .delete-guess-btn{
+    width: 22px; height: 22px;
+    border: none; border-radius: 50%;
+    background: rgba(217,112,95,0.18);
+    color: var(--red);
+    font-size: 0.85rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex; align-items:center; justify-content:center;
+    padding: 0;
+    transition: background 0.1s ease, transform 0.1s ease;
+  }
+  .delete-guess-btn:hover{ background: rgba(217,112,95,0.32); }
+  .delete-guess-btn:active{ transform: scale(0.9); }
   .rung{
     font-family:'Fraunces', serif;
     font-size: var(--rung-font, 1.35rem);
@@ -300,8 +314,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785356824"></script>
-<script src="data/hints.js?v=1785356824"></script>
+<script src="data/puzzles.js?v=1785358834"></script>
+<script src="data/hints.js?v=1785358834"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -628,7 +642,8 @@ function render(focusInput = false, pendingErrors = null){
       rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><input type="text" class="rung rung-input" id="rung-input-${L}" data-length="${L}" maxlength="${L}" value="${g ? g : ''}" style="${rungWidthStyle(L)}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done"></div>`);
     } else {
       const clickableClass = isWon ? '' : 'clickable';
-      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><div class="rung ${g?'':'empty'} ${clickableClass}" data-length="${L}" style="${rungWidthStyle(L)}">${g ? g : '&nbsp;'.repeat(L)}</div></div>`);
+      const deleteBtn = (g && !isWon) ? `<button type="button" class="delete-guess-btn" data-length="${L}" aria-label="Delete this guess">×</button>` : '';
+      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><div class="rung ${g?'':'empty'} ${clickableClass}" data-length="${L}" style="${rungWidthStyle(L)}">${g ? g : '&nbsp;'.repeat(L)}</div>${deleteBtn}</div>`);
     }
   }
   rungsHtml.push(`<div class="rung-row"><div class="rung-count">${startingWord.length}</div><div class="rung anchor" style="${rungWidthStyle(startingWord.length)}">${startingWord}</div></div>`);
@@ -687,6 +702,16 @@ function render(focusInput = false, pendingErrors = null){
       el.addEventListener('click', ()=>{
         activeLength = Number(el.dataset.length);
         render(true);
+      });
+    });
+    panel.querySelectorAll('.delete-guess-btn').forEach(btn => {
+      btn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        const L = Number(btn.dataset.length);
+        const currentGuesses = loadGuesses(activeTier);
+        delete currentGuesses[L];
+        saveGuesses(activeTier, currentGuesses);
+        render();
       });
     });
   }
@@ -752,10 +777,10 @@ function render(focusInput = false, pendingErrors = null){
         const letterProblems = checkGuessLetters(raw, startingWord, finalWord);
         for(const problem of letterProblems){
           if(problem.reason === 'missing_starting_letters'){
-            errs.push(`Guess doesn't include every letter from the starting word: ${joinAnd(problem.letters.map(l => l.toUpperCase()))}`);
+            errs.push(`Guess doesn't include every letter from the bottom word: ${joinAnd(problem.letters.map(l => l.toUpperCase()))}`);
           } else if(problem.reason === 'letter_not_in_final'){
             const isPlural = problem.letters.length > 1;
-            errs.push(`Guess uses ${isPlural ? "letters that aren't" : "a letter that isn't"} in the final word: ${joinAnd(problem.letters.map(l => l.toUpperCase()))}`);
+            errs.push(`Guess uses ${isPlural ? "letters that aren't" : "a letter that isn't"} in the top word: ${joinAnd(problem.letters.map(l => l.toUpperCase()))}`);
           } else if(problem.reason === 'too_many_repeats'){
             const parts = problem.details.map(d => `"${d.ch.toUpperCase()}" too many times — it's only in the final word ${timesText(d.fCount)}`);
             errs.push(`Guess uses ${parts.join('; ')}.`);
