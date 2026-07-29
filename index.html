@@ -250,8 +250,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785293381"></script>
-<script src="data/hints.js?v=1785293381"></script>
+<script src="data/puzzles.js?v=1785293889"></script>
+<script src="data/hints.js?v=1785293889"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -580,17 +580,19 @@ function render(focusInput = false, pendingErrors = null){
       }
 
       if(errs.length > 0){
+        activeInput.value = '';
         if(viaEnter){
-          // An explicit submit attempt - show what's wrong and keep this
-          // rung open so they can fix it right away.
-          activeInput.value = '';
+          // An explicit submit attempt - keep this rung open so they can
+          // fix it right away.
           render(true, errs);
         } else {
-          // They tapped away to do something else (another rung, a tab,
-          // Clear, etc). Don't pop an error over whatever they're doing -
-          // just close this rung back up without saving the bad guess.
+          // Tapped away instead of pressing Enter (this is actually the
+          // common case on mobile, where the keyboard's "Return"/"Go" key
+          // often just blurs the field rather than firing a proper Enter
+          // key event). Still show the error - just don't force focus
+          // back, since they may have deliberately tapped somewhere else.
           activeLength = null;
-          render();
+          render(false, errs);
         }
         return;
       }
@@ -611,6 +613,13 @@ function render(focusInput = false, pendingErrors = null){
 
     activeInput.addEventListener('keydown', (e)=>{
       if(e.key === 'Enter'){ e.preventDefault(); commit(true); }
+    });
+    activeInput.addEventListener('input', (e)=>{
+      // Mobile keyboards don't always fire a proper keydown for
+      // Return/Go on a plain input - but the 'input' event's inputType
+      // reliably reflects it when they do commit a line break, so this
+      // catches Enter presses that keydown alone might miss.
+      if(e.inputType === 'insertLineBreak'){ commit(true); }
     });
     activeInput.addEventListener('blur', ()=> commit(false));
   }
