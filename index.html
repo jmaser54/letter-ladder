@@ -243,12 +243,13 @@
   .feedback.ok{ color: var(--ink-dim); font-weight:500; }
   .details{ margin-top:4px; text-align:center; font-size:0.8rem; color: var(--red); font-style:italic; }
 
-  .actions-row{ display:flex; justify-content:center; gap:10px; margin-top:10px; flex-shrink:0; }
+  .actions-row{ display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:10px; flex-shrink:0; }
   .hint-display{
     text-align:center; margin-top:10px; font-size:0.85rem; color: var(--ink-dim);
     font-style:italic; flex-shrink:0; min-height: 0;
   }
   .hint-display .hint-letters{ color: var(--amber); font-style:normal; font-weight:600; letter-spacing:0.04em; }
+  .share-status{ text-align:center; margin-top:8px; font-size:0.8rem; color: var(--green); font-weight:600; flex-shrink:0; }
 
   .empty-state{ text-align:center; color: var(--ink-dim); padding: 30px 0; }
 
@@ -343,8 +344,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785361693"></script>
-<script src="data/hints.js?v=1785361693"></script>
+<script src="data/puzzles.js?v=1785362748"></script>
+<script src="data/hints.js?v=1785362748"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -463,6 +464,11 @@ function isValidChain(startingWord, guessesObj, finalWord){
 
 // ---------- state ----------
 const TIERS = ['easy','medium','hard'];
+// Must match START_DATE in scripts/generate_schedule.py, so the puzzle
+// "day number" shown in shared results matches what the schedule actually
+// uses. Update both together if you ever change the launch date.
+const LAUNCH_DATE_KEY = '2026-07-27';
+const SITE_URL = 'https://jmaser54.github.io/letter-ladder/';
 let activeTier = 'easy';
 let activeLength = null; // which rung (by word length) is currently being typed into
 let lastEnterCommitAt = 0; // guards against iOS sometimes firing two separate
@@ -597,6 +603,33 @@ function isTierComplete(tier){
   return valid;
 }
 
+function puzzleDayNumber(){
+  const [ly, lm, ld] = LAUNCH_DATE_KEY.split('-').map(Number);
+  const launch = new Date(ly, lm-1, ld);
+  const [ty, tm, td] = dateKey.split('-').map(Number);
+  const today = new Date(ty, tm-1, td);
+  const diffDays = Math.round((today - launch) / 86400000);
+  return diffDays + 1;
+}
+
+function buildShareText(){
+  const tierLabels = { easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+  const lines = [];
+  for(const tier of TIERS){
+    const puzzle = getTodaysPuzzle(tier);
+    if(!puzzle) continue; // nothing scheduled for this tier today, skip it
+    if(isTierComplete(tier)){
+      const hints = getHintsUsed(tier);
+      lines.push(hints > 0
+        ? `${tierLabels[tier]}: 🔍 (${hints} hint${hints > 1 ? 's' : ''} used)`
+        : `${tierLabels[tier]}: ✅`);
+    } else {
+      lines.push(`${tierLabels[tier]}: —`);
+    }
+  }
+  return `🪜 Letter Ladder #${puzzleDayNumber()}\n\n${lines.join('\n')}\n\n${SITE_URL}`;
+}
+
 function triggerSummitCelebration(){
   const colors = ['#E8A33D', '#6FBF8B', '#F5EFE0', '#D9705F'];
   for(let i=0; i<70; i++){
@@ -721,6 +754,8 @@ function render(focusInput = false, pendingErrors = null){
   else if(totalRungs >= 7) sizeTier = 'rungs-lg';
   else if(totalRungs >= 5) sizeTier = 'rungs-md';
 
+  const anyTierSolvedToday = TIERS.some(tier => getTodaysPuzzle(tier) && isTierComplete(tier));
+
   panel.className = `panel ${sizeTier}`;
   panel.innerHTML = `
     <div class="level-label">${activeTier} puzzle</div>
@@ -730,8 +765,10 @@ function render(focusInput = false, pendingErrors = null){
     <div class="actions-row">
       <button class="btn-ghost" id="clear-btn" type="button">Clear guesses</button>
       ${isWon ? '' : `<button class="btn-ghost" id="hint-btn" type="button" aria-label="Hint"><svg width="27" height="27" viewBox="0 0 24 24"><circle cx="10" cy="10" r="7.2" fill="rgba(245,239,224,0.18)" stroke="currentColor" stroke-width="2.8"></circle><circle cx="7.5" cy="7.5" r="2" fill="rgba(255,255,255,0.55)"></circle><line x1="15.6" y1="15.6" x2="21.8" y2="21.8" stroke="currentColor" stroke-width="4" stroke-linecap="round"></line></svg></button>`}
+      ${anyTierSolvedToday ? `<button class="btn-primary" id="share-btn" type="button">Share results</button>` : ''}
     </div>
     <div class="hint-display" id="hint-display"></div>
+    <div class="share-status" id="share-status"></div>
   `;
 
   if(lastHint[activeTier]){
@@ -767,6 +804,28 @@ function render(focusInput = false, pendingErrors = null){
       render();
     }
   });
+
+  const shareBtn = document.getElementById('share-btn');
+  if(shareBtn){
+    shareBtn.addEventListener('click', async ()=>{
+      const shareText = buildShareText();
+      const statusEl = document.getElementById('share-status');
+      if(navigator.share){
+        try{
+          await navigator.share({ text: shareText });
+        }catch(e){
+          // person cancelled the native share sheet - not an error, do nothing
+        }
+      } else {
+        try{
+          await navigator.clipboard.writeText(shareText);
+          if(statusEl) statusEl.textContent = 'Copied to clipboard!';
+        }catch(e){
+          if(statusEl) statusEl.textContent = shareText;
+        }
+      }
+    });
+  }
 
   const hintBtn = document.getElementById('hint-btn');
   if(hintBtn){
