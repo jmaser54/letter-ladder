@@ -114,6 +114,7 @@
     display:flex; flex-direction:column; align-items:center; gap: var(--rung-gap, 10px);
     position: relative;
     padding: 10px 26px;
+    margin: 0 auto;
   }
   .ladder::before, .ladder::after{
     content: "";
@@ -121,8 +122,8 @@
     top: 0; bottom: 0;
     width: 13px;
     border-radius: 7px;
-    background: linear-gradient(90deg, #C97F3D, #E8A055 45%, #C97F3D);
-    box-shadow: inset -2px 0 0 rgba(255,255,255,0.25), inset 2px 0 0 rgba(0,0,0,0.2), 0 2px 5px rgba(0,0,0,0.3);
+    background: linear-gradient(90deg, #8B93A0, #CBD1D9 45%, #8B93A0);
+    box-shadow: inset -2px 0 0 rgba(255,255,255,0.3), inset 2px 0 0 rgba(0,0,0,0.25), 0 2px 5px rgba(0,0,0,0.3);
   }
   .ladder::before{ left: 6px; }
   .ladder::after{ right: 6px; }
@@ -141,8 +142,8 @@
     top: 50%; transform: translateY(-50%);
     height: 13px;
     border-radius: 6px;
-    background: linear-gradient(180deg, #E8A055, #C97F3D);
-    box-shadow: inset 0 -2px 0 rgba(0,0,0,0.2), inset 0 2px 0 rgba(255,255,255,0.25), 0 2px 4px rgba(0,0,0,0.3);
+    background: linear-gradient(180deg, #CBD1D9, #8B93A0);
+    box-shadow: inset 0 -2px 0 rgba(0,0,0,0.25), inset 0 2px 0 rgba(255,255,255,0.3), 0 2px 4px rgba(0,0,0,0.3);
     z-index: 0;
   }
   .rung-row > *{ position: relative; z-index: 1; }
@@ -296,8 +297,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785353564"></script>
-<script src="data/hints.js?v=1785353564"></script>
+<script src="data/puzzles.js?v=1785354278"></script>
+<script src="data/hints.js?v=1785354278"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -615,6 +616,8 @@ function render(focusInput = false, pendingErrors = null){
     return `width:max(var(--rung-minw), calc(${L}ch + ${(L*0.08).toFixed(2)}em + 2.4em));`;
   }
 
+  const ladderMaxWidth = `max-width: calc(${rungWidthStyle(finalWord.length).replace('width:','').replace(';','')} + 86px);`;
+
   const rungsHtml = [];
   rungsHtml.push(`<div class="rung-row"><div class="rung-count">${finalWord.length}</div><div class="rung anchor" style="${rungWidthStyle(finalWord.length)}">${finalWord}</div></div>`);
   for(let i = steps.length-1; i>=0; i--){
@@ -638,7 +641,7 @@ function render(focusInput = false, pendingErrors = null){
   panel.className = `panel ${sizeTier}`;
   panel.innerHTML = `
     <div class="level-label">${activeTier} puzzle</div>
-    <div class="ladder-scroll" id="ladder-scroll"><div class="ladder">${rungsHtml.join('')}</div></div>
+    <div class="ladder-scroll" id="ladder-scroll"><div class="ladder" style="${ladderMaxWidth}">${rungsHtml.join('')}</div></div>
     <div class="feedback ${feedbackClassFinal}">${feedbackHtml}</div>
     ${details.map(d=>`<div class="details">${d}</div>`).join('')}
     <div class="actions-row">
