@@ -139,10 +139,10 @@
     100%{ transform: translateY(45px) rotate(var(--crumble-rot, 12deg)); opacity:0; }
   }
   .ladder.crumbling::before, .ladder.crumbling::after{
-    animation: crumble-rail 0.6s ease-in forwards;
+    animation: crumble-rail 1.2s ease-in forwards;
   }
   .ladder.crumbling .rung-row{
-    animation: crumble-rung 0.55s ease-in forwards;
+    animation: crumble-rung 1.1s ease-in forwards;
   }
 
   .rung-row{
@@ -330,8 +330,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785360462"></script>
-<script src="data/hints.js?v=1785360462"></script>
+<script src="data/puzzles.js?v=1785361224"></script>
+<script src="data/hints.js?v=1785361224"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -693,7 +693,7 @@ function render(focusInput = false, pendingErrors = null){
     ${details.map(d=>`<div class="details">${d}</div>`).join('')}
     <div class="actions-row">
       <button class="btn-ghost" id="clear-btn" type="button">Clear guesses</button>
-      ${isWon ? '' : `<button class="btn-ghost" id="hint-btn" type="button" aria-label="Hint"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg></button>`}
+      ${isWon ? '' : `<button class="btn-ghost" id="hint-btn" type="button" aria-label="Hint"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5" stroke-width="2.6"></circle><path d="M15.8 15.8L21 21" stroke-width="3.2"></path><path d="M7.3 8.6C7.9 7.2 9.2 6.5 10.6 6.5" stroke-width="1.4" opacity="0.55"></path></svg></button>`}
     </div>
     <div class="hint-display" id="hint-display"></div>
   `;
@@ -709,16 +709,20 @@ function render(focusInput = false, pendingErrors = null){
       const rows = ladderEl.querySelectorAll('.rung-row');
       rows.forEach((row, i) => {
         row.style.setProperty('--crumble-rot', (Math.random()*30 - 15) + 'deg');
-        row.style.animationDelay = (i * 0.05) + 's';
+        row.style.animationDelay = (i * 0.1) + 's';
       });
       ladderEl.classList.add('crumbling');
+      // Wait for the full staggered animation to actually finish, however
+      // many rungs this specific puzzle has, rather than a fixed guess
+      // that could cut a long puzzle's crumble short.
+      const totalWaitMs = (rows.length * 100) + 1200;
       setTimeout(()=>{
         activeLength = null;
         clearGuesses(activeTier);
         lastFeedback[activeTier] = null;
         lastHint[activeTier] = null;
         render();
-      }, 650);
+      }, totalWaitMs);
     } else {
       activeLength = null;
       clearGuesses(activeTier);
@@ -746,6 +750,11 @@ function render(focusInput = false, pendingErrors = null){
         hintDisplay.innerHTML = `No hint available for this puzzle yet.`;
         return;
       }
+
+      if(!confirm("Are you sure you'd like to use a hint?")){
+        return;
+      }
+
       const letters = joinAnd(targetWord.split('').sort().map(ch => ch.toUpperCase()));
       const hintHtml = `${targetLength}-letter word uses: <span class="hint-letters">${letters}</span>`;
       hintDisplay.innerHTML = hintHtml;
