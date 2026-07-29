@@ -164,7 +164,12 @@
   .feedback.ok{ color: var(--ink-dim); font-weight:500; }
   .details{ margin-top:4px; text-align:center; font-size:0.8rem; color: var(--red); font-style:italic; }
 
-  .actions-row{ display:flex; justify-content:center; margin-top:10px; flex-shrink:0; }
+  .actions-row{ display:flex; justify-content:center; gap:10px; margin-top:10px; flex-shrink:0; }
+  .hint-display{
+    text-align:center; margin-top:10px; font-size:0.85rem; color: var(--ink-dim);
+    font-style:italic; flex-shrink:0; min-height: 0;
+  }
+  .hint-display .hint-letters{ color: var(--amber); font-style:normal; font-weight:600; letter-spacing:0.04em; }
 
   .empty-state{ text-align:center; color: var(--ink-dim); padding: 30px 0; }
 
@@ -220,7 +225,7 @@
     <div class="tagline">Add one letter, scramble to a new word, climb to the top.</div>
     <div class="top-links">
       <a href="about.html">How to play</a>
-      <a href="solutions.html">Past solutions</a>
+      <a href="solutions.html">Yesterday's solution</a>
     </div>
   </header>
 
@@ -245,7 +250,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785287680"></script>
+<script src="data/puzzles.js?v=1785291257"></script>
+<script src="data/hints.js?v=1785291257"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -476,7 +482,9 @@ function render(focusInput = false){
     ${details.map(d=>`<div class="details">${d}</div>`).join('')}
     <div class="actions-row">
       <button class="btn-ghost" id="clear-btn" type="button">Clear guesses</button>
+      ${isWon ? '' : `<button class="btn-ghost" id="hint-btn" type="button">Hint</button>`}
     </div>
+    <div class="hint-display" id="hint-display"></div>
   `;
 
   document.getElementById('clear-btn').addEventListener('click', ()=>{
@@ -484,6 +492,29 @@ function render(focusInput = false){
     clearGuesses(activeTier);
     render();
   });
+
+  const hintBtn = document.getElementById('hint-btn');
+  if(hintBtn){
+    hintBtn.addEventListener('click', ()=>{
+      const hintDisplay = document.getElementById('hint-display');
+      const unfilled = steps.filter(L => !guesses[L]);
+      if(unfilled.length === 0){
+        hintDisplay.innerHTML = `Every rung is already filled in!`;
+        return;
+      }
+      const targetLength = Math.max(...unfilled);
+      const dayHints = (typeof HINTS_SCHEDULE !== 'undefined' && HINTS_SCHEDULE[dateKey]) || null;
+      const tierHint = dayHints ? dayHints[activeTier] : null;
+      const targetWord = tierHint ? tierHint.solution.find(w => w.length === targetLength) : null;
+
+      if(!targetWord){
+        hintDisplay.innerHTML = `No hint available for this puzzle yet.`;
+        return;
+      }
+      const letters = targetWord.split('').sort().join(', ').toUpperCase();
+      hintDisplay.innerHTML = `Your ${targetLength}-letter word uses: <span class="hint-letters">${letters}</span>`;
+    });
+  }
 
   if(!isWon){
     panel.querySelectorAll('.rung.clickable').forEach(el => {

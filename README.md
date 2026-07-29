@@ -47,11 +47,19 @@ That URL is what you share with people to play the game. Anyone visiting it play
 
 ## Past solutions page
 
-`solutions.html` shows one worked solution for each **past** day's puzzles
-(never today's or future ones - those are deliberately left out of the
-generated file entirely, so there's nothing to find even by inspecting the
-page's source). It only shows a day/tier once you've filled in a `Solution`
-for it in the spreadsheet, and only once that day has actually passed.
+`solutions.html` ("Yesterday's Solution") shows one worked solution for
+**yesterday's** puzzles only (never today's or future ones - those are
+deliberately left out of the generated file entirely). It only shows a
+tier once you've filled in a `Solution` for it in the spreadsheet.
+
+## In-game hints
+
+Each puzzle has a "Hint" button that reveals the letters (not the exact
+word or order) needed for the longest rung you haven't filled in yet. This
+is powered by `data/hints.js`, generated from the same `Solution` column,
+using the same 10-day rolling window as `puzzles.js` - so it doesn't expose
+any more of your puzzle bank than the live game already does. A puzzle
+without a `Solution` filled in simply won't offer a hint yet.
 
 ## Keeping your puzzle bank private
 
