@@ -113,8 +113,10 @@
   .ladder{
     display:flex; flex-direction:column; align-items:center; gap: var(--rung-gap, 10px);
     position: relative;
-    padding: 10px 26px;
+    padding: 10px 30px;
     margin: 0 auto;
+    width: -webkit-fit-content;
+    width: fit-content;
   }
   .ladder::before, .ladder::after{
     content: "";
@@ -297,8 +299,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785354278"></script>
-<script src="data/hints.js?v=1785354278"></script>
+<script src="data/puzzles.js?v=1785356432"></script>
+<script src="data/hints.js?v=1785356432"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -616,8 +618,6 @@ function render(focusInput = false, pendingErrors = null){
     return `width:max(var(--rung-minw), calc(${L}ch + ${(L*0.08).toFixed(2)}em + 2.4em));`;
   }
 
-  const ladderMaxWidth = `max-width: calc(${rungWidthStyle(finalWord.length).replace('width:','').replace(';','')} + 86px);`;
-
   const rungsHtml = [];
   rungsHtml.push(`<div class="rung-row"><div class="rung-count">${finalWord.length}</div><div class="rung anchor" style="${rungWidthStyle(finalWord.length)}">${finalWord}</div></div>`);
   for(let i = steps.length-1; i>=0; i--){
@@ -641,7 +641,7 @@ function render(focusInput = false, pendingErrors = null){
   panel.className = `panel ${sizeTier}`;
   panel.innerHTML = `
     <div class="level-label">${activeTier} puzzle</div>
-    <div class="ladder-scroll" id="ladder-scroll"><div class="ladder" style="${ladderMaxWidth}">${rungsHtml.join('')}</div></div>
+    <div class="ladder-scroll" id="ladder-scroll"><div class="ladder">${rungsHtml.join('')}</div></div>
     <div class="feedback ${feedbackClassFinal}">${feedbackHtml}</div>
     ${details.map(d=>`<div class="details">${d}</div>`).join('')}
     <div class="actions-row">
