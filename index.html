@@ -250,8 +250,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785298105"></script>
-<script src="data/hints.js?v=1785298105"></script>
+<script src="data/puzzles.js?v=1785298526"></script>
+<script src="data/hints.js?v=1785298526"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -582,6 +582,16 @@ function render(focusInput = false, pendingErrors = null){
       debugLog(`  -> computed raw="${raw}" (L=${L})`);
 
       if(raw === ''){
+        if(pendingErrors){
+          // This box was reopened specifically to show an error (from an
+          // earlier Enter-triggered submit). If it blurs away untouched
+          // before the person retypes anything, don't silently wipe that
+          // error off the screen - keep it visible.
+          debugLog(`  -> raw is EMPTY, but preserving the previously-shown error instead of wiping it`);
+          activeLength = null;
+          render(false, pendingErrors);
+          return;
+        }
         // Nothing typed (or it was cleared) - just close without changing
         // anything, no error needed for an abandoned/empty attempt.
         debugLog(`  -> raw is EMPTY, closing silently with NO error`);
