@@ -79,3 +79,28 @@ how Wordle, Connections, and most browser word games work too. If you'd
 rather have puzzle answers live on a real server that visitors truly cannot
 inspect, that's a different (and more involved) setup — worth revisiting if
 this becomes a bigger project down the line.
+
+## Stats, streaks & score
+
+`stats.html` shows played/solved%/streaks/score, per level and combined.
+Everything is tracked entirely in the visitor's own browser (localStorage) -
+there are no accounts and nothing is sent to a server, which means stats are
+per-device (won't follow someone from their phone to their laptop) but
+required zero new infrastructure to build. Score is based on the length of
+the words a player actually guessed, minus a small penalty for each hint
+used (`HINT_PENALTY_PER_USE` near the top of index.html's script if you
+want to tune it).
+
+## Difficulty scoring tool
+
+`scripts/difficulty_score.py` is a helper for curating puzzle difficulty
+objectively rather than by pure gut feel. Run it like:
+
+    python3 scripts/difficulty_score.py "start_word" "final_word"
+
+It reports two things: TRAPS (real words that look like a valid first move
+but are dead ends) and BOTTLENECK (how many real words exist at each step -
+consistently low numbers throughout suggest a genuinely hard puzzle, a
+single late narrow point suggests it's easier than it looks). It can't
+judge how *obvious* a trap word is to an average player, though - that part
+still needs your judgment.
