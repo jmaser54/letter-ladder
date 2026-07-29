@@ -110,8 +110,39 @@
        the scroll edges, and so the scrollbar doesn't sit on top of text */
     padding: 2px 2px;
   }
-  .ladder{ display:flex; flex-direction:column; align-items:center; gap: var(--rung-gap, 10px); }
-  .rung-row{ display:flex; align-items:center; gap:12px; width:100%; justify-content:center; }
+  .ladder{
+    display:flex; flex-direction:column; align-items:center; gap: var(--rung-gap, 10px);
+    position: relative;
+    padding: 6px 26px;
+  }
+  .ladder::before, .ladder::after{
+    content: "";
+    position: absolute;
+    top: 4px; bottom: 4px;
+    width: 11px;
+    border-radius: 7px;
+    background: linear-gradient(180deg, #E0A055, #B87730);
+    box-shadow: inset -2px 0 0 rgba(255,255,255,0.2), inset 2px 0 0 rgba(0,0,0,0.18), 0 2px 5px rgba(0,0,0,0.3);
+  }
+  .ladder::before{ left: 6px; }
+  .ladder::after{ right: 6px; }
+
+  .rung-row{
+    display:flex; align-items:center; gap:12px; width:100%; justify-content:center;
+    position: relative;
+  }
+  .rung-row::before, .rung-row::after{
+    content: "";
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    width: 15px; height: 15px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #F6D190, #8A5A22 85%);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.35);
+    z-index: 2;
+  }
+  .rung-row::before{ left: 1px; }
+  .rung-row::after{ right: 1px; }
   .rung-count{ width: 22px; text-align:right; color: var(--ink-dim); font-size: 0.75rem; font-variant-numeric: tabular-nums; }
   .rung{
     font-family:'Fraunces', serif;
@@ -139,6 +170,8 @@
     border: none;
     outline: none;
     box-shadow: 0 0 0 2px var(--amber);
+    width: var(--rung-minw, 140px);
+    box-sizing: border-box;
   }
 
   /* Ladders get taller the more rungs a puzzle has, so these tiers shrink
@@ -260,8 +293,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785302518"></script>
-<script src="data/hints.js?v=1785302518"></script>
+<script src="data/puzzles.js?v=1785352670"></script>
+<script src="data/hints.js?v=1785352670"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
