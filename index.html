@@ -250,8 +250,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785297684"></script>
-<script src="data/hints.js?v=1785297684"></script>
+<script src="data/puzzles.js?v=1785298105"></script>
+<script src="data/hints.js?v=1785298105"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -351,6 +351,14 @@ let activeTier = 'easy';
 let activeLength = null; // which rung (by word length) is currently being typed into
 let lastEnterCommitAt = 0; // guards against iOS sometimes firing two separate
                             // "Enter was pressed" signals for one keypress
+let debugEntries = []; // TEMPORARY - for diagnosing the iOS Enter-key bug
+function debugLog(msg){
+  const t = new Date().toISOString().slice(11,23);
+  debugEntries.push(`${t}  ${msg}`);
+  if(debugEntries.length > 50) debugEntries.shift();
+  const el = document.getElementById('debug-log');
+  if(el) el.textContent = debugEntries.join('\n');
+}
 const dateKey = todayKey();
 
 function storageKey(tier){ return `letterladder:${dateKey}:${tier}`; }
@@ -497,7 +505,9 @@ function render(focusInput = false, pendingErrors = null){
       ${isWon ? '' : `<button class="btn-ghost" id="hint-btn" type="button">Hint</button>`}
     </div>
     <div class="hint-display" id="hint-display"></div>
+    <div id="debug-log" style="margin-top:14px; font-size:0.7rem; font-family:monospace; color:var(--ink-dim); background:rgba(0,0,0,0.25); border-radius:8px; padding:8px; max-height:140px; overflow-y:auto; white-space:pre-wrap; text-align:left;"></div>
   `;
+  { const dl = document.getElementById('debug-log'); if(dl) dl.textContent = debugEntries.join('\n'); }
 
   document.getElementById('clear-btn').addEventListener('click', ()=>{
     activeLength = null;
@@ -531,6 +541,7 @@ function render(focusInput = false, pendingErrors = null){
   if(!isWon){
     panel.querySelectorAll('.rung.clickable').forEach(el => {
       el.addEventListener('click', ()=>{
+        debugLog(`--- rung ${el.dataset.length} clicked open ---`);
         activeLength = Number(el.dataset.length);
         render(true);
       });
@@ -552,7 +563,8 @@ function render(focusInput = false, pendingErrors = null){
     let lastNonEmptyValue = activeInput.value || '';
     let committed = false;
     function commit(viaEnter){
-      if(committed) return;
+      debugLog(`commit(viaEnter=${viaEnter}) called | committed=${committed} | live value="${activeInput.value}" | lastNonEmptyValue="${lastNonEmptyValue}"`);
+      if(committed){ debugLog(`  -> IGNORED (already committed)`); return; }
       committed = true;
 
       const L = activeLength;
@@ -564,12 +576,15 @@ function render(focusInput = false, pendingErrors = null){
       // Fall back to the last thing they actually typed in that case.
       if(viaEnter && (!liveValue || liveValue.trim() === '') && lastNonEmptyValue){
         liveValue = lastNonEmptyValue;
+        debugLog(`  -> live value was empty, falling back to lastNonEmptyValue="${liveValue}"`);
       }
       const raw = liveValue.replace(/\s+/g,'').toLowerCase().slice(0, L);
+      debugLog(`  -> computed raw="${raw}" (L=${L})`);
 
       if(raw === ''){
         // Nothing typed (or it was cleared) - just close without changing
         // anything, no error needed for an abandoned/empty attempt.
+        debugLog(`  -> raw is EMPTY, closing silently with NO error`);
         activeLength = null;
         render();
         return;
@@ -599,11 +614,14 @@ function render(focusInput = false, pendingErrors = null){
         }
       }
 
+      debugLog(`  -> errs.length=${errs.length}${errs.length ? ': ' + errs.join(' | ') : ''}`);
+
       if(errs.length > 0){
         activeInput.value = '';
         if(viaEnter){
           // An explicit submit attempt - keep this rung open so they can
           // fix it right away.
+          debugLog(`  -> showing errors, reopening rung ${L} fresh (viaEnter)`);
           render(true, errs);
         } else {
           // Tapped away instead of pressing Enter (this is actually the
@@ -611,12 +629,14 @@ function render(focusInput = false, pendingErrors = null){
           // often just blurs the field rather than firing a proper Enter
           // key event). Still show the error - just don't force focus
           // back, since they may have deliberately tapped somewhere else.
+          debugLog(`  -> showing errors, closing rung (blur path)`);
           activeLength = null;
           render(false, errs);
         }
         return;
       }
 
+      debugLog(`  -> ACCEPTED as correct guess`);
       const newGuesses = loadGuesses(activeTier);
       newGuesses[L] = raw;
       saveGuesses(activeTier, newGuesses);
@@ -627,18 +647,20 @@ function render(focusInput = false, pendingErrors = null){
       render();
     }
 
-    function tryCommitViaEnter(){
+    function tryCommitViaEnter(source){
       const now = Date.now();
-      if(now - lastEnterCommitAt < 700) return; // a duplicate signal for the
-                                                 // same keypress - ignore it
+      debugLog(`tryCommitViaEnter() from [${source}] | time since last=${now - lastEnterCommitAt}ms`);
+      if(now - lastEnterCommitAt < 700){ debugLog(`  -> BLOCKED by debounce`); return; }
       lastEnterCommitAt = now;
       commit(true);
     }
 
     activeInput.addEventListener('keydown', (e)=>{
-      if(e.key === 'Enter'){ e.preventDefault(); tryCommitViaEnter(); }
+      debugLog(`keydown fired | key="${e.key}"`);
+      if(e.key === 'Enter'){ e.preventDefault(); tryCommitViaEnter('keydown'); }
     });
     activeInput.addEventListener('input', (e)=>{
+      debugLog(`input fired | inputType="${e.inputType}" | value="${activeInput.value}"`);
       if(activeInput.value && activeInput.value.trim() !== ''){
         lastNonEmptyValue = activeInput.value;
       }
@@ -648,9 +670,12 @@ function render(focusInput = false, pendingErrors = null){
       // catches Enter presses that keydown alone might miss. The debounce
       // above keeps this from double-firing alongside keydown for the
       // exact same keypress.
-      if(e.inputType === 'insertLineBreak'){ tryCommitViaEnter(); }
+      if(e.inputType === 'insertLineBreak'){ tryCommitViaEnter('input-insertLineBreak'); }
     });
-    activeInput.addEventListener('blur', ()=> commit(false));
+    activeInput.addEventListener('blur', ()=>{
+      debugLog(`blur fired | value="${activeInput.value}"`);
+      commit(false);
+    });
   }
 
   const ladderScroll = document.getElementById('ladder-scroll');
