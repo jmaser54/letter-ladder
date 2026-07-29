@@ -250,8 +250,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785291257"></script>
-<script src="data/hints.js?v=1785291257"></script>
+<script src="data/puzzles.js?v=1785293381"></script>
+<script src="data/hints.js?v=1785293381"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -410,7 +410,7 @@ function checkAndCelebrateIfAllComplete(){
   triggerSummitCelebration();
 }
 
-function render(focusInput = false){
+function render(focusInput = false, pendingErrors = null){
   document.querySelectorAll('.tab').forEach(t=>{
     t.classList.toggle('active', t.dataset.tier === activeTier);
   });
@@ -454,6 +454,13 @@ function render(focusInput = false){
   const isWon = feedbackClass === 'win';
   if(isWon) activeLength = null; // no more editing once solved
 
+  let feedbackHtml = feedback;
+  let feedbackClassFinal = feedbackClass;
+  if(pendingErrors){
+    feedbackHtml = `<div class="error-list-wrap"><ul class="error-list">${pendingErrors.map(e => `<li>${e}</li>`).join('')}</ul></div>`;
+    feedbackClassFinal = 'error';
+  }
+
   const rungsHtml = [];
   rungsHtml.push(`<div class="rung-row"><div class="rung-count">${finalWord.length}</div><div class="rung anchor">${finalWord}</div></div>`);
   for(let i = steps.length-1; i>=0; i--){
@@ -478,7 +485,7 @@ function render(focusInput = false){
   panel.innerHTML = `
     <div class="level-label">${activeTier} puzzle</div>
     <div class="ladder-scroll" id="ladder-scroll"><div class="ladder">${rungsHtml.join('')}</div></div>
-    <div class="feedback ${feedbackClass}">${feedback}</div>
+    <div class="feedback ${feedbackClassFinal}">${feedbackHtml}</div>
     ${details.map(d=>`<div class="details">${d}</div>`).join('')}
     <div class="actions-row">
       <button class="btn-ghost" id="clear-btn" type="button">Clear guesses</button>
@@ -576,9 +583,8 @@ function render(focusInput = false){
         if(viaEnter){
           // An explicit submit attempt - show what's wrong and keep this
           // rung open so they can fix it right away.
-          showErrors(errs);
           activeInput.value = '';
-          render(true);
+          render(true, errs);
         } else {
           // They tapped away to do something else (another rung, a tab,
           // Clear, etc). Don't pop an error over whatever they're doing -
@@ -626,12 +632,6 @@ function render(focusInput = false){
       }, 120);
     }, { passive: true });
   }
-}
-
-function showErrors(errors){
-  const fb = document.querySelector('.feedback');
-  fb.innerHTML = `<div class="error-list-wrap"><ul class="error-list">${errors.map(e => `<li>${e}</li>`).join('')}</ul></div>`;
-  fb.className = 'feedback error';
 }
 
 document.getElementById('tabs').addEventListener('click', (e)=>{
