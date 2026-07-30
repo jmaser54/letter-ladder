@@ -124,7 +124,7 @@
     100%{ opacity:0; }
   }
   .ladder.fading-out{
-    animation: fade-away 1.4s ease-in forwards;
+    animation: fade-away 1.23s ease-in forwards;
   }
 
   .rung-row{
@@ -311,8 +311,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785376164"></script>
-<script src="data/hints.js?v=1785376164"></script>
+<script src="data/puzzles.js?v=1785377141"></script>
+<script src="data/hints.js?v=1785377141"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -699,7 +699,12 @@ function render(focusInput = false, pendingErrors = null){
     // size across the whole puzzle. A short word just naturally occupies
     // less of the box, centered, while the longest word fills it edge to
     // edge - that's what gives the pyramid effect, not stretched-out text.
-    const width = `max(var(--rung-minw), calc(${maxWordLen}ch + ${(maxWordLen*0.08).toFixed(2)}em + 2.4em))`;
+    //
+    // Uses em units only (not ch) - ch measures an actual glyph's width,
+    // which browsers can compute slightly differently for an <input> than
+    // for a <div> with a custom webfont, most noticeably at larger font
+    // sizes (exactly what a short puzzle like ar->racer uses).
+    const width = `max(var(--rung-minw), calc(${(maxWordLen * 0.62 + 2.4).toFixed(2)}em))`;
     return `width:${width};`;
   }
 
@@ -709,11 +714,15 @@ function render(focusInput = false, pendingErrors = null){
     const L = steps[i];
     const g = guesses[L];
     if(!isWon && activeLength === L){
-      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><input type="text" class="rung rung-input" id="rung-input-${L}" data-length="${L}" maxlength="${L}" value="${g ? g : ''}" style="${rungBoxStyle(L)}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done"></div>`);
+      // Only show the delete option here if this specific box already had
+      // a guess in it when it was opened (i.e. you clicked in to replace
+      // or remove an existing entry) - not for a box you're filling in
+      // for the first time.
+      const deleteBtn = g ? `<button type="button" class="delete-guess-btn" data-length="${L}" aria-label="Delete this guess">×</button>` : '';
+      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><input type="text" class="rung rung-input" id="rung-input-${L}" data-length="${L}" maxlength="${L}" value="${g ? g : ''}" style="${rungBoxStyle(L)}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done">${deleteBtn}</div>`);
     } else {
       const clickableClass = isWon ? '' : 'clickable';
-      const deleteBtn = g ? `<button type="button" class="delete-guess-btn" data-length="${L}" aria-label="Delete this guess">×</button>` : '';
-      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><div class="rung ${g?'':'empty'} ${clickableClass}" data-length="${L}" style="${rungBoxStyle(L)}">${g ? g : '&nbsp;'.repeat(L)}</div>${deleteBtn}</div>`);
+      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><div class="rung ${g?'':'empty'} ${clickableClass}" data-length="${L}" style="${rungBoxStyle(L)}">${g ? g : '&nbsp;'.repeat(L)}</div></div>`);
     }
   }
   rungsHtml.push(`<div class="rung-row"><div class="rung-count">${startingWord.length}</div><div class="rung anchor" style="${rungBoxStyle(startingWord.length)}">${startingWord}</div></div>`);
@@ -756,7 +765,7 @@ function render(focusInput = false, pendingErrors = null){
         lastFeedback[activeTier] = null;
         lastHint[activeTier] = null;
         render();
-      }, 1450);
+      }, 1280);
     } else {
       activeLength = null;
       clearGuesses(activeTier);
@@ -826,13 +835,19 @@ function render(focusInput = false, pendingErrors = null){
     });
   }
   panel.querySelectorAll('.delete-guess-btn').forEach(btn => {
+    // Stop the browser from blurring the currently-focused input (which
+    // would fire its own commit logic) before this click gets to run.
+    btn.addEventListener('mousedown', (e)=> e.preventDefault());
+    btn.addEventListener('touchstart', (e)=> e.preventDefault(), { passive: false });
     btn.addEventListener('click', (e)=>{
       e.stopPropagation();
       const L = Number(btn.dataset.length);
       const currentGuesses = loadGuesses(activeTier);
       delete currentGuesses[L];
       saveGuesses(activeTier, currentGuesses);
-      render();
+      // Leave this same box open and focused, now empty, ready to type a
+      // fresh guess right away instead of closing it.
+      render(true);
     });
   });
 
