@@ -359,8 +359,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785450265"></script>
-<script src="data/hints.js?v=1785450265"></script>
+<script src="data/puzzles.js?v=1785452188"></script>
+<script src="data/hints.js?v=1785452188"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -1103,7 +1103,7 @@ function render(focusInput = false, pendingErrors = null){
       const targetWord = tierHint ? tierHint.solution.find(w => w.length === targetLength) : null;
 
       if(!targetWord){
-        hintDisplay.innerHTML = `No hint available for this puzzle yet.`;
+        hintDisplay.innerHTML = `No hint available for this puzzle yet`;
         return;
       }
 
@@ -1223,13 +1223,13 @@ function render(focusInput = false, pendingErrors = null){
       const errs = [];
 
       if(raw.length !== L){
-        errs.push(`Guess must be ${L} letters long.`);
+        errs.push(`Guess must be ${L} letters long`);
       }
 
       if(!/^[a-z]+$/.test(raw)){
-        errs.push("Guess must be letters only.");
+        errs.push("Guess must be letters only");
       } else {
-        if(!WORD_SET.has(raw)) errs.push("Not a valid English word.");
+        if(!WORD_SET.has(raw)) errs.push("Not a valid English word");
         const letterProblems = checkGuessLetters(raw, startingWord, finalWord);
         for(const problem of letterProblems){
           if(problem.reason === 'missing_starting_letters'){
@@ -1239,7 +1239,7 @@ function render(focusInput = false, pendingErrors = null){
             errs.push(`Guess uses ${isPlural ? "letters that aren't" : "a letter that isn't"} in the top word: ${joinAnd(problem.letters.map(l => l.toUpperCase()))}`);
           } else if(problem.reason === 'too_many_repeats'){
             const parts = problem.details.map(d => `"${d.ch.toUpperCase()}" too many times — it's only in the final word ${timesText(d.fCount)}`);
-            errs.push(`Guess uses ${parts.join('; ')}.`);
+            errs.push(`Guess uses ${parts.join('; ')}`);
           }
         }
       }
