@@ -153,10 +153,13 @@
     font-weight:600;
     background: var(--rung);
     color: #1B2A41;
-    padding: var(--rung-pad, 10px 18px);
+    height: var(--rung-height, 50px);
+    line-height: var(--rung-height, 50px);
+    padding: 0 18px;
     border-radius: 10px;
-    position: relative;
-    overflow: hidden;
+    text-align:center;
+    text-transform: uppercase;
+    box-sizing: border-box;
   }
   .rung.empty{
     background: var(--rung-empty);
@@ -167,31 +170,10 @@
   .rung.clickable{ cursor: pointer; transition: filter 0.1s ease, transform 0.1s ease; }
   .rung.clickable:hover{ filter: brightness(1.08); }
   .rung.clickable:active{ transform: scale(0.97); }
-  .rung.rung-active{ box-shadow: 0 0 0 2px var(--amber); }
-
-  .rung-cells{
-    display: grid;
-    width: 100%; height: 100%;
-    align-items: stretch;
-  }
-  .rung-cell{
-    display:flex; align-items:center; justify-content:center;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    border-right: 1px solid rgba(0,0,0,0.14);
-  }
-  .rung.empty .rung-cell, .rung.rung-active .rung-cell{ border-right-color: rgba(245,239,224,0.18); }
-  .rung-cell:last-child{ border-right: none; }
-
-  .rung-input-overlay{
-    position: absolute; inset: 0;
-    width: 100%; height: 100%;
-    border: none; outline: none;
-    background: transparent; color: transparent;
-    caret-color: #1B2A41;
-    font: inherit; text-align: center;
-    padding: 0; margin: 0;
-    z-index: 2;
+  input.rung-input{
+    border: none;
+    outline: none;
+    box-shadow: 0 0 0 2px var(--amber);
   }
 
   /* Ladders get taller the more rungs a puzzle has, so these tiers shrink
@@ -200,9 +182,9 @@
      ladder area above, a puzzle that still doesn't fully fit (rare - only
      the longest puzzles on the smallest screens) simply scrolls within its
      own little area instead of taking over the whole page. */
-  .panel.rungs-md{ --rung-font: 1.1rem; --rung-pad: 7px 12px; --rung-minw: 115px; --rung-gap: 6px; }
-  .panel.rungs-lg{ --rung-font: 0.95rem; --rung-pad: 6px 10px; --rung-minw: 100px; --rung-gap: 5px; }
-  .panel.rungs-xl{ --rung-font: 0.85rem; --rung-pad: 5px 8px; --rung-minw: 88px; --rung-gap: 4px; }
+  .panel.rungs-md{ --rung-font: 1.1rem; --rung-height: 42px; --rung-minw: 115px; --rung-gap: 6px; }
+  .panel.rungs-lg{ --rung-font: 0.95rem; --rung-height: 37px; --rung-minw: 100px; --rung-gap: 5px; }
+  .panel.rungs-xl{ --rung-font: 0.85rem; --rung-height: 33px; --rung-minw: 88px; --rung-gap: 4px; }
 
 
   button{
@@ -328,8 +310,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785374276"></script>
-<script src="data/hints.js?v=1785374276"></script>
+<script src="data/puzzles.js?v=1785375494"></script>
+<script src="data/hints.js?v=1785375494"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -709,38 +691,30 @@ function render(focusInput = false, pendingErrors = null){
     feedbackClassFinal = lastFeedback[activeTier].className;
   }
 
-  function uniformRungWidthStyle(){
-    // ONE width for every rung in this puzzle (based on the longest word,
-    // which is always the final word), instead of sizing each rung
-    // separately - short-word rows just get proportionally wider cells.
-    const maxL = finalWord.length;
-    return `width:max(var(--rung-minw), calc(${maxL}ch + ${(maxL*0.08).toFixed(2)}em + 2.4em));`;
-  }
-  const uniformWidthStyle = uniformRungWidthStyle();
-
-  function cellsHtml(word, L){
-    const letters = word ? word.toUpperCase().split('') : [];
-    let out = '';
-    for(let i=0;i<L;i++){
-      out += `<div class="rung-cell">${letters[i] || ''}</div>`;
-    }
-    return out;
+  const maxWordLen = finalWord.length; // always the longest word in the puzzle
+  function rungBoxStyle(L){
+    // ONE width for every rung in this puzzle (based on the longest word),
+    // but the letter-spacing widens for shorter words - so the pyramid
+    // effect comes from how spread-out the letters look, not the box size.
+    const width = `max(var(--rung-minw), calc(${maxWordLen}ch + ${(maxWordLen*0.08).toFixed(2)}em + 2.4em))`;
+    const spacing = ((maxWordLen - L) * 0.13).toFixed(2);
+    return `width:${width}; letter-spacing:${spacing}em;`;
   }
 
   const rungsHtml = [];
-  rungsHtml.push(`<div class="rung-row"><div class="rung-count">${finalWord.length}</div><div class="rung anchor" style="${uniformWidthStyle}"><div class="rung-cells" style="grid-template-columns: repeat(${finalWord.length}, 1fr);">${cellsHtml(finalWord, finalWord.length)}</div></div></div>`);
+  rungsHtml.push(`<div class="rung-row"><div class="rung-count">${finalWord.length}</div><div class="rung anchor" style="${rungBoxStyle(finalWord.length)}">${finalWord}</div></div>`);
   for(let i = steps.length-1; i>=0; i--){
     const L = steps[i];
     const g = guesses[L];
     if(!isWon && activeLength === L){
-      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><div class="rung rung-active" style="${uniformWidthStyle}"><div class="rung-cells" id="rung-cells-${L}" style="grid-template-columns: repeat(${L}, 1fr);">${cellsHtml(g, L)}</div><input type="text" class="rung-input-overlay" id="rung-input-${L}" data-length="${L}" maxlength="${L}" value="${g ? g : ''}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done"></div></div>`);
+      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><input type="text" class="rung rung-input" id="rung-input-${L}" data-length="${L}" maxlength="${L}" value="${g ? g : ''}" style="${rungBoxStyle(L)}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done"></div>`);
     } else {
       const clickableClass = isWon ? '' : 'clickable';
       const deleteBtn = g ? `<button type="button" class="delete-guess-btn" data-length="${L}" aria-label="Delete this guess">×</button>` : '';
-      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><div class="rung ${g?'':'empty'} ${clickableClass}" data-length="${L}" style="${uniformWidthStyle}"><div class="rung-cells" style="grid-template-columns: repeat(${L}, 1fr);">${cellsHtml(g, L)}</div></div>${deleteBtn}</div>`);
+      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><div class="rung ${g?'':'empty'} ${clickableClass}" data-length="${L}" style="${rungBoxStyle(L)}">${g ? g : '&nbsp;'.repeat(L)}</div>${deleteBtn}</div>`);
     }
   }
-  rungsHtml.push(`<div class="rung-row"><div class="rung-count">${startingWord.length}</div><div class="rung anchor" style="${uniformWidthStyle}"><div class="rung-cells" style="grid-template-columns: repeat(${startingWord.length}, 1fr);">${cellsHtml(startingWord, startingWord.length)}</div></div></div>`);
+  rungsHtml.push(`<div class="rung-row"><div class="rung-count">${startingWord.length}</div><div class="rung anchor" style="${rungBoxStyle(startingWord.length)}">${startingWord}</div></div>`);
 
   const totalRungs = steps.length + 2;
   let sizeTier = '';
@@ -975,12 +949,6 @@ function render(focusInput = false, pendingErrors = null){
     activeInput.addEventListener('input', (e)=>{
       if(activeInput.value && activeInput.value.trim() !== ''){
         lastNonEmptyValue = activeInput.value;
-      }
-      const cellsEl = document.getElementById(`rung-cells-${activeLength}`);
-      if(cellsEl){
-        const chars = activeInput.value.toUpperCase().split('');
-        const cellEls = cellsEl.querySelectorAll('.rung-cell');
-        cellEls.forEach((cell, i) => { cell.textContent = chars[i] || ''; });
       }
       // Mobile keyboards don't always fire a proper keydown for
       // Return/Go on a plain input - but the 'input' event's inputType
