@@ -359,8 +359,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785438431"></script>
-<script src="data/hints.js?v=1785438431"></script>
+<script src="data/puzzles.js?v=1785440476"></script>
+<script src="data/hints.js?v=1785440476"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -676,7 +676,7 @@ function buildShareText(){
     if(isTierComplete(tier)){
       const hints = getHintsUsed(tier);
       lines.push(hints > 0
-        ? `${tierLabels[tier]}: ${'🔍'.repeat(hints)}`
+        ? `${tierLabels[tier]}: ${'💡'.repeat(hints)}`
         : `${tierLabels[tier]}: ✔️`);
     } else {
       lines.push(`${tierLabels[tier]}: —`);
