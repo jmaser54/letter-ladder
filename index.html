@@ -41,11 +41,11 @@
   .wrap{
     max-width: 560px; margin: 0 auto;
     height: 100vh;
-    height: 100dvh; /* dynamic viewport height: shrinks automatically when the
-                       on-screen keyboard opens, unlike 100vh which ignores it.
-                       This is the key piece that keeps the guess box and tabs
-                       always on-screen and stable instead of fighting the
-                       browser's own scroll-into-view behavior. */
+    height: 100dvh; /* fallback for browsers without visualViewport support */
+    height: var(--app-vh, 100dvh); /* JS keeps this in sync with the ACTUAL
+                       visible viewport live, including the instant the
+                       keyboard opens/closes - more reliable than dvh alone,
+                       which doesn't always update promptly. */
     display: flex;
     flex-direction: column;
     padding: 20px 16px 12px;
@@ -315,8 +315,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785382512"></script>
-<script src="data/hints.js?v=1785382512"></script>
+<script src="data/puzzles.js?v=1785417505"></script>
+<script src="data/hints.js?v=1785417505"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -593,7 +593,7 @@ function buildShareText(){
       const hints = getHintsUsed(tier);
       lines.push(hints > 0
         ? `${tierLabels[tier]}: ${'🔍'.repeat(hints)}`
-        : `${tierLabels[tier]}: ✔️`);
+        : `${tierLabels[tier]}: 🔵`);
     } else {
       lines.push(`${tierLabels[tier]}: —`);
     }
@@ -849,18 +849,35 @@ function render(focusInput = false, pendingErrors = null){
     });
   }
   panel.querySelectorAll('.delete-guess-btn').forEach(btn => {
-    btn.addEventListener('click', (e)=>{
-      e.stopPropagation();
+    function doDelete(){
       const L = Number(btn.dataset.length);
       const currentGuesses = loadGuesses(activeTier);
       delete currentGuesses[L];
       saveGuesses(activeTier, currentGuesses);
       // Leave this same box open and focused, now empty, ready to type a
-      // fresh guess right away. Set this explicitly (rather than trusting
-      // whatever activeLength already is) since tapping this button can
-      // blur the input a moment beforehand on some browsers.
+      // fresh guess right away.
       activeLength = L;
       render(true);
+    }
+    // On iOS specifically, blur can fire on the currently-focused input
+    // BEFORE any mousedown/click on this button even happens - preventing
+    // mousedown's default (which worked for other browsers) isn't reliable
+    // there. Handling touchend directly, and preventing default on it,
+    // suppresses the whole synthesized mouse-event sequence (blur,
+    // mousedown, click) that would otherwise follow the tap - so the
+    // delete runs immediately, before any premature re-render can happen.
+    btn.addEventListener('touchend', (e)=>{
+      e.preventDefault();
+      doDelete();
+    });
+    btn.addEventListener('mousedown', (e)=> e.preventDefault());
+    btn.addEventListener('click', (e)=>{
+      // Only reached via an actual mouse click (desktop) - on touch
+      // devices the touchend handler above already ran and prevented
+      // this synthesized click from firing at all, so there's no
+      // double-delete.
+      e.stopPropagation();
+      doDelete();
     });
   });
 
@@ -1019,6 +1036,27 @@ document.getElementById('tabs').addEventListener('click', (e)=>{
 });
 
 render();
+
+// Keep the app's height locked to the ACTUAL visible viewport (accounting
+// for the on-screen keyboard), rather than relying solely on the CSS dvh
+// unit, which doesn't reliably update the instant the keyboard opens on
+// every browser.
+if(window.visualViewport){
+  const vv = window.visualViewport;
+  function updateAppHeight(){
+    document.documentElement.style.setProperty('--app-vh', vv.height + 'px');
+    // The keyboard animates in over time, so the scroll position we set
+    // the instant a box was tapped can be stale by the time the keyboard
+    // actually finishes opening. Re-apply it now that the viewport has
+    // genuinely settled into its new (keyboard-open) size.
+    if(activeLength != null){
+      const el = document.getElementById(`rung-input-${activeLength}`);
+      if(el) el.scrollIntoView({ block: 'nearest' });
+    }
+  }
+  vv.addEventListener('resize', updateAppHeight);
+  updateAppHeight();
+}
 
 </script>
 </body>
