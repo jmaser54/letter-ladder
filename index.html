@@ -313,8 +313,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785380459"></script>
-<script src="data/hints.js?v=1785380459"></script>
+<script src="data/puzzles.js?v=1785380976"></script>
+<script src="data/hints.js?v=1785380976"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -695,16 +695,34 @@ function render(focusInput = false, pendingErrors = null){
   }
 
   const maxWordLen = finalWord.length; // always the longest word in the puzzle
+
+  const totalRungs = steps.length + 2;
+  let sizeTier = '';
+  if(totalRungs >= 9) sizeTier = 'rungs-xl';
+  else if(totalRungs >= 7) sizeTier = 'rungs-lg';
+  else if(totalRungs >= 5) sizeTier = 'rungs-md';
+
+  // Same font-size/min-width numbers as the CSS tiers below, mirrored here
+  // in plain JS so the box width can be a flat pixel number - no calc()/
+  // var()/max() for the browser to resolve, which is what kept going wrong.
+  const TIER_CONFIG = {
+    '':         { fontPx: 21.6, minWidthPx: 165 },
+    'rungs-md': { fontPx: 18.4, minWidthPx: 115 },
+    'rungs-lg': { fontPx: 16,   minWidthPx: 100 },
+    'rungs-xl': { fontPx: 14.4, minWidthPx: 88  },
+  };
+  const tierCfg = TIER_CONFIG[sizeTier];
+  const computedWidthPx = Math.round(Math.max(
+    tierCfg.minWidthPx,
+    maxWordLen * tierCfg.fontPx * 0.6 + tierCfg.fontPx * 2.4
+  ));
+
   function rungBoxStyle(L){
-    // ONE width for every rung in this puzzle (based on the longest word).
-    // No per-rung letter-spacing here - every letter stays the same fixed
-    // size across the whole puzzle. A short word just naturally occupies
-    // less of the box, centered, while the longest word fills it edge to
-    // edge - that's what gives the pyramid effect, not stretched-out text.
-    // Uses ch (actual glyph width) rather than a rough em-based guess, so
-    // the box actually matches how wide the word really renders.
-    const width = `max(var(--rung-minw), calc(${maxWordLen}ch + ${(maxWordLen*0.08).toFixed(2)}em + 2.4em))`;
-    return `width:${width}; max-width:${width}; min-width:0;`;
+    // ONE flat pixel width for every rung in this puzzle (based on the
+    // longest word). A short word just naturally occupies less of the
+    // box, centered, while the longest word fills it edge to edge -
+    // that's what gives the pyramid effect, not stretched-out text.
+    return `width:${computedWidthPx}px; max-width:${computedWidthPx}px; min-width:0;`;
   }
 
   const rungsHtml = [];
@@ -725,12 +743,6 @@ function render(focusInput = false, pendingErrors = null){
     }
   }
   rungsHtml.push(`<div class="rung-row"><div class="rung-count">${startingWord.length}</div><div class="rung anchor" style="${rungBoxStyle(startingWord.length)}">${startingWord}</div></div>`);
-
-  const totalRungs = steps.length + 2;
-  let sizeTier = '';
-  if(totalRungs >= 9) sizeTier = 'rungs-xl';
-  else if(totalRungs >= 7) sizeTier = 'rungs-lg';
-  else if(totalRungs >= 5) sizeTier = 'rungs-md';
 
   const anyTierSolvedToday = TIERS.some(tier => getTodaysPuzzle(tier) && isTierComplete(tier));
 
