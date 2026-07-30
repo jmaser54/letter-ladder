@@ -41,11 +41,8 @@
   .wrap{
     max-width: 560px; margin: 0 auto;
     height: 100vh;
-    height: 100dvh; /* fallback for browsers without visualViewport support */
-    height: var(--app-vh, 100dvh); /* JS keeps this in sync with the ACTUAL
-                       visible viewport live, including the instant the
-                       keyboard opens/closes - more reliable than dvh alone,
-                       which doesn't always update promptly. */
+    height: 100dvh; /* dynamic viewport height: shrinks automatically when the
+                       on-screen keyboard opens, unlike 100vh which ignores it. */
     display: flex;
     flex-direction: column;
     padding: 20px 16px 12px;
@@ -315,8 +312,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785417505"></script>
-<script src="data/hints.js?v=1785417505"></script>
+<script src="data/puzzles.js?v=1785417819"></script>
+<script src="data/hints.js?v=1785417819"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -1036,27 +1033,6 @@ document.getElementById('tabs').addEventListener('click', (e)=>{
 });
 
 render();
-
-// Keep the app's height locked to the ACTUAL visible viewport (accounting
-// for the on-screen keyboard), rather than relying solely on the CSS dvh
-// unit, which doesn't reliably update the instant the keyboard opens on
-// every browser.
-if(window.visualViewport){
-  const vv = window.visualViewport;
-  function updateAppHeight(){
-    document.documentElement.style.setProperty('--app-vh', vv.height + 'px');
-    // The keyboard animates in over time, so the scroll position we set
-    // the instant a box was tapped can be stale by the time the keyboard
-    // actually finishes opening. Re-apply it now that the viewport has
-    // genuinely settled into its new (keyboard-open) size.
-    if(activeLength != null){
-      const el = document.getElementById(`rung-input-${activeLength}`);
-      if(el) el.scrollIntoView({ block: 'nearest' });
-    }
-  }
-  vv.addEventListener('resize', updateAppHeight);
-  updateAppHeight();
-}
 
 </script>
 </body>
