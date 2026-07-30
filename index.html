@@ -151,6 +151,7 @@
     font-family:'Fraunces', serif;
     font-size: var(--rung-font, 1.35rem);
     font-weight:600;
+    letter-spacing: 0.05em;
     background: var(--rung);
     color: #1B2A41;
     height: var(--rung-height, 50px);
@@ -182,9 +183,9 @@
      ladder area above, a puzzle that still doesn't fully fit (rare - only
      the longest puzzles on the smallest screens) simply scrolls within its
      own little area instead of taking over the whole page. */
-  .panel.rungs-md{ --rung-font: 1.1rem; --rung-height: 42px; --rung-minw: 115px; --rung-gap: 6px; }
-  .panel.rungs-lg{ --rung-font: 0.95rem; --rung-height: 37px; --rung-minw: 100px; --rung-gap: 5px; }
-  .panel.rungs-xl{ --rung-font: 0.85rem; --rung-height: 33px; --rung-minw: 88px; --rung-gap: 4px; }
+  .panel.rungs-md{ --rung-font: 1.15rem; --rung-height: 44px; --rung-minw: 115px; --rung-gap: 6px; }
+  .panel.rungs-lg{ --rung-font: 1rem; --rung-height: 39px; --rung-minw: 100px; --rung-gap: 5px; }
+  .panel.rungs-xl{ --rung-font: 0.9rem; --rung-height: 35px; --rung-minw: 88px; --rung-gap: 4px; }
 
 
   button{
@@ -310,8 +311,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785375494"></script>
-<script src="data/hints.js?v=1785375494"></script>
+<script src="data/puzzles.js?v=1785376164"></script>
+<script src="data/hints.js?v=1785376164"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -693,12 +694,13 @@ function render(focusInput = false, pendingErrors = null){
 
   const maxWordLen = finalWord.length; // always the longest word in the puzzle
   function rungBoxStyle(L){
-    // ONE width for every rung in this puzzle (based on the longest word),
-    // but the letter-spacing widens for shorter words - so the pyramid
-    // effect comes from how spread-out the letters look, not the box size.
+    // ONE width for every rung in this puzzle (based on the longest word).
+    // No per-rung letter-spacing here - every letter stays the same fixed
+    // size across the whole puzzle. A short word just naturally occupies
+    // less of the box, centered, while the longest word fills it edge to
+    // edge - that's what gives the pyramid effect, not stretched-out text.
     const width = `max(var(--rung-minw), calc(${maxWordLen}ch + ${(maxWordLen*0.08).toFixed(2)}em + 2.4em))`;
-    const spacing = ((maxWordLen - L) * 0.13).toFixed(2);
-    return `width:${width}; letter-spacing:${spacing}em;`;
+    return `width:${width};`;
   }
 
   const rungsHtml = [];
