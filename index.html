@@ -200,6 +200,55 @@
   .feedback.ok{ color: var(--ink-dim); font-weight:500; }
   .details{ margin-top:4px; text-align:center; font-size:0.8rem; color: var(--red); font-style:italic; }
 
+  .letter-bank{
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .bank-tiles{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    max-width: 100%;
+  }
+  .bank-tile{
+    width: 36px; height: 36px;
+    border: none; border-radius: 8px;
+    background: var(--amber);
+    color: #1B2A41;
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.1s ease, opacity 0.15s ease;
+  }
+  .bank-tile:active{ transform: scale(0.9); }
+  .bank-tile.used{
+    background: rgba(245,239,224,0.08);
+    color: var(--ink-dim);
+    opacity: 0.4;
+    cursor: default;
+  }
+  .bank-controls{
+    display: flex; gap: 10px;
+  }
+  .bank-ctrl-btn{
+    width: 38px; height: 38px;
+    border: none; border-radius: 10px;
+    background: rgba(245,239,224,0.08);
+    color: var(--ink);
+    font-size: 1.1rem;
+    display: flex; align-items:center; justify-content:center;
+    cursor: pointer;
+    padding: 0;
+  }
+  .bank-ctrl-btn:active{ transform: scale(0.92); }
+  .bank-ctrl-btn.kb-off{ background: var(--amber); color: #1B2A41; }
+
   .actions-row{ display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:10px; flex-shrink:0; }
   .hint-display{
     text-align:center; margin-top:10px; font-size:0.85rem; color: var(--ink-dim);
@@ -301,8 +350,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785419005"></script>
-<script src="data/hints.js?v=1785419005"></script>
+<script src="data/puzzles.js?v=1785419989"></script>
+<script src="data/hints.js?v=1785419989"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -434,6 +483,9 @@ let lastFeedback = {}; // per-tier: the last shown error, so it survives a
                         // re-render triggered by opening a different box
                         // (e.g. the keyboard appearing) instead of vanishing
 let lastHint = {}; // per-tier: same idea, for the hint display
+let bankState = {}; // per tier: { word, order } - the source word the bank's
+                     // tiles are drawn from, and their current shuffle order
+let keyboardEnabled = localStorage.getItem('letterladder:keyboardEnabled') !== 'false'; // default on
 const dateKey = todayKey();
 
 function storageKey(tier){ return `letterladder:${dateKey}:${tier}`; }
@@ -547,6 +599,40 @@ function getTodaysPuzzle(tier){
   const day = PUZZLE_SCHEDULE[dateKey];
   if(!day) return null;
   return day[tier] || null;
+}
+
+function computeBankUsedFlags(order, typedValue){
+  // Walks the bank's displayed tile order and marks the first N instances
+  // of each letter as "used", where N is how many of that letter are
+  // currently typed into the active box. Doesn't matter WHICH specific
+  // instance of a repeated letter gets marked, just that the count matches.
+  const neededCounts = {};
+  for(const ch of typedValue.toUpperCase()){
+    neededCounts[ch] = (neededCounts[ch] || 0) + 1;
+  }
+  const consumedSoFar = {};
+  return order.map(letter => {
+    const upper = letter.toUpperCase();
+    consumedSoFar[upper] = consumedSoFar[upper] || 0;
+    if(neededCounts[upper] && consumedSoFar[upper] < neededCounts[upper]){
+      consumedSoFar[upper]++;
+      return true;
+    }
+    return false;
+  });
+}
+
+function getBankWord(startingWord, finalWord, guesses){
+  // The longest word among the starting word (always given) and whatever
+  // guesses have actually been typed so far - deliberately EXCLUDES the
+  // final word. Including the final word would hand over the answer's
+  // letters immediately regardless of whether the person's own higher
+  // guesses are actually correct or a dead end.
+  let bankWord = startingWord;
+  for(let L = startingWord.length + 1; L < finalWord.length; L++){
+    if(guesses[L]) bankWord = guesses[L];
+  }
+  return bankWord;
 }
 
 function isTierComplete(tier){
@@ -727,13 +813,38 @@ function render(focusInput = false, pendingErrors = null){
       // or remove an existing entry) - not for a box you're filling in
       // for the first time.
       const deleteBtn = g ? `<button type="button" class="delete-guess-btn" data-length="${L}" aria-label="Delete this guess">×</button>` : '';
-      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><input type="text" class="rung rung-input" id="rung-input-${L}" data-length="${L}" maxlength="${L}" size="${maxWordLen}" value="${g ? g : ''}" style="${rungBoxStyle(L)}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done">${deleteBtn}</div>`);
+      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><input type="text" class="rung rung-input" id="rung-input-${L}" data-length="${L}" maxlength="${L}" size="${maxWordLen}" value="${g ? g : ''}" style="${rungBoxStyle(L)}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" inputmode="${keyboardEnabled ? 'text' : 'none'}" ${keyboardEnabled ? '' : 'readonly'}>${deleteBtn}</div>`);
     } else {
       const clickableClass = 'clickable';
       rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><div class="rung ${g?'':'empty'} ${clickableClass}" data-length="${L}" style="${rungBoxStyle(L)}">${g ? g : '&nbsp;'.repeat(L)}</div></div>`);
     }
   }
   rungsHtml.push(`<div class="rung-row"><div class="rung-count">${startingWord.length}</div><div class="rung anchor" style="${rungBoxStyle(startingWord.length)}">${startingWord}</div></div>`);
+
+  let bankHtml = '';
+  if(!isWon && activeLength != null){
+    const bankWord = getBankWord(startingWord, finalWord, guesses);
+    if(!bankState[activeTier] || bankState[activeTier].word !== bankWord){
+      bankState[activeTier] = { word: bankWord, order: bankWord.split('') };
+    }
+    const order = bankState[activeTier].order;
+    const typedValue = guesses[activeLength] || '';
+    const usedFlags = computeBankUsedFlags(order, typedValue);
+    const tilesHtml = order.map((letter, i) =>
+      `<button type="button" class="bank-tile ${usedFlags[i] ? 'used' : ''}" data-letter="${letter}" data-index="${i}" ${usedFlags[i] ? 'disabled' : ''}>${letter.toUpperCase()}</button>`
+    ).join('');
+    const kbIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2"></rect><line x1="6" y1="9.5" x2="6" y2="9.5"></line><line x1="9.5" y1="9.5" x2="9.5" y2="9.5"></line><line x1="13" y1="9.5" x2="13" y2="9.5"></line><line x1="16.5" y1="9.5" x2="16.5" y2="9.5"></line><line x1="19.5" y1="9.5" x2="19.5" y2="9.5"></line><line x1="6" y1="13" x2="6" y2="13"></line><line x1="9.5" y1="13" x2="9.5" y2="13"></line><line x1="13" y1="13" x2="13" y2="13"></line><line x1="16.5" y1="13" x2="16.5" y2="13"></line><line x1="19.5" y1="13" x2="19.5" y2="13"></line><line x1="8" y1="16" x2="16" y2="16"></line></svg>`;
+    bankHtml = `
+      <div class="letter-bank" id="letter-bank">
+        <div class="bank-tiles" id="bank-tiles">${tilesHtml}</div>
+        <div class="bank-controls">
+          <button type="button" class="bank-ctrl-btn" id="bank-backspace-btn" aria-label="Delete last letter">⌫</button>
+          <button type="button" class="bank-ctrl-btn" id="shuffle-btn" aria-label="Shuffle letters">🔀</button>
+          <button type="button" class="bank-ctrl-btn ${keyboardEnabled ? '' : 'kb-off'}" id="keyboard-toggle-btn" aria-label="Toggle keyboard">${kbIcon}</button>
+        </div>
+      </div>
+    `;
+  }
 
   const anyTierSolvedToday = TIERS.some(tier => getTodaysPuzzle(tier) && isTierComplete(tier));
 
@@ -743,6 +854,7 @@ function render(focusInput = false, pendingErrors = null){
     <div class="ladder-scroll" id="ladder-scroll"><div class="ladder">${rungsHtml.join('')}</div></div>
     <div class="feedback ${feedbackClassFinal}">${feedbackHtml}</div>
     ${details.map(d=>`<div class="details">${d}</div>`).join('')}
+    ${bankHtml}
     <div class="actions-row">
       <button class="btn-ghost" id="clear-btn" type="button">Clear guesses</button>
       ${isWon ? '' : `<button class="btn-ghost" id="hint-btn" type="button" aria-label="Hint"><svg width="27" height="27" viewBox="0 0 24 24"><circle cx="10" cy="10" r="7.2" fill="rgba(245,239,224,0.18)" stroke="currentColor" stroke-width="2.8"></circle><circle cx="7.5" cy="7.5" r="2" fill="rgba(255,255,255,0.55)"></circle><line x1="15.6" y1="15.6" x2="21.8" y2="21.8" stroke="currentColor" stroke-width="4" stroke-linecap="round"></line></svg></button>`}
@@ -798,6 +910,49 @@ function render(focusInput = false, pendingErrors = null){
       }
     });
   }
+
+  const shuffleBtn = document.getElementById('shuffle-btn');
+  if(shuffleBtn){
+    shuffleBtn.addEventListener('click', ()=>{
+      const order = bankState[activeTier].order;
+      // Fisher-Yates shuffle, in place
+      for(let i = order.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [order[i], order[j]] = [order[j], order[i]];
+      }
+      render(true);
+    });
+  }
+
+  const keyboardToggleBtn = document.getElementById('keyboard-toggle-btn');
+  if(keyboardToggleBtn){
+    keyboardToggleBtn.addEventListener('click', ()=>{
+      keyboardEnabled = !keyboardEnabled;
+      localStorage.setItem('letterladder:keyboardEnabled', keyboardEnabled ? 'true' : 'false');
+      render(true);
+    });
+  }
+
+  const bankBackspaceBtn = document.getElementById('bank-backspace-btn');
+  if(bankBackspaceBtn){
+    bankBackspaceBtn.addEventListener('click', ()=>{
+      const inputEl = document.getElementById(`rung-input-${activeLength}`);
+      if(inputEl && inputEl.value.length > 0){
+        inputEl.value = inputEl.value.slice(0, -1);
+        inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    });
+  }
+
+  panel.querySelectorAll('.bank-tile').forEach(tile => {
+    tile.addEventListener('click', ()=>{
+      const inputEl = document.getElementById(`rung-input-${activeLength}`);
+      if(!inputEl) return;
+      if(inputEl.value.length >= Number(inputEl.maxLength)) return; // already full
+      inputEl.value += tile.dataset.letter;
+      inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+  });
 
   const hintBtn = document.getElementById('hint-btn');
   if(hintBtn){
@@ -981,6 +1136,23 @@ function render(focusInput = false, pendingErrors = null){
     activeInput.addEventListener('input', (e)=>{
       if(activeInput.value && activeInput.value.trim() !== ''){
         lastNonEmptyValue = activeInput.value;
+      }
+      // Keep the bank's tiles in sync live, regardless of whether this
+      // keystroke came from the physical keyboard, a tapped tile, or the
+      // on-screen backspace button.
+      if(bankState[activeTier]){
+        const order = bankState[activeTier].order;
+        const usedFlags = computeBankUsedFlags(order, activeInput.value);
+        const tileEls = panel.querySelectorAll('.bank-tile');
+        tileEls.forEach((tileEl, i) => {
+          if(usedFlags[i]){
+            tileEl.classList.add('used');
+            tileEl.disabled = true;
+          } else {
+            tileEl.classList.remove('used');
+            tileEl.disabled = false;
+          }
+        });
       }
       // Mobile keyboards don't always fire a proper keydown for
       // Return/Go on a plain input - but the 'input' event's inputType
