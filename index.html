@@ -1165,13 +1165,13 @@ function render(focusInput = false, pendingErrors = null){
       const errs = [];
 
       if(raw.length !== L){
-        errs.push(`Guess must be ${L} letters long.`);
+        errs.push(`Guess must be ${L} letters long`);
       }
 
       if(!/^[a-z]+$/.test(raw)){
-        errs.push("Guess must be letters only.");
+        errs.push("Guess must be letters only");
       } else {
-        if(!WORD_SET.has(raw)) errs.push("Not a valid English word.");
+        if(!WORD_SET.has(raw)) errs.push("Not a valid English word");
         const letterProblems = checkGuessLetters(raw, startingWord, finalWord);
         for(const problem of letterProblems){
           if(problem.reason === 'missing_starting_letters'){
