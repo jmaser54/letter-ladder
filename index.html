@@ -26,6 +26,7 @@
     --ink-dim: #9FB3C8;
     --amber: #E8A33D;
     --red: #D9705F;
+    --blue: #5B9BD5;
     --green: #6FBF8B;
   }
   *{box-sizing:border-box;}
@@ -218,7 +219,7 @@
     font-style:italic; flex-shrink:0; min-height: 0;
   }
   .hint-display .hint-letters{ color: var(--amber); font-style:normal; font-weight:600; letter-spacing:0.04em; }
-  .share-status{ text-align:center; margin-top:8px; font-size:0.8rem; color: var(--green); font-weight:600; flex-shrink:0; }
+  .share-status{ text-align:center; margin-top:8px; font-size:0.8rem; color: var(--blue); font-weight:600; flex-shrink:0; }
 
   .empty-state{ text-align:center; color: var(--ink-dim); padding: 30px 0; }
 
@@ -313,8 +314,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785380976"></script>
-<script src="data/hints.js?v=1785380976"></script>
+<script src="data/puzzles.js?v=1785381415"></script>
+<script src="data/hints.js?v=1785381415"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -590,7 +591,7 @@ function buildShareText(){
     if(isTierComplete(tier)){
       const hints = getHintsUsed(tier);
       lines.push(hints > 0
-        ? `${tierLabels[tier]}: 🔍 (${hints} hint${hints > 1 ? 's' : ''} used)`
+        ? `${tierLabels[tier]}: ${'🔍'.repeat(hints)}`
         : `${tierLabels[tier]}: ✅`);
     } else {
       lines.push(`${tierLabels[tier]}: —`);
