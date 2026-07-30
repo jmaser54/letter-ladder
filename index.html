@@ -359,8 +359,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785437738"></script>
-<script src="data/hints.js?v=1785437738"></script>
+<script src="data/puzzles.js?v=1785438431"></script>
+<script src="data/hints.js?v=1785438431"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -1044,7 +1044,7 @@ function render(focusInput = false, pendingErrors = null){
 
   const hintBtn = document.getElementById('hint-btn');
   if(hintBtn){
-    hintBtn.addEventListener('click', ()=>{
+    bindTapAction(hintBtn, ()=>{
       const hintDisplay = document.getElementById('hint-display');
       const unfilled = steps.filter(L => !guesses[L]);
       if(unfilled.length === 0){
@@ -1188,6 +1188,7 @@ function render(focusInput = false, pendingErrors = null){
 
       if(errs.length > 0){
         activeInput.value = '';
+        bankState[activeTier] = null;
         if(viaEnter){
           // An explicit submit attempt - keep this rung open so they can
           // fix it right away.
