@@ -11,7 +11,7 @@
 </script>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-visual">
 <title>Letter Ladder</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,13 +36,10 @@
     background: radial-gradient(120% 140% at 50% -10%, #24384F 0%, #1B2A41 55%, #142132 100%);
     color: var(--ink);
     font-family: 'Inter', system-ui, sans-serif;
-    overflow: hidden; /* the app-shell below manages its own internal scrolling instead */
   }
   .wrap{
     max-width: 560px; margin: 0 auto;
-    height: 100vh;
-    height: 100dvh; /* dynamic viewport height: shrinks automatically when the
-                       on-screen keyboard opens, unlike 100vh which ignores it. */
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     padding: 20px 16px 12px;
@@ -86,13 +83,8 @@
     border-radius: 18px;
     padding: 18px 18px 16px;
     box-shadow: 0 20px 50px rgba(0,0,0,0.35);
-    flex: 1;
-    min-height: 0; /* required so this flex child can shrink below its content
-                      size and let its own inner scroll area take over,
-                      instead of overflowing the page */
     display: flex;
     flex-direction: column;
-    overflow: hidden;
   }
 
   .level-label{
@@ -101,12 +93,9 @@
   }
 
   .ladder-scroll{
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    /* a little breathing room so the top/bottom rungs aren't flush against
-       the scroll edges, and so the scrollbar doesn't sit on top of text */
+    /* No longer its own internal scroll region - the whole page scrolls
+       naturally now via the browser's own scrollbar, which handles the
+       on-screen keyboard correctly without any custom viewport math. */
     padding: 2px 2px;
   }
   .ladder{
@@ -312,8 +301,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785417819"></script>
-<script src="data/hints.js?v=1785417819"></script>
+<script src="data/puzzles.js?v=1785418412"></script>
+<script src="data/hints.js?v=1785418412"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -590,12 +579,12 @@ function buildShareText(){
       const hints = getHintsUsed(tier);
       lines.push(hints > 0
         ? `${tierLabels[tier]}: ${'🔍'.repeat(hints)}`
-        : `${tierLabels[tier]}: 🔵`);
+        : `${tierLabels[tier]}: ✅`);
     } else {
       lines.push(`${tierLabels[tier]}: —`);
     }
   }
-  return `🪜 Letter Ladder #${puzzleDayNumber()}\n\n${lines.join('\n')}\n\n${SITE_URL}`;
+  return `Letter Ladder #${puzzleDayNumber()} 🪜\n\n${lines.join('\n')}\n\n${SITE_URL}`;
 }
 
 function triggerSummitCelebration(){
@@ -885,9 +874,8 @@ function render(focusInput = false, pendingErrors = null){
 
   if(activeInput){
     if(focusInput){
-      activeInput.focus({ preventScroll: true });
+      activeInput.focus();
       activeInput.select();
-      activeInput.scrollIntoView({ block: 'nearest' });
     }
 
     let lastNonEmptyValue = activeInput.value || '';
