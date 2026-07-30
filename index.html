@@ -175,6 +175,8 @@
     border: none;
     outline: none;
     box-shadow: 0 0 0 2px var(--amber);
+    box-sizing: border-box;
+    min-width: 0;
   }
 
   /* Ladders get taller the more rungs a puzzle has, so these tiers shrink
@@ -311,8 +313,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785377141"></script>
-<script src="data/hints.js?v=1785377141"></script>
+<script src="data/puzzles.js?v=1785379873"></script>
+<script src="data/hints.js?v=1785379873"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -699,13 +701,10 @@ function render(focusInput = false, pendingErrors = null){
     // size across the whole puzzle. A short word just naturally occupies
     // less of the box, centered, while the longest word fills it edge to
     // edge - that's what gives the pyramid effect, not stretched-out text.
-    //
-    // Uses em units only (not ch) - ch measures an actual glyph's width,
-    // which browsers can compute slightly differently for an <input> than
-    // for a <div> with a custom webfont, most noticeably at larger font
-    // sizes (exactly what a short puzzle like ar->racer uses).
-    const width = `max(var(--rung-minw), calc(${(maxWordLen * 0.62 + 2.4).toFixed(2)}em))`;
-    return `width:${width};`;
+    // Uses ch (actual glyph width) rather than a rough em-based guess, so
+    // the box actually matches how wide the word really renders.
+    const width = `max(var(--rung-minw), calc(${maxWordLen}ch + ${(maxWordLen*0.08).toFixed(2)}em + 2.4em))`;
+    return `width:${width}; max-width:${width}; min-width:0;`;
   }
 
   const rungsHtml = [];
@@ -719,7 +718,7 @@ function render(focusInput = false, pendingErrors = null){
       // or remove an existing entry) - not for a box you're filling in
       // for the first time.
       const deleteBtn = g ? `<button type="button" class="delete-guess-btn" data-length="${L}" aria-label="Delete this guess">×</button>` : '';
-      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><input type="text" class="rung rung-input" id="rung-input-${L}" data-length="${L}" maxlength="${L}" value="${g ? g : ''}" style="${rungBoxStyle(L)}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done">${deleteBtn}</div>`);
+      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><input type="text" class="rung rung-input" id="rung-input-${L}" data-length="${L}" maxlength="${L}" size="${L}" value="${g ? g : ''}" style="${rungBoxStyle(L)}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done">${deleteBtn}</div>`);
     } else {
       const clickableClass = isWon ? '' : 'clickable';
       rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><div class="rung ${g?'':'empty'} ${clickableClass}" data-length="${L}" style="${rungBoxStyle(L)}">${g ? g : '&nbsp;'.repeat(L)}</div></div>`);
