@@ -359,8 +359,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785440476"></script>
-<script src="data/hints.js?v=1785440476"></script>
+<script src="data/puzzles.js?v=1785446378"></script>
+<script src="data/hints.js?v=1785446378"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -387,6 +387,27 @@ function timesText(n){
   if(n === 2) return 'twice';
   return `${n} times`;
 }
+// Tapping a button while a box is focused would otherwise blur that
+// input first, which triggers commit() and can close/reset the box
+// before this button's own action gets a chance to run. The fix is to
+// run the action directly inside touchend (with preventDefault to stop
+// the blur), not in a separate click listener - preventDefault on a
+// touch event can silently suppress the click that would otherwise
+// follow it, which is what broke this whole class of button on mobile.
+function bindTapAction(el, action){
+  let firedViaTouch = false;
+  el.addEventListener('touchend', (e)=>{
+    e.preventDefault();
+    firedViaTouch = true;
+    action();
+  });
+  el.addEventListener('mousedown', (e)=> e.preventDefault());
+  el.addEventListener('click', ()=>{
+    if(firedViaTouch){ firedViaTouch = false; return; }
+    action();
+  });
+}
+
 function showConfirmModal(message, onConfirm){
   const overlay = document.createElement('div');
   overlay.className = 'confirm-overlay';
@@ -402,9 +423,9 @@ function showConfirmModal(message, onConfirm){
   document.body.appendChild(overlay);
 
   function close(){ overlay.remove(); }
-  overlay.querySelector('.confirm-cancel').addEventListener('click', close);
+  bindTapAction(overlay.querySelector('.confirm-cancel'), close);
   overlay.addEventListener('click', (e)=>{ if(e.target === overlay) close(); });
-  overlay.querySelector('.confirm-ok').addEventListener('click', ()=>{
+  bindTapAction(overlay.querySelector('.confirm-ok'), ()=>{
     close();
     onConfirm();
   });
@@ -962,27 +983,6 @@ function render(focusInput = false, pendingErrors = null){
     });
   }
 
-  // Tapping any of these while a box is focused would otherwise blur that
-  // input first, which triggers commit() and can close/reset the box
-  // before this button's own action gets a chance to run. The fix is to
-  // run the action directly inside touchend (with preventDefault to stop
-  // the blur), not in a separate click listener - preventDefault on a
-  // touch event can silently suppress the click that would otherwise
-  // follow it, which is what broke every one of these buttons on mobile.
-  function bindTapAction(el, action){
-    let firedViaTouch = false;
-    el.addEventListener('touchend', (e)=>{
-      e.preventDefault();
-      firedViaTouch = true;
-      action();
-    });
-    el.addEventListener('mousedown', (e)=> e.preventDefault());
-    el.addEventListener('click', ()=>{
-      if(firedViaTouch){ firedViaTouch = false; return; }
-      action();
-    });
-  }
-
   const shuffleBtn = document.getElementById('shuffle-btn');
   if(shuffleBtn){
     bindTapAction(shuffleBtn, ()=>{
@@ -1072,7 +1072,7 @@ function render(focusInput = false, pendingErrors = null){
   }
 
   panel.querySelectorAll('.rung.clickable').forEach(el => {
-    el.addEventListener('click', ()=>{
+    bindTapAction(el, ()=>{
       activeLength = Number(el.dataset.length);
       render(true);
     });
@@ -1165,13 +1165,13 @@ function render(focusInput = false, pendingErrors = null){
       const errs = [];
 
       if(raw.length !== L){
-        errs.push(`Guess must be ${L} letters long`);
+        errs.push(`Guess must be ${L} letters long.`);
       }
 
       if(!/^[a-z]+$/.test(raw)){
-        errs.push("Guess must be letters only");
+        errs.push("Guess must be letters only.");
       } else {
-        if(!WORD_SET.has(raw)) errs.push("Not a valid English word");
+        if(!WORD_SET.has(raw)) errs.push("Not a valid English word.");
         const letterProblems = checkGuessLetters(raw, startingWord, finalWord);
         for(const problem of letterProblems){
           if(problem.reason === 'missing_starting_letters'){
