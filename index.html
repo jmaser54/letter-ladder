@@ -359,8 +359,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785437191"></script>
-<script src="data/hints.js?v=1785437191"></script>
+<script src="data/puzzles.js?v=1785437738"></script>
+<script src="data/hints.js?v=1785437738"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -927,6 +927,7 @@ function render(focusInput = false, pendingErrors = null){
         clearGuesses(activeTier);
         lastFeedback[activeTier] = null;
         lastHint[activeTier] = null;
+        bankState[activeTier] = null;
         render();
       }, 960);
     } else {
@@ -934,6 +935,7 @@ function render(focusInput = false, pendingErrors = null){
       clearGuesses(activeTier);
       lastFeedback[activeTier] = null;
       lastHint[activeTier] = null;
+      bankState[activeTier] = null;
       render();
     }
   });
@@ -1081,6 +1083,11 @@ function render(focusInput = false, pendingErrors = null){
       const currentGuesses = loadGuesses(activeTier);
       delete currentGuesses[L];
       saveGuesses(activeTier, currentGuesses);
+      // Force the letter bank to recompute from scratch - otherwise its
+      // "which tiles are used" tracking stays stuck reflecting the guess
+      // that just got deleted, leaving tiles faded when they should be
+      // available again.
+      bankState[activeTier] = null;
       // Leave this same box open and focused, now empty, ready to type a
       // fresh guess right away.
       activeLength = L;
