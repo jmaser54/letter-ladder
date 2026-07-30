@@ -359,8 +359,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785448466"></script>
-<script src="data/hints.js?v=1785448466"></script>
+<script src="data/puzzles.js?v=1785449077"></script>
+<script src="data/hints.js?v=1785449077"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -512,7 +512,6 @@ let lastEnterCommitAt = 0; // guards against iOS sometimes firing two separate
 let lastFeedback = {}; // per-tier: the last shown error, so it survives a
                         // re-render triggered by opening a different box
                         // (e.g. the keyboard appearing) instead of vanishing
-let lastHint = {}; // per-tier: same idea, for the hint display
 let bankState = {}; // per tier: { word, order } - the source word the bank's
                      // tiles are drawn from, and their current shuffle order
 const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
@@ -604,6 +603,18 @@ function recordHintedLength(tier, L){
   if(!lengths.includes(L)){
     lengths.push(L);
     localStorage.setItem(`letterladder:${dateKey}:${tier}:hintedLengths`, JSON.stringify(lengths));
+  }
+}
+
+function getLastHintText(tier){
+  return localStorage.getItem(`letterladder:${dateKey}:${tier}:lastHintText`) || null;
+}
+function setLastHintText(tier, text){
+  const key = `letterladder:${dateKey}:${tier}:lastHintText`;
+  if(text === null){
+    localStorage.removeItem(key);
+  } else {
+    localStorage.setItem(key, text);
   }
 }
 
@@ -959,9 +970,10 @@ function render(focusInput = false, pendingErrors = null){
     <div class="share-status" id="share-status"></div>
   `;
 
-  if(lastHint[activeTier]){
+  const savedHintText = getLastHintText(activeTier);
+  if(savedHintText){
     const hd = document.getElementById('hint-display');
-    if(hd) hd.innerHTML = lastHint[activeTier];
+    if(hd) hd.innerHTML = savedHintText;
   }
 
   document.getElementById('clear-btn').addEventListener('click', ()=>{
@@ -972,7 +984,7 @@ function render(focusInput = false, pendingErrors = null){
         activeLength = null;
         clearGuesses(activeTier);
         lastFeedback[activeTier] = null;
-        lastHint[activeTier] = null;
+        setLastHintText(activeTier, null);
         bankState[activeTier] = null;
         render();
       }, 960);
@@ -980,7 +992,7 @@ function render(focusInput = false, pendingErrors = null){
       activeLength = null;
       clearGuesses(activeTier);
       lastFeedback[activeTier] = null;
-      lastHint[activeTier] = null;
+      setLastHintText(activeTier, null);
       bankState[activeTier] = null;
       render();
     }
@@ -1089,7 +1101,7 @@ function render(focusInput = false, pendingErrors = null){
       showConfirmModal("Are you sure you'd like to use a hint?", ()=>{
         const letters = joinAnd(targetWord.split('').sort().map(ch => ch.toUpperCase()));
         const hintHtml = `${targetLength}-letter word uses: <span class="hint-letters">${letters}</span>`;
-        lastHint[activeTier] = hintHtml;
+        setLastHintText(activeTier, hintHtml);
         recordHintUsed(activeTier);
         recordHintedLength(activeTier, targetLength);
         render(true);
