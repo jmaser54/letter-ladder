@@ -301,8 +301,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785418412"></script>
-<script src="data/hints.js?v=1785418412"></script>
+<script src="data/puzzles.js?v=1785419005"></script>
+<script src="data/hints.js?v=1785419005"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -579,7 +579,7 @@ function buildShareText(){
       const hints = getHintsUsed(tier);
       lines.push(hints > 0
         ? `${tierLabels[tier]}: ${'🔍'.repeat(hints)}`
-        : `${tierLabels[tier]}: ✅`);
+        : `${tierLabels[tier]}: ✔️`);
     } else {
       lines.push(`${tierLabels[tier]}: —`);
     }
@@ -662,7 +662,9 @@ function render(focusInput = false, pendingErrors = null){
   }
 
   const isWon = feedbackClass === 'win';
-  if(isWon) activeLength = null; // no more editing once solved
+  // Editing after a win is allowed (clicking a rung + its delete-X reopens
+  // it), so activeLength is no longer force-reset just because isWon is
+  // true - only the actual guess-acceptance/delete logic controls it now.
 
   let feedbackHtml = feedback;
   let feedbackClassFinal = feedbackClass;
@@ -719,7 +721,7 @@ function render(focusInput = false, pendingErrors = null){
   for(let i = steps.length-1; i>=0; i--){
     const L = steps[i];
     const g = guesses[L];
-    if(!isWon && activeLength === L){
+    if(activeLength === L){
       // Only show the delete option here if this specific box already had
       // a guess in it when it was opened (i.e. you clicked in to replace
       // or remove an existing entry) - not for a box you're filling in
@@ -727,7 +729,7 @@ function render(focusInput = false, pendingErrors = null){
       const deleteBtn = g ? `<button type="button" class="delete-guess-btn" data-length="${L}" aria-label="Delete this guess">×</button>` : '';
       rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><input type="text" class="rung rung-input" id="rung-input-${L}" data-length="${L}" maxlength="${L}" size="${maxWordLen}" value="${g ? g : ''}" style="${rungBoxStyle(L)}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done">${deleteBtn}</div>`);
     } else {
-      const clickableClass = isWon ? '' : 'clickable';
+      const clickableClass = 'clickable';
       rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><div class="rung ${g?'':'empty'} ${clickableClass}" data-length="${L}" style="${rungBoxStyle(L)}">${g ? g : '&nbsp;'.repeat(L)}</div></div>`);
     }
   }
@@ -826,14 +828,12 @@ function render(focusInput = false, pendingErrors = null){
     });
   }
 
-  if(!isWon){
-    panel.querySelectorAll('.rung.clickable').forEach(el => {
-      el.addEventListener('click', ()=>{
-        activeLength = Number(el.dataset.length);
-        render(true);
-      });
+  panel.querySelectorAll('.rung.clickable').forEach(el => {
+    el.addEventListener('click', ()=>{
+      activeLength = Number(el.dataset.length);
+      render(true);
     });
-  }
+  });
   panel.querySelectorAll('.delete-guess-btn').forEach(btn => {
     function doDelete(){
       const L = Number(btn.dataset.length);
@@ -868,7 +868,7 @@ function render(focusInput = false, pendingErrors = null){
   });
 
   let activeInput = null;
-  if(!isWon && activeLength != null){
+  if(activeLength != null){
     activeInput = document.getElementById(`rung-input-${activeLength}`);
   }
 
