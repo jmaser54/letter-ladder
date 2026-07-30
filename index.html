@@ -118,52 +118,19 @@
     width: -webkit-fit-content;
     width: fit-content;
   }
-  .ladder::before, .ladder::after{
-    content: "";
-    position: absolute;
-    top: 0; bottom: 0;
-    width: 13px;
-    border-radius: 7px;
-    background: linear-gradient(90deg, #8B93A0, #CBD1D9 45%, #8B93A0);
-    box-shadow: inset -2px 0 0 rgba(255,255,255,0.3), inset 2px 0 0 rgba(0,0,0,0.25), 0 2px 5px rgba(0,0,0,0.3);
-  }
-  .ladder::before{ left: 6px; }
-  .ladder::after{ right: 6px; }
 
-  @keyframes crumble-rail{
-    0%{ transform: translateY(0) rotate(0deg); opacity:1; }
-    100%{ transform: translateY(50px) rotate(var(--crumble-rail-rot, 8deg)); opacity:0; }
+  @keyframes fade-away{
+    0%{ opacity:1; }
+    100%{ opacity:0; }
   }
-  @keyframes crumble-rung{
-    0%{ transform: translateY(0) rotate(0deg); opacity:1; }
-    100%{ transform: translateY(45px) rotate(var(--crumble-rot, 12deg)); opacity:0; }
-  }
-  .ladder.crumbling::before, .ladder.crumbling::after{
-    animation: crumble-rail 1.2s ease-in forwards;
-  }
-  .ladder.crumbling .rung-row{
-    animation: crumble-rung 1.1s ease-in forwards;
+  .ladder.fading-out{
+    animation: fade-away 1.4s ease-in forwards;
   }
 
   .rung-row{
     display:grid; grid-template-columns: 22px 1fr 22px; align-items:center; column-gap:12px; width:100%;
     position: relative;
   }
-  .rung-row::before{
-    /* the actual rung: a horizontal plank spanning between the two side
-       rails, sitting BEHIND the word box so it reads as one continuous
-       crossbar the word is written on */
-    content: "";
-    position: absolute;
-    left: -20px; right: -20px;
-    top: 50%; transform: translateY(-50%);
-    height: 13px;
-    border-radius: 6px;
-    background: linear-gradient(180deg, #CBD1D9, #8B93A0);
-    box-shadow: inset 0 -2px 0 rgba(0,0,0,0.25), inset 0 2px 0 rgba(255,255,255,0.3), 0 2px 4px rgba(0,0,0,0.3);
-    z-index: 0;
-  }
-  .rung-row > *{ position: relative; z-index: 1; }
   .rung-row > .rung{ justify-self: center; }
   .rung-count{ width: 22px; text-align:right; color: var(--ink-dim); font-size: 0.75rem; font-variant-numeric: tabular-nums; }
   .delete-guess-btn{
@@ -184,14 +151,12 @@
     font-family:'Fraunces', serif;
     font-size: var(--rung-font, 1.35rem);
     font-weight:600;
-    letter-spacing: 0.06em;
     background: var(--rung);
     color: #1B2A41;
     padding: var(--rung-pad, 10px 18px);
     border-radius: 10px;
-    min-width: var(--rung-minw, 140px);
-    text-align:center;
-    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
   }
   .rung.empty{
     background: var(--rung-empty);
@@ -202,12 +167,31 @@
   .rung.clickable{ cursor: pointer; transition: filter 0.1s ease, transform 0.1s ease; }
   .rung.clickable:hover{ filter: brightness(1.08); }
   .rung.clickable:active{ transform: scale(0.97); }
-  input.rung-input{
-    border: none;
-    outline: none;
-    box-shadow: 0 0 0 2px var(--amber);
-    width: var(--rung-minw, 140px);
-    box-sizing: border-box;
+  .rung.rung-active{ box-shadow: 0 0 0 2px var(--amber); }
+
+  .rung-cells{
+    display: grid;
+    width: 100%; height: 100%;
+    align-items: stretch;
+  }
+  .rung-cell{
+    display:flex; align-items:center; justify-content:center;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    border-right: 1px solid rgba(0,0,0,0.14);
+  }
+  .rung.empty .rung-cell, .rung.rung-active .rung-cell{ border-right-color: rgba(245,239,224,0.18); }
+  .rung-cell:last-child{ border-right: none; }
+
+  .rung-input-overlay{
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    border: none; outline: none;
+    background: transparent; color: transparent;
+    caret-color: #1B2A41;
+    font: inherit; text-align: center;
+    padding: 0; margin: 0;
+    z-index: 2;
   }
 
   /* Ladders get taller the more rungs a puzzle has, so these tiers shrink
@@ -344,8 +328,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785362748"></script>
-<script src="data/hints.js?v=1785362748"></script>
+<script src="data/puzzles.js?v=1785374276"></script>
+<script src="data/hints.js?v=1785374276"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -725,28 +709,38 @@ function render(focusInput = false, pendingErrors = null){
     feedbackClassFinal = lastFeedback[activeTier].className;
   }
 
-  function rungWidthStyle(L){
-    // Sized to that specific rung's own letter count (not a single blanket
-    // size for the whole puzzle) so a 9-letter word gets a wider box than
-    // a 4-letter one in the same puzzle, while still respecting the
-    // size-tier's baseline minimum for short words.
-    return `width:max(var(--rung-minw), calc(${L}ch + ${(L*0.08).toFixed(2)}em + 2.4em));`;
+  function uniformRungWidthStyle(){
+    // ONE width for every rung in this puzzle (based on the longest word,
+    // which is always the final word), instead of sizing each rung
+    // separately - short-word rows just get proportionally wider cells.
+    const maxL = finalWord.length;
+    return `width:max(var(--rung-minw), calc(${maxL}ch + ${(maxL*0.08).toFixed(2)}em + 2.4em));`;
+  }
+  const uniformWidthStyle = uniformRungWidthStyle();
+
+  function cellsHtml(word, L){
+    const letters = word ? word.toUpperCase().split('') : [];
+    let out = '';
+    for(let i=0;i<L;i++){
+      out += `<div class="rung-cell">${letters[i] || ''}</div>`;
+    }
+    return out;
   }
 
   const rungsHtml = [];
-  rungsHtml.push(`<div class="rung-row"><div class="rung-count">${finalWord.length}</div><div class="rung anchor" style="${rungWidthStyle(finalWord.length)}">${finalWord}</div></div>`);
+  rungsHtml.push(`<div class="rung-row"><div class="rung-count">${finalWord.length}</div><div class="rung anchor" style="${uniformWidthStyle}"><div class="rung-cells" style="grid-template-columns: repeat(${finalWord.length}, 1fr);">${cellsHtml(finalWord, finalWord.length)}</div></div></div>`);
   for(let i = steps.length-1; i>=0; i--){
     const L = steps[i];
     const g = guesses[L];
     if(!isWon && activeLength === L){
-      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><input type="text" class="rung rung-input" id="rung-input-${L}" data-length="${L}" maxlength="${L}" value="${g ? g : ''}" style="${rungWidthStyle(L)}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done"></div>`);
+      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><div class="rung rung-active" style="${uniformWidthStyle}"><div class="rung-cells" id="rung-cells-${L}" style="grid-template-columns: repeat(${L}, 1fr);">${cellsHtml(g, L)}</div><input type="text" class="rung-input-overlay" id="rung-input-${L}" data-length="${L}" maxlength="${L}" value="${g ? g : ''}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done"></div></div>`);
     } else {
       const clickableClass = isWon ? '' : 'clickable';
       const deleteBtn = g ? `<button type="button" class="delete-guess-btn" data-length="${L}" aria-label="Delete this guess">×</button>` : '';
-      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><div class="rung ${g?'':'empty'} ${clickableClass}" data-length="${L}" style="${rungWidthStyle(L)}">${g ? g : '&nbsp;'.repeat(L)}</div>${deleteBtn}</div>`);
+      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><div class="rung ${g?'':'empty'} ${clickableClass}" data-length="${L}" style="${uniformWidthStyle}"><div class="rung-cells" style="grid-template-columns: repeat(${L}, 1fr);">${cellsHtml(g, L)}</div></div>${deleteBtn}</div>`);
     }
   }
-  rungsHtml.push(`<div class="rung-row"><div class="rung-count">${startingWord.length}</div><div class="rung anchor" style="${rungWidthStyle(startingWord.length)}">${startingWord}</div></div>`);
+  rungsHtml.push(`<div class="rung-row"><div class="rung-count">${startingWord.length}</div><div class="rung anchor" style="${uniformWidthStyle}"><div class="rung-cells" style="grid-template-columns: repeat(${startingWord.length}, 1fr);">${cellsHtml(startingWord, startingWord.length)}</div></div></div>`);
 
   const totalRungs = steps.length + 2;
   let sizeTier = '';
@@ -779,23 +773,14 @@ function render(focusInput = false, pendingErrors = null){
   document.getElementById('clear-btn').addEventListener('click', ()=>{
     const ladderEl = panel.querySelector('.ladder');
     if(ladderEl){
-      const rows = ladderEl.querySelectorAll('.rung-row');
-      rows.forEach((row, i) => {
-        row.style.setProperty('--crumble-rot', (Math.random()*30 - 15) + 'deg');
-        row.style.animationDelay = (i * 0.1) + 's';
-      });
-      ladderEl.classList.add('crumbling');
-      // Wait for the full staggered animation to actually finish, however
-      // many rungs this specific puzzle has, rather than a fixed guess
-      // that could cut a long puzzle's crumble short.
-      const totalWaitMs = (rows.length * 100) + 1200;
+      ladderEl.classList.add('fading-out');
       setTimeout(()=>{
         activeLength = null;
         clearGuesses(activeTier);
         lastFeedback[activeTier] = null;
         lastHint[activeTier] = null;
         render();
-      }, totalWaitMs);
+      }, 1450);
     } else {
       activeLength = null;
       clearGuesses(activeTier);
@@ -990,6 +975,12 @@ function render(focusInput = false, pendingErrors = null){
     activeInput.addEventListener('input', (e)=>{
       if(activeInput.value && activeInput.value.trim() !== ''){
         lastNonEmptyValue = activeInput.value;
+      }
+      const cellsEl = document.getElementById(`rung-cells-${activeLength}`);
+      if(cellsEl){
+        const chars = activeInput.value.toUpperCase().split('');
+        const cellEls = cellsEl.querySelectorAll('.rung-cell');
+        cellEls.forEach((cell, i) => { cell.textContent = chars[i] || ''; });
       }
       // Mobile keyboards don't always fire a proper keydown for
       // Return/Go on a plain input - but the 'input' event's inputType
