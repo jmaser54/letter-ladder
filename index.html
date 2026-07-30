@@ -313,8 +313,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785379873"></script>
-<script src="data/hints.js?v=1785379873"></script>
+<script src="data/puzzles.js?v=1785380459"></script>
+<script src="data/hints.js?v=1785380459"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -718,7 +718,7 @@ function render(focusInput = false, pendingErrors = null){
       // or remove an existing entry) - not for a box you're filling in
       // for the first time.
       const deleteBtn = g ? `<button type="button" class="delete-guess-btn" data-length="${L}" aria-label="Delete this guess">×</button>` : '';
-      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><input type="text" class="rung rung-input" id="rung-input-${L}" data-length="${L}" maxlength="${L}" size="${L}" value="${g ? g : ''}" style="${rungBoxStyle(L)}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done">${deleteBtn}</div>`);
+      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><input type="text" class="rung rung-input" id="rung-input-${L}" data-length="${L}" maxlength="${L}" size="${maxWordLen}" value="${g ? g : ''}" style="${rungBoxStyle(L)}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done">${deleteBtn}</div>`);
     } else {
       const clickableClass = isWon ? '' : 'clickable';
       rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><div class="rung ${g?'':'empty'} ${clickableClass}" data-length="${L}" style="${rungBoxStyle(L)}">${g ? g : '&nbsp;'.repeat(L)}</div></div>`);
