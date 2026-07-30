@@ -107,6 +107,7 @@
     flex: 1;
     min-height: 0;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     /* a little breathing room so the top/bottom rungs aren't flush against
        the scroll edges, and so the scrollbar doesn't sit on top of text */
     padding: 2px 2px;
@@ -125,7 +126,7 @@
     100%{ opacity:0; }
   }
   .ladder.fading-out{
-    animation: fade-away 1.23s ease-in forwards;
+    animation: fade-away 0.92s ease-in forwards;
   }
 
   .rung-row{
@@ -314,8 +315,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=1"></script>
-<script src="data/puzzles.js?v=1785381415"></script>
-<script src="data/hints.js?v=1785381415"></script>
+<script src="data/puzzles.js?v=1785382512"></script>
+<script src="data/hints.js?v=1785382512"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -592,7 +593,7 @@ function buildShareText(){
       const hints = getHintsUsed(tier);
       lines.push(hints > 0
         ? `${tierLabels[tier]}: ${'🔍'.repeat(hints)}`
-        : `${tierLabels[tier]}: ✅`);
+        : `${tierLabels[tier]}: ✔️`);
     } else {
       lines.push(`${tierLabels[tier]}: —`);
     }
@@ -713,9 +714,10 @@ function render(focusInput = false, pendingErrors = null){
     'rungs-xl': { fontPx: 14.4, minWidthPx: 88  },
   };
   const tierCfg = TIER_CONFIG[sizeTier];
+  const letterSpacingPx = tierCfg.fontPx * 0.05; // matches the CSS letter-spacing
   const computedWidthPx = Math.round(Math.max(
     tierCfg.minWidthPx,
-    maxWordLen * tierCfg.fontPx * 0.6 + tierCfg.fontPx * 2.4
+    maxWordLen * tierCfg.fontPx * 0.6 + (maxWordLen - 1) * letterSpacingPx + tierCfg.fontPx * 3.4
   ));
 
   function rungBoxStyle(L){
@@ -777,7 +779,7 @@ function render(focusInput = false, pendingErrors = null){
         lastFeedback[activeTier] = null;
         lastHint[activeTier] = null;
         render();
-      }, 1280);
+      }, 960);
     } else {
       activeLength = null;
       clearGuesses(activeTier);
@@ -847,10 +849,6 @@ function render(focusInput = false, pendingErrors = null){
     });
   }
   panel.querySelectorAll('.delete-guess-btn').forEach(btn => {
-    // Stop the browser from blurring the currently-focused input (which
-    // would fire its own commit logic) before this click gets to run.
-    btn.addEventListener('mousedown', (e)=> e.preventDefault());
-    btn.addEventListener('touchstart', (e)=> e.preventDefault(), { passive: false });
     btn.addEventListener('click', (e)=>{
       e.stopPropagation();
       const L = Number(btn.dataset.length);
@@ -858,7 +856,10 @@ function render(focusInput = false, pendingErrors = null){
       delete currentGuesses[L];
       saveGuesses(activeTier, currentGuesses);
       // Leave this same box open and focused, now empty, ready to type a
-      // fresh guess right away instead of closing it.
+      // fresh guess right away. Set this explicitly (rather than trusting
+      // whatever activeLength already is) since tapping this button can
+      // blur the input a moment beforehand on some browsers.
+      activeLength = L;
       render(true);
     });
   });
