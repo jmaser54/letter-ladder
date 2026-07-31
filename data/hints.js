@@ -310,9 +310,10 @@ const HINTS_SCHEDULE = {
       ]
     },
     "hard": {
-      "start": "cornet",
+      "start": "toner",
       "final": "countryside",
       "solution": [
+        "toner",
         "cornet",
         "trounce",
         "counters",

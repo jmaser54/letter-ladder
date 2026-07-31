@@ -122,7 +122,7 @@ const PUZZLE_SCHEDULE = {
       "final": "decipher"
     },
     "hard": {
-      "start": "cornet",
+      "start": "toner",
       "final": "countryside"
     }
   },
