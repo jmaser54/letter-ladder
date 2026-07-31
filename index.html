@@ -356,8 +356,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=2"></script>
-<script src="data/puzzles.js?v=1785464220"></script>
-<script src="data/hints.js?v=1785464220"></script>
+<script src="data/puzzles.js?v=1785468833"></script>
+<script src="data/hints.js?v=1785468833"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -774,6 +774,17 @@ function render(focusInput = false, pendingErrors = null){
     t.classList.toggle('active', t.dataset.tier === activeTier);
   });
 
+  // Capture whatever is currently typed (but not yet submitted) in the
+  // active input before the panel gets rebuilt below - otherwise actions
+  // like shuffle, which re-render without changing what's being typed,
+  // would wipe out in-progress typing since a fresh input element only
+  // ever starts from the last *committed* guess.
+  let preservedLiveValue = null;
+  if(activeLength != null){
+    const existingInput = document.getElementById(`rung-input-${activeLength}`);
+    if(existingInput) preservedLiveValue = existingInput.value;
+  }
+
   const puzzle = getTodaysPuzzle(activeTier);
   if(!puzzle){
     panel.className = 'panel';
@@ -890,7 +901,8 @@ function render(focusInput = false, pendingErrors = null){
       // or remove an existing entry) - not for a box you're filling in
       // for the first time.
       const deleteBtn = g ? `<button type="button" class="delete-guess-btn" data-length="${L}" aria-label="Delete this guess">×</button>` : '';
-      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><input type="text" class="rung rung-input" id="rung-input-${L}" data-length="${L}" maxlength="${L}" size="${maxWordLen}" value="${g ? g : ''}" style="${rungBoxStyle(L)}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" inputmode="${keyboardEnabled ? 'text' : 'none'}" ${keyboardEnabled ? '' : 'readonly'}>${deleteBtn}</div>`);
+      const inputValue = preservedLiveValue !== null ? preservedLiveValue : (g ? g : '');
+      rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><input type="text" class="rung rung-input" id="rung-input-${L}" data-length="${L}" maxlength="${L}" size="${maxWordLen}" value="${inputValue}" style="${rungBoxStyle(L)}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" inputmode="${keyboardEnabled ? 'text' : 'none'}" ${keyboardEnabled ? '' : 'readonly'}>${deleteBtn}</div>`);
     } else {
       const clickableClass = 'clickable';
       rungsHtml.push(`<div class="rung-row"><div class="rung-count">${L}</div><div class="rung ${g?'':'empty'} ${clickableClass}" data-length="${L}" style="${rungBoxStyle(L)}">${g ? g : '&nbsp;'.repeat(L)}</div></div>`);
