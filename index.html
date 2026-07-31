@@ -357,8 +357,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=2"></script>
-<script src="data/puzzles.js?v=1785514674"></script>
-<script src="data/hints.js?v=1785514674"></script>
+<script src="data/puzzles.js?v=1785518937"></script>
+<script src="data/hints.js?v=1785518937"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -436,6 +436,29 @@ function joinAnd(items){
 }
 function lettersPhrase(letters){
   return letters.length === 1 ? `the letter ${letters[0]}` : `the letters ${joinAnd(letters)}`;
+}
+function getHintLetterOrder(word){
+  // The hint just needs to show which letters are used, not imply any
+  // particular order matters - so if the plain alphabetical arrangement
+  // happens to spell out a real word (possibly even the answer itself),
+  // shuffle instead rather than accidentally giving away more than
+  // intended.
+  const lower = word.toLowerCase();
+  const sorted = lower.split('');
+  sorted.sort();
+  if(!WORD_SET.has(sorted.join(''))){
+    return sorted;
+  }
+  let attempt = sorted.slice();
+  for(let i = 0; i < 20; i++){
+    for(let j = attempt.length - 1; j > 0; j--){
+      const k = Math.floor(Math.random() * (j + 1));
+      [attempt[j], attempt[k]] = [attempt[k], attempt[j]];
+    }
+    if(!WORD_SET.has(attempt.join(''))) return attempt;
+  }
+  // Vanishingly unlikely to ever be reached, but don't loop forever.
+  return attempt;
 }
 function checkGuessLetters(guess, startingWord, finalWord){
   const problems = [];
@@ -1165,7 +1188,7 @@ function render(focusInput = false, pendingErrors = null){
       showConfirmModal(confirmMsg, ()=>{
         const updatedInfo = { ...hintInfo };
         if(!isSecondHint){
-          updatedInfo.letters = joinAnd(targetWord.split('').sort().map(ch => ch.toUpperCase()));
+          updatedInfo.letters = joinAnd(getHintLetterOrder(targetWord).map(ch => ch.toUpperCase()));
         } else {
           updatedInfo.firstLetter = targetWord[0].toUpperCase();
         }
