@@ -30,12 +30,14 @@
   .credit{ color: var(--ink-dim); margin-bottom: 24px; }
   a{ color: var(--amber); }
   .panel{ background: var(--bg-panel); border-radius:18px; padding: 26px 24px; margin-bottom:20px; box-shadow: 0 20px 50px rgba(0,0,0,0.35); }
-  .example-word{ font-family:'Fraunces',serif; background: var(--rung); color:#1B2A41; padding: 4px 10px; border-radius:6px; font-weight:600; text-transform: uppercase; }
+  .example-word{
+    font-family:'Fraunces',serif; background: var(--rung); color:#1B2A41;
+    padding: 2px 8px; border-radius:6px; font-weight:600; text-transform: uppercase;
+    display: inline-block; margin: 3px 0; line-height: 1.4;
+  }
   .back{ display:inline-block; margin-bottom: 22px; color: var(--ink-dim); text-decoration:none; }
   .back:hover{ color: var(--amber); }
   ul{ line-height:1.7; }
-  ul.sub-list{ margin: 6px 0; padding-left: 1.3em; }
-  ul.sub-list li{ margin-bottom: 2px; }
   .footer-note{ color: var(--ink-dim); font-size: 0.9rem; margin-top: 24px; }
 </style>
 </head>
@@ -53,13 +55,6 @@
       <li><span class="example-word">not</span> could climb to <span class="example-word">tone</span>, <span class="example-word">note</span>, or <span class="example-word">torn</span></li>
       <li>A letter can repeat — <span class="example-word">lead</span> can become <span class="example-word">ladle</span> by adding a second "L"</li>
       <li>Every word in the ladder must be a real English word</li>
-      <li>Up to two hints per word can be used
-        <ul class="sub-list">
-          <li>Hint 1: Reveals the letters in the highest unfilled word using one possible solution</li>
-          <li>Hint 2: Reveals the first letter of the highest unfilled word</li>
-        </ul>
-        Each hint subtracts 5 points from your final score
-      </li>
     </ul>
     <p>There's usually more than one path to the top — how many can you find?</p>
   </div>
