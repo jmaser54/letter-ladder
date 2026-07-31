@@ -2,37 +2,39 @@
 // Only ever contains YESTERDAY's puzzles - never today's or
 // future ones, and nothing older than yesterday either.
 const SOLUTIONS_SCHEDULE = {
-  "2026-07-28": {
+  "2026-07-30": {
     "easy": {
-      "start": "ice",
-      "final": "since",
+      "start": "in",
+      "final": "diner",
       "solution": [
-        "ice",
-        "nice",
-        "since"
+        "in",
+        "din",
+        "rind",
+        "diner"
       ]
     },
     "medium": {
-      "start": "an",
-      "final": "dancers",
+      "start": "act",
+      "final": "clarinet",
       "solution": [
-        "an",
-        "can",
-        "cane",
-        "crane",
-        "dancer",
-        "dancers"
+        "act",
+        "cart",
+        "cater",
+        "canter",
+        "central",
+        "clarinet"
       ]
     },
     "hard": {
-      "start": "nut",
-      "final": "caution",
+      "start": "drag",
+      "final": "generated",
       "solution": [
-        "nut",
-        "unto",
-        "count",
-        "toucan",
-        "caution"
+        "drag",
+        "grade",
+        "garden",
+        "angered",
+        "renegade",
+        "generated"
       ]
     }
   }

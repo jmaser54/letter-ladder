@@ -17,7 +17,7 @@ const HINTS_SCHEDULE = {
       "final": "nation",
       "solution": [
         "an",
-        "ann",
+        "nan",
         "anon",
         "anion",
         "nation"
@@ -93,15 +93,16 @@ const HINTS_SCHEDULE = {
       ]
     },
     "hard": {
-      "start": "tuna",
-      "final": "debutante",
+      "start": "go",
+      "final": "gorgeous",
       "solution": [
-        "tuna",
-        "taunt",
-        "attune",
-        "attuned",
-        "unbatted",
-        "debutante"
+        "go",
+        "ego",
+        "gore",
+        "rogue",
+        "grouse",
+        "gougers",
+        "gorgeous"
       ]
     }
   },
@@ -199,15 +200,17 @@ const HINTS_SCHEDULE = {
       ]
     },
     "hard": {
-      "start": "dame",
-      "final": "exclaimed",
+      "start": "ace",
+      "final": "correlated",
       "solution": [
-        "dame",
-        "medal",
-        "calmed",
-        "medical",
-        "climaxed",
-        "exclaimed"
+        "ace",
+        "care",
+        "crate",
+        "traced",
+        "reacted",
+        "decorate",
+        "relocated",
+        "correlated"
       ]
     }
   },
@@ -232,17 +235,15 @@ const HINTS_SCHEDULE = {
       ]
     },
     "hard": {
-      "start": "ace",
-      "final": "correlated",
+      "start": "dame",
+      "final": "exclaimed",
       "solution": [
-        "ace",
-        "care",
-        "crate",
-        "traced",
-        "reacted",
-        "decorate",
-        "relocated",
-        "correlated"
+        "dame",
+        "medal",
+        "calmed",
+        "medical",
+        "climaxed",
+        "exclaimed"
       ]
     }
   },
@@ -258,11 +259,11 @@ const HINTS_SCHEDULE = {
       ]
     },
     "medium": {
-      "start": "me",
+      "start": "mi",
       "final": "premier",
       "solution": [
-        "me",
-        "erm",
+        "mi",
+        "rim",
         "mire",
         "prime",
         "empire",
@@ -278,7 +279,7 @@ const HINTS_SCHEDULE = {
         "pies",
         "poise",
         "poised",
-        "depoist",
+        "deposit",
         "despotic"
       ]
     }
@@ -296,23 +297,23 @@ const HINTS_SCHEDULE = {
       ]
     },
     "medium": {
-      "start": "ear",
-      "final": "dewatering",
+      "start": "pi",
+      "final": "decipher",
       "solution": [
-        "ear",
-        "tear",
-        "irate",
-        "retain",
-        "tearing",
-        "gradient",
-        "denigrate",
-        "dewatering"
+        "pi",
+        "pie",
+        "pier",
+        "price",
+        "recipe",
+        "pierced",
+        "decipher"
       ]
     },
     "hard": {
-      "start": "trounce",
+      "start": "cornet",
       "final": "countryside",
       "solution": [
+        "cornet",
         "trounce",
         "counters",
         "countries",
@@ -334,16 +335,16 @@ const HINTS_SCHEDULE = {
       ]
     },
     "medium": {
-      "start": "pi",
-      "final": "decipher",
+      "start": "an",
+      "final": "bargeman",
       "solution": [
-        "pi",
-        "pie",
-        "pier",
-        "price",
-        "recipe",
-        "pierced",
-        "decipher"
+        "an",
+        "ran",
+        "rang",
+        "anger",
+        "manger",
+        "manager",
+        "bargeman"
       ]
     },
     "hard": {

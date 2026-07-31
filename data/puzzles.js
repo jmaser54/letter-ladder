@@ -38,8 +38,8 @@ const PUZZLE_SCHEDULE = {
       "final": "bygone"
     },
     "hard": {
-      "start": "tuna",
-      "final": "debutante"
+      "start": "go",
+      "final": "gorgeous"
     }
   },
   "2026-07-30": {
@@ -80,8 +80,8 @@ const PUZZLE_SCHEDULE = {
       "final": "fealty"
     },
     "hard": {
-      "start": "dame",
-      "final": "exclaimed"
+      "start": "ace",
+      "final": "correlated"
     }
   },
   "2026-08-02": {
@@ -94,8 +94,8 @@ const PUZZLE_SCHEDULE = {
       "final": "performed"
     },
     "hard": {
-      "start": "ace",
-      "final": "correlated"
+      "start": "dame",
+      "final": "exclaimed"
     }
   },
   "2026-08-03": {
@@ -104,7 +104,7 @@ const PUZZLE_SCHEDULE = {
       "final": "bushy"
     },
     "medium": {
-      "start": "me",
+      "start": "mi",
       "final": "premier"
     },
     "hard": {
@@ -118,11 +118,11 @@ const PUZZLE_SCHEDULE = {
       "final": "scared"
     },
     "medium": {
-      "start": "ear",
-      "final": "dewatering"
+      "start": "pi",
+      "final": "decipher"
     },
     "hard": {
-      "start": "trounce",
+      "start": "cornet",
       "final": "countryside"
     }
   },
@@ -132,8 +132,8 @@ const PUZZLE_SCHEDULE = {
       "final": "crater"
     },
     "medium": {
-      "start": "pi",
-      "final": "decipher"
+      "start": "an",
+      "final": "bargeman"
     },
     "hard": {
       "start": "sine",
