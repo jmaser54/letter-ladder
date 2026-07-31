@@ -356,8 +356,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=2"></script>
-<script src="data/puzzles.js?v=1785452506"></script>
-<script src="data/hints.js?v=1785452506"></script>
+<script src="data/puzzles.js?v=1785463706"></script>
+<script src="data/hints.js?v=1785463706"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -502,7 +502,10 @@ const TIERS = ['easy','medium','hard'];
 // uses. Update both together if you ever change the launch date.
 const LAUNCH_DATE_KEY = '2026-07-27';
 const SITE_URL = 'https://jmaser54.github.io/letter-ladder/';
-let activeTier = 'easy';
+let activeTier = (function(){
+  const saved = localStorage.getItem('letterladder:activeTier');
+  return TIERS.includes(saved) ? saved : 'easy';
+})();
 let activeLength = null; // which rung (by word length) is currently being typed into
 let lastEnterCommitAt = 0; // guards against iOS sometimes firing two separate
                             // "Enter was pressed" signals for one keypress
@@ -1360,6 +1363,7 @@ document.getElementById('tabs').addEventListener('click', (e)=>{
   const tab = e.target.closest('.tab');
   if(!tab) return;
   activeTier = tab.dataset.tier;
+  localStorage.setItem('letterladder:activeTier', activeTier);
   activeLength = null;
   render();
 });
