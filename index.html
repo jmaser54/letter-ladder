@@ -356,8 +356,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=2"></script>
-<script src="data/puzzles.js?v=1785468833"></script>
-<script src="data/hints.js?v=1785468833"></script>
+<script src="data/puzzles.js?v=1785471755"></script>
+<script src="data/hints.js?v=1785471755"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -1158,6 +1158,12 @@ function render(focusInput = false, pendingErrors = null){
       // that just got deleted, leaving tiles faded when they should be
       // available again.
       bankState[activeTier] = null;
+      // Clear the actual input's live value too - otherwise render()'s
+      // in-progress-typing preservation (added for the shuffle fix) would
+      // read this now-stale value straight off the DOM and put the just-
+      // deleted guess right back into the freshly-rendered box.
+      const existingInput = document.getElementById(`rung-input-${L}`);
+      if(existingInput) existingInput.value = '';
       // Leave this same box open and focused, now empty, ready to type a
       // fresh guess right away.
       activeLength = L;
