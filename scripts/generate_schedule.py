@@ -46,9 +46,33 @@ START_DATE = date(2026, 7, 27)  # <-- change this to your real launch date
 NUM_DAYS = 10                    # <-- how many days of schedule to generate
 # ---------------------------------------------------------
 
-EASY_LEVELS = {"rookie", "beginner"}
-MEDIUM_LEVELS = {"novice"}
-HARD_LEVELS = {"expert", "wordsmith"}
+# Which tier a puzzle falls into is now based entirely on its
+# Assign_Puzzle_Difficulty (APD) value, not the old "Level" text column:
+#   APD < EASY_MAX               -> easy
+#   EASY_MAX <= APD <= MEDIUM_MAX -> medium
+#   MEDIUM_MAX < APD <= HARD_MAX  -> hard
+#   APD > HARD_MAX (or blank)     -> excluded (no real difficulty assigned yet)
+EASY_MAX_APD = 1.25
+MEDIUM_MAX_APD = 2.8
+HARD_MAX_APD = 5
+
+
+def compute_tier(apd):
+    """Returns 'easy', 'medium', 'hard', or None (excluded) for a given
+    Assign_Puzzle_Difficulty value."""
+    if apd is None:
+        return None
+    try:
+        apd = float(apd)
+    except (TypeError, ValueError):
+        return None
+    if apd < EASY_MAX_APD:
+        return "easy"
+    if apd <= MEDIUM_MAX_APD:
+        return "medium"
+    if apd <= HARD_MAX_APD:
+        return "hard"
+    return None
 
 
 def parse_solution(raw):
@@ -66,25 +90,25 @@ def parse_solution(raw):
 def load_puzzles():
     df = pd.read_excel(EXCEL_PATH, sheet_name="Puzzle Bank")
     df.columns = df.columns.str.strip()
-    df = df[df["Level"].isin(EASY_LEVELS | MEDIUM_LEVELS | HARD_LEVELS)]
+    df["_tier"] = df["Assign_Puzzle_Difficulty"].apply(compute_tier)
+    df = df[df["_tier"].notna()]
     df = df.sort_values(by="Assign_Puzzle_Difficulty").reset_index(drop=True)
 
     has_solution_col = "Solution" in df.columns
 
     tiers = {"easy": [], "medium": [], "hard": []}
     for _, row in df.iterrows():
+        solution = parse_solution(row["Solution"]) if has_solution_col else None
+        if solution is None:
+            # Never include a puzzle with no solution in the actual live
+            # schedule - it would be genuinely unsolvable for players.
+            continue
         entry = {
             "start": str(row["Starting_Word"]).strip().lower(),
             "final": str(row["Final_Word"]).strip().lower(),
-            "solution": parse_solution(row["Solution"]) if has_solution_col else None,
+            "solution": solution,
         }
-        level = row["Level"]
-        if level in EASY_LEVELS:
-            tiers["easy"].append(entry)
-        elif level in MEDIUM_LEVELS:
-            tiers["medium"].append(entry)
-        elif level in HARD_LEVELS:
-            tiers["hard"].append(entry)
+        tiers[row["_tier"]].append(entry)
     return tiers
 
 
