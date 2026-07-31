@@ -356,8 +356,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=2"></script>
-<script src="data/puzzles.js?v=1785463706"></script>
-<script src="data/hints.js?v=1785463706"></script>
+<script src="data/puzzles.js?v=1785464220"></script>
+<script src="data/hints.js?v=1785464220"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -1180,8 +1180,21 @@ function render(focusInput = false, pendingErrors = null){
 
   if(activeInput){
     if(focusInput){
-      activeInput.focus();
+      // The rung must already be visible on screen for the person to have
+      // tapped it - so the browser's default "scroll focused input into
+      // view" behavior is never actually needed here, and on long puzzles
+      // it was yanking the page away from a position the person had
+      // deliberately scrolled to (hiding the icon row below the input).
+      const scrollYBefore = window.scrollY;
+      activeInput.focus({ preventScroll: true });
       activeInput.select();
+      // Fallback for browsers that ignore preventScroll: if focusing still
+      // triggered a scroll jump, put the page back where it was.
+      requestAnimationFrame(()=>{
+        if(Math.abs(window.scrollY - scrollYBefore) > 5){
+          window.scrollTo(0, scrollYBefore);
+        }
+      });
     }
 
     let lastNonEmptyValue = activeInput.value || '';
