@@ -357,8 +357,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=2"></script>
-<script src="data/puzzles.js?v=1785513300"></script>
-<script src="data/hints.js?v=1785513300"></script>
+<script src="data/puzzles.js?v=1785514674"></script>
+<script src="data/hints.js?v=1785514674"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -440,13 +440,17 @@ function lettersPhrase(letters){
 function checkGuessLetters(guess, startingWord, finalWord){
   const problems = [];
 
-  const startingLetters = new Set(startingWord);
-  const missingStarting = [...startingLetters].filter(ch => !guess.includes(ch));
+  const guessCounter = counter(guess);
+  const startingCounter = counter(startingWord);
+  const missingStarting = [];
+  for(const ch of Object.keys(startingCounter)){
+    const have = guessCounter[ch] || 0;
+    if(have < startingCounter[ch]) missingStarting.push(ch);
+  }
   if(missingStarting.length > 0){
     problems.push({ reason:'missing_starting_letters', letters: missingStarting });
   }
 
-  const guessCounter = counter(guess);
   const finalCounter = counter(finalWord);
   const notInFinal = [];
   const tooMany = [];
