@@ -80,8 +80,8 @@ const PUZZLE_SCHEDULE = {
       "final": "fealty"
     },
     "hard": {
-      "start": "ace",
-      "final": "correlated"
+      "start": "toner",
+      "final": "countryside"
     }
   },
   "2026-08-02": {
@@ -94,8 +94,8 @@ const PUZZLE_SCHEDULE = {
       "final": "performed"
     },
     "hard": {
-      "start": "dame",
-      "final": "exclaimed"
+      "start": "ace",
+      "final": "correlated"
     }
   },
   "2026-08-03": {
@@ -108,8 +108,8 @@ const PUZZLE_SCHEDULE = {
       "final": "premier"
     },
     "hard": {
-      "start": "is",
-      "final": "despotic"
+      "start": "ma",
+      "final": "exclaimed"
     }
   },
   "2026-08-04": {
@@ -122,8 +122,8 @@ const PUZZLE_SCHEDULE = {
       "final": "decipher"
     },
     "hard": {
-      "start": "toner",
-      "final": "countryside"
+      "start": "is",
+      "final": "despotic"
     }
   },
   "2026-08-05": {

@@ -200,17 +200,16 @@ const HINTS_SCHEDULE = {
       ]
     },
     "hard": {
-      "start": "ace",
-      "final": "correlated",
+      "start": "toner",
+      "final": "countryside",
       "solution": [
-        "ace",
-        "care",
-        "crate",
-        "traced",
-        "reacted",
-        "decorate",
-        "relocated",
-        "correlated"
+        "toner",
+        "cornet",
+        "trounce",
+        "counters",
+        "countries",
+        "introduces",
+        "countryside"
       ]
     }
   },
@@ -235,15 +234,17 @@ const HINTS_SCHEDULE = {
       ]
     },
     "hard": {
-      "start": "dame",
-      "final": "exclaimed",
+      "start": "ace",
+      "final": "correlated",
       "solution": [
-        "dame",
-        "medal",
-        "calmed",
-        "medical",
-        "climaxed",
-        "exclaimed"
+        "ace",
+        "care",
+        "crate",
+        "traced",
+        "reacted",
+        "decorate",
+        "relocated",
+        "correlated"
       ]
     }
   },
@@ -271,16 +272,17 @@ const HINTS_SCHEDULE = {
       ]
     },
     "hard": {
-      "start": "is",
-      "final": "despotic",
+      "start": "ma",
+      "final": "exclaimed",
       "solution": [
-        "is",
-        "sip",
-        "pies",
-        "poise",
-        "poised",
-        "deposit",
-        "despotic"
+        "ma",
+        "mad",
+        "dame",
+        "medal",
+        "calmed",
+        "medical",
+        "climaxed",
+        "exclaimed"
       ]
     }
   },
@@ -310,16 +312,16 @@ const HINTS_SCHEDULE = {
       ]
     },
     "hard": {
-      "start": "toner",
-      "final": "countryside",
+      "start": "is",
+      "final": "despotic",
       "solution": [
-        "toner",
-        "cornet",
-        "trounce",
-        "counters",
-        "countries",
-        "discounter",
-        "countryside"
+        "is",
+        "sip",
+        "pies",
+        "poise",
+        "poised",
+        "deposit",
+        "despotic"
       ]
     }
   },
