@@ -94,16 +94,15 @@ const SOLUTIONS_SCHEDULE = {
       ]
     },
     "hard": {
-      "start": "go",
-      "final": "gorgeous",
+      "start": "drag",
+      "final": "generated",
       "solution": [
-        "go",
-        "ego",
-        "gore",
-        "rogue",
-        "grouse",
-        "gougers",
-        "gorgeous"
+        "drag",
+        "grade",
+        "garden",
+        "angered",
+        "renegade",
+        "generated"
       ]
     }
   },
@@ -119,27 +118,29 @@ const SOLUTIONS_SCHEDULE = {
       ]
     },
     "medium": {
-      "start": "act",
-      "final": "clarinet",
+      "start": "in",
+      "final": "sentient",
       "solution": [
-        "act",
-        "cart",
-        "cater",
-        "canter",
-        "central",
-        "clarinet"
+        "in",
+        "tin",
+        "tins",
+        "stein",
+        "tennis",
+        "intents",
+        "sentient"
       ]
     },
     "hard": {
-      "start": "drag",
-      "final": "generated",
+      "start": "go",
+      "final": "gorgeous",
       "solution": [
-        "drag",
-        "grade",
-        "garden",
-        "angered",
-        "renegade",
-        "generated"
+        "go",
+        "ego",
+        "gore",
+        "rogue",
+        "grouse",
+        "gougers",
+        "gorgeous"
       ]
     }
   },
@@ -155,16 +156,15 @@ const SOLUTIONS_SCHEDULE = {
       ]
     },
     "medium": {
-      "start": "in",
-      "final": "sentient",
+      "start": "act",
+      "final": "clarinet",
       "solution": [
-        "in",
-        "tin",
-        "tins",
-        "stein",
-        "tennis",
-        "intents",
-        "sentient"
+        "act",
+        "cart",
+        "cater",
+        "canter",
+        "central",
+        "clarinet"
       ]
     },
     "hard": {

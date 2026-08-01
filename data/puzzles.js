@@ -38,8 +38,8 @@ const PUZZLE_SCHEDULE = {
       "final": "bygone"
     },
     "hard": {
-      "start": "go",
-      "final": "gorgeous"
+      "start": "drag",
+      "final": "generated"
     }
   },
   "2026-07-30": {
@@ -48,12 +48,12 @@ const PUZZLE_SCHEDULE = {
       "final": "diner"
     },
     "medium": {
-      "start": "act",
-      "final": "clarinet"
+      "start": "in",
+      "final": "sentient"
     },
     "hard": {
-      "start": "drag",
-      "final": "generated"
+      "start": "go",
+      "final": "gorgeous"
     }
   },
   "2026-07-31": {
@@ -62,8 +62,8 @@ const PUZZLE_SCHEDULE = {
       "final": "think"
     },
     "medium": {
-      "start": "in",
-      "final": "sentient"
+      "start": "act",
+      "final": "clarinet"
     },
     "hard": {
       "start": "entice",
@@ -86,6 +86,20 @@ const PUZZLE_SCHEDULE = {
   },
   "2026-08-02": {
     "easy": {
+      "start": "it",
+      "final": "tires"
+    },
+    "medium": {
+      "start": "at",
+      "final": "tarmac"
+    },
+    "hard": {
+      "start": "to",
+      "final": "undertows"
+    }
+  },
+  "2026-08-03": {
+    "easy": {
       "start": "sip",
       "final": "spire"
     },
@@ -94,11 +108,11 @@ const PUZZLE_SCHEDULE = {
       "final": "performed"
     },
     "hard": {
-      "start": "rad",
-      "final": "correlated"
+      "start": "ma",
+      "final": "exclaimed"
     }
   },
-  "2026-08-03": {
+  "2026-08-04": {
     "easy": {
       "start": "us",
       "final": "bushy"
@@ -108,11 +122,11 @@ const PUZZLE_SCHEDULE = {
       "final": "premier"
     },
     "hard": {
-      "start": "ma",
-      "final": "exclaimed"
+      "start": "rad",
+      "final": "correlated"
     }
   },
-  "2026-08-04": {
+  "2026-08-05": {
     "easy": {
       "start": "as",
       "final": "scared"
@@ -124,20 +138,6 @@ const PUZZLE_SCHEDULE = {
     "hard": {
       "start": "is",
       "final": "despotic"
-    }
-  },
-  "2026-08-05": {
-    "easy": {
-      "start": "at",
-      "final": "crater"
-    },
-    "medium": {
-      "start": "an",
-      "final": "bargeman"
-    },
-    "hard": {
-      "start": "sine",
-      "final": "burnished"
     }
   }
 };

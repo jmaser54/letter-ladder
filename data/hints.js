@@ -93,16 +93,15 @@ const HINTS_SCHEDULE = {
       ]
     },
     "hard": {
-      "start": "go",
-      "final": "gorgeous",
+      "start": "drag",
+      "final": "generated",
       "solution": [
-        "go",
-        "ego",
-        "gore",
-        "rogue",
-        "grouse",
-        "gougers",
-        "gorgeous"
+        "drag",
+        "grade",
+        "garden",
+        "angered",
+        "renegade",
+        "generated"
       ]
     }
   },
@@ -118,27 +117,29 @@ const HINTS_SCHEDULE = {
       ]
     },
     "medium": {
-      "start": "act",
-      "final": "clarinet",
+      "start": "in",
+      "final": "sentient",
       "solution": [
-        "act",
-        "cart",
-        "cater",
-        "canter",
-        "central",
-        "clarinet"
+        "in",
+        "tin",
+        "tins",
+        "stein",
+        "tennis",
+        "intents",
+        "sentient"
       ]
     },
     "hard": {
-      "start": "drag",
-      "final": "generated",
+      "start": "go",
+      "final": "gorgeous",
       "solution": [
-        "drag",
-        "grade",
-        "garden",
-        "angered",
-        "renegade",
-        "generated"
+        "go",
+        "ego",
+        "gore",
+        "rogue",
+        "grouse",
+        "gougers",
+        "gorgeous"
       ]
     }
   },
@@ -154,16 +155,15 @@ const HINTS_SCHEDULE = {
       ]
     },
     "medium": {
-      "start": "in",
-      "final": "sentient",
+      "start": "act",
+      "final": "clarinet",
       "solution": [
-        "in",
-        "tin",
-        "tins",
-        "stein",
-        "tennis",
-        "intents",
-        "sentient"
+        "act",
+        "cart",
+        "cater",
+        "canter",
+        "central",
+        "clarinet"
       ]
     },
     "hard": {
@@ -215,6 +215,43 @@ const HINTS_SCHEDULE = {
   },
   "2026-08-02": {
     "easy": {
+      "start": "it",
+      "final": "tires",
+      "solution": [
+        "it",
+        "sit",
+        "ties",
+        "tires"
+      ]
+    },
+    "medium": {
+      "start": "at",
+      "final": "tarmac",
+      "solution": [
+        "at",
+        "rat",
+        "cart",
+        "carat",
+        "tarmac"
+      ]
+    },
+    "hard": {
+      "start": "to",
+      "final": "undertows",
+      "solution": [
+        "to",
+        "toe",
+        "note",
+        "tones",
+        "stoner",
+        "snorted",
+        "roundest",
+        "undertows"
+      ]
+    }
+  },
+  "2026-08-03": {
+    "easy": {
       "start": "sip",
       "final": "spire",
       "solution": [
@@ -234,21 +271,21 @@ const HINTS_SCHEDULE = {
       ]
     },
     "hard": {
-      "start": "rad",
-      "final": "correlated",
+      "start": "ma",
+      "final": "exclaimed",
       "solution": [
-        "rad",
-        "card",
-        "cared",
-        "traced",
-        "reacted",
-        "decorate",
-        "relocated",
-        "correlated"
+        "ma",
+        "mad",
+        "dame",
+        "medal",
+        "calmed",
+        "medical",
+        "climaxed",
+        "exclaimed"
       ]
     }
   },
-  "2026-08-03": {
+  "2026-08-04": {
     "easy": {
       "start": "us",
       "final": "bushy",
@@ -272,21 +309,21 @@ const HINTS_SCHEDULE = {
       ]
     },
     "hard": {
-      "start": "ma",
-      "final": "exclaimed",
+      "start": "rad",
+      "final": "correlated",
       "solution": [
-        "ma",
-        "mad",
-        "dame",
-        "medal",
-        "calmed",
-        "medical",
-        "climaxed",
-        "exclaimed"
+        "rad",
+        "card",
+        "cared",
+        "traced",
+        "reacted",
+        "decorate",
+        "relocated",
+        "correlated"
       ]
     }
   },
-  "2026-08-04": {
+  "2026-08-05": {
     "easy": {
       "start": "as",
       "final": "scared",
@@ -322,44 +359,6 @@ const HINTS_SCHEDULE = {
         "poised",
         "deposit",
         "despotic"
-      ]
-    }
-  },
-  "2026-08-05": {
-    "easy": {
-      "start": "at",
-      "final": "crater",
-      "solution": [
-        "at",
-        "rat",
-        "rate",
-        "crate",
-        "crater"
-      ]
-    },
-    "medium": {
-      "start": "an",
-      "final": "bargeman",
-      "solution": [
-        "an",
-        "ran",
-        "rang",
-        "anger",
-        "manger",
-        "manager",
-        "bargeman"
-      ]
-    },
-    "hard": {
-      "start": "sine",
-      "final": "burnished",
-      "solution": [
-        "sine",
-        "dines",
-        "diners",
-        "insured",
-        "sideburn",
-        "burnished"
       ]
     }
   }
