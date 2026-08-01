@@ -357,8 +357,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=2"></script>
-<script src="data/puzzles.js?v=1785549389"></script>
-<script src="data/hints.js?v=1785549389"></script>
+<script src="data/puzzles.js?v=1785550441"></script>
+<script src="data/hints.js?v=1785550441"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -1478,11 +1478,21 @@ function render(focusInput = false, pendingErrors = null){
     activeInput.addEventListener('keydown', (e)=>{
       if(e.key === 'Enter'){ e.preventDefault(); tryCommitViaEnter(); return; }
       // Only letters that actually appear in the top (final) word can be
-      // typed - this can't guarantee a correct guess, but it stops
-      // obviously impossible letters from ever being entered.
+      // typed, and only up to as many times as they actually appear there -
+      // this can't guarantee a correct guess, but it stops obviously
+      // impossible letters (or too many repeats of a letter, like typing
+      // five t's when the final word only has one) from ever being entered.
       if(e.key.length === 1 && /^[a-zA-Z]$/.test(e.key) && !e.ctrlKey && !e.metaKey && !e.altKey){
-        if(!finalWord.toLowerCase().includes(e.key.toLowerCase())){
+        const key = e.key.toLowerCase();
+        const allowedCount = finalWord.toLowerCase().split('').filter(ch => ch === key).length;
+        if(allowedCount === 0){
           e.preventDefault();
+        } else {
+          const currentValue = activeInput.value || '';
+          const currentCount = currentValue.toLowerCase().split('').filter(ch => ch === key).length;
+          if(currentCount >= allowedCount){
+            e.preventDefault();
+          }
         }
       }
     });
