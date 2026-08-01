@@ -94,7 +94,7 @@ const PUZZLE_SCHEDULE = {
       "final": "performed"
     },
     "hard": {
-      "start": "ace",
+      "start": "rad",
       "final": "correlated"
     }
   },

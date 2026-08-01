@@ -234,12 +234,12 @@ const HINTS_SCHEDULE = {
       ]
     },
     "hard": {
-      "start": "ace",
+      "start": "rad",
       "final": "correlated",
       "solution": [
-        "ace",
-        "care",
-        "crate",
+        "rad",
+        "card",
+        "cared",
         "traced",
         "reacted",
         "decorate",
