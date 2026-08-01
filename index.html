@@ -357,8 +357,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=2"></script>
-<script src="data/puzzles.js?v=1785550441"></script>
-<script src="data/hints.js?v=1785550441"></script>
+<script src="data/puzzles.js?v=1785551122"></script>
+<script src="data/hints.js?v=1785551122"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -1496,7 +1496,37 @@ function render(focusInput = false, pendingErrors = null){
         }
       }
     });
+    function sanitizeToAllowedLetters(rawValue, finalWord){
+      // Strips out any letter not in the final word, and caps each letter
+      // at the exact number of times it's actually allowed to appear there
+      // - applied to the resulting value itself rather than trying to
+      // block individual keystrokes, since paste, autocorrect, and mobile
+      // swipe-typing don't reliably fire normal keydown events per
+      // character and can bypass a keystroke-level restriction entirely.
+      const allowedCounts = {};
+      for(const ch of finalWord.toLowerCase()){
+        allowedCounts[ch] = (allowedCounts[ch] || 0) + 1;
+      }
+      const usedCounts = {};
+      let result = '';
+      for(const ch of rawValue){
+        if(!/^[a-zA-Z]$/.test(ch)) continue;
+        const lower = ch.toLowerCase();
+        const allowed = allowedCounts[lower] || 0;
+        const used = usedCounts[lower] || 0;
+        if(used < allowed){
+          result += ch;
+          usedCounts[lower] = used + 1;
+        }
+      }
+      return result;
+    }
+
     activeInput.addEventListener('input', (e)=>{
+      const sanitized = sanitizeToAllowedLetters(activeInput.value, finalWord);
+      if(sanitized !== activeInput.value){
+        activeInput.value = sanitized;
+      }
       if(activeInput.value && activeInput.value.trim() !== ''){
         lastNonEmptyValue = activeInput.value;
       }
