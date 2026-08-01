@@ -357,8 +357,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=2"></script>
-<script src="data/puzzles.js?v=1785525805"></script>
-<script src="data/hints.js?v=1785525805"></script>
+<script src="data/puzzles.js?v=1785548541"></script>
+<script src="data/hints.js?v=1785548541"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -800,6 +800,82 @@ function buildShareText(){
   return `Letter Ladder #${puzzleDayNumber()} 🪜\n\n${lines.join('\n')}\n\n${SITE_URL}`;
 }
 
+async function buildShareImage(){
+  // Builds a results-card PNG matching the game's own visual style, for
+  // sharing to platforms like Instagram Stories that handle images far
+  // better than plain text through the native share sheet.
+  const tierLabels = { easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+  const rows = [];
+  for(const tier of TIERS){
+    const puzzle = getTodaysPuzzle(tier);
+    if(!puzzle) continue;
+    if(isTierComplete(tier)){
+      const hints = getHintsUsed(tier);
+      rows.push({ label: tierLabels[tier], status: hints > 0 ? '💡'.repeat(hints) : '✔️', solved: true });
+    } else {
+      rows.push({ label: tierLabels[tier], status: '—', solved: false });
+    }
+  }
+
+  const W = 1080, H = 1080;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // Background gradient matching the game's own body background
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, '#24384F');
+  grad.addColorStop(0.55, '#1B2A41');
+  grad.addColorStop(1, '#142132');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.textAlign = 'center';
+
+  // Title
+  ctx.fillStyle = '#F5EFE0';
+  ctx.font = "700 64px Georgia, serif";
+  ctx.fillText(`Letter Ladder #${puzzleDayNumber()} 🪜`, W/2, 160);
+
+  ctx.fillStyle = '#9FB3C8';
+  ctx.font = "400 34px Arial, sans-serif";
+  ctx.fillText("Can you climb it?", W/2, 220);
+
+  // Per-tier result rows, styled as rounded cards
+  let y = 340;
+  const cardW = 760, cardH = 130, cardX = (W - cardW) / 2;
+  for(const row of rows){
+    ctx.fillStyle = row.solved ? 'rgba(232,163,61,0.15)' : 'rgba(245,239,224,0.06)';
+    ctx.beginPath();
+    ctx.roundRect(cardX, y, cardW, cardH, 18);
+    ctx.fill();
+    ctx.strokeStyle = row.solved ? '#E8A33D' : 'rgba(245,239,224,0.2)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#F5EFE0';
+    ctx.font = "700 48px Arial, sans-serif";
+    ctx.fillText(row.label, cardX + 40, y + 82);
+
+    ctx.textAlign = 'right';
+    ctx.font = "700 48px Arial, sans-serif";
+    ctx.fillStyle = row.solved ? '#E8A33D' : '#9FB3C8';
+    ctx.fillText(row.status, cardX + cardW - 40, y + 82);
+
+    y += cardH + 30;
+  }
+
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#9FB3C8';
+  ctx.font = "400 32px Arial, sans-serif";
+  ctx.fillText(SITE_URL.replace('https://', ''), W/2, y + 40);
+
+  return new Promise(resolve => {
+    canvas.toBlob(blob => resolve(blob), 'image/png');
+  });
+}
+
 function triggerSummitCelebration(){
   const colors = ['#E8A33D', '#6FBF8B', '#F5EFE0', '#D9705F'];
   for(let i=0; i<70; i++){
@@ -1084,6 +1160,23 @@ function render(focusInput = false, pendingErrors = null){
     shareBtn.addEventListener('click', async ()=>{
       const shareText = buildShareText();
       const statusEl = document.getElementById('share-status');
+
+      // Try the richest option first: image + text together in one native
+      // share sheet. Messages/email can use both; Instagram picks up the
+      // image for Stories (its main real sharing path); Twitter/Facebook
+      // use whichever part they support. This one call covers all of them.
+      try{
+        const imageBlob = await buildShareImage();
+        const imageFile = new File([imageBlob], 'letter-ladder-results.png', { type: 'image/png' });
+        if(navigator.canShare && navigator.canShare({ files: [imageFile] })){
+          await navigator.share({ files: [imageFile], text: shareText, title: 'Letter Ladder' });
+          return;
+        }
+      }catch(e){
+        if(e && e.name === 'AbortError') return; // person cancelled the share sheet - not an error
+        // otherwise fall through to the text-only options below
+      }
+
       if(navigator.share){
         try{
           await navigator.share({ text: shareText });
