@@ -360,8 +360,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=2"></script>
-<script src="data/puzzles.js?v=1785564487"></script>
-<script src="data/hints.js?v=1785564487"></script>
+<script src="data/puzzles.js?v=1785565897"></script>
+<script src="data/hints.js?v=1785565897"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -1526,9 +1526,18 @@ function render(focusInput = false, pendingErrors = null){
     }
 
     activeInput.addEventListener('input', (e)=>{
-      const sanitized = sanitizeToAllowedLetters(activeInput.value, finalWord);
-      if(sanitized !== activeInput.value){
-        activeInput.value = sanitized;
+      // While a composition is actively in progress (this is how voice
+      // dictation and IME text input work under the hood - the OS/browser
+      // is still refining what was recognized and expects to have
+      // exclusive control over the field's content in the meantime),
+      // rewriting the value out from under it causes exactly the kind of
+      // slow, wrong, or truncated results dictation was showing. Skip
+      // sanitizing until composition actually finishes instead.
+      if(!e.isComposing){
+        const sanitized = sanitizeToAllowedLetters(activeInput.value, finalWord);
+        if(sanitized !== activeInput.value){
+          activeInput.value = sanitized;
+        }
       }
       if(activeInput.value && activeInput.value.trim() !== ''){
         lastNonEmptyValue = activeInput.value;
@@ -1572,6 +1581,16 @@ function render(focusInput = false, pendingErrors = null){
       // above keeps this from double-firing alongside keydown for the
       // exact same keypress.
       if(e.inputType === 'insertLineBreak'){ tryCommitViaEnter(); }
+    });
+    activeInput.addEventListener('compositionend', ()=>{
+      // Composition (voice dictation, IME, etc) has now actually finished,
+      // so it's safe to sanitize the final result without fighting the
+      // OS's own recognition process.
+      const sanitized = sanitizeToAllowedLetters(activeInput.value, finalWord);
+      if(sanitized !== activeInput.value){
+        activeInput.value = sanitized;
+        activeInput.dispatchEvent(new Event('input', { bubbles: true }));
+      }
     });
     activeInput.addEventListener('blur', ()=> commit(false));
   }
