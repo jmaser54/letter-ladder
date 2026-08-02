@@ -55,11 +55,18 @@
   <div id="solutions-list"></div>
 </div>
 
-<script src="data/solutions.js?v=1785604628"></script>
+<script src="data/hints.js?v=1785644134"></script>
 <script>
 function yesterdayKey(){
   const d = new Date();
   d.setDate(d.getDate() - 1);
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+function todayKey(){
+  const d = new Date();
   const y = d.getFullYear();
   const m = String(d.getMonth()+1).padStart(2,'0');
   const day = String(d.getDate()).padStart(2,'0');
@@ -72,21 +79,30 @@ function prettyDate(key){
 }
 
 const container = document.getElementById('solutions-list');
-const allDayKeys = Object.keys(SOLUTIONS_SCHEDULE || {}).sort().reverse();
-// Look up yesterday specifically, based on the visitor's own current date -
-// not just whatever happens to be the most recent entry in the file. Falls
-// back to the most recent available day only if that exact date is somehow
-// missing (e.g. right around a schedule refresh), rather than showing
-// nothing at all.
+// hints.js covers the entire scheduled window (past, today, and future -
+// same data that powers the in-game hint button), not just past days like
+// the old solutions.js did. That's what was going stale every day: this
+// page used to depend on a separate file that only ever contained
+// whatever was "already past" at the exact moment the schedule was last
+// generated. Reading from hints.js instead means yesterday's puzzle is
+// always there as long as it falls anywhere within the generated window,
+// regardless of exactly when the script last ran.
+const allDayKeys = Object.keys(HINTS_SCHEDULE || {}).sort().reverse();
+// Since this data source also includes today and future days, the
+// fallback below is explicitly restricted to days strictly before today -
+// so even in an edge case, this can never show today's or an upcoming
+// puzzle's solution early.
+const today = todayKey();
+const pastKeys = allDayKeys.filter(k => k < today);
 const wantedKey = yesterdayKey();
-const days = allDayKeys.includes(wantedKey) ? [wantedKey] : allDayKeys;
+const days = pastKeys.includes(wantedKey) ? [wantedKey] : pastKeys;
 
 if(days.length === 0){
   container.innerHTML = `<div class="empty-state">No solution posted yet - check back after the first day's puzzles have run!</div>`;
 } else {
   const tierNames = { easy: 'Easy', medium: 'Medium', hard: 'Hard' };
   const dayKey = days[0];
-  const day = SOLUTIONS_SCHEDULE[dayKey];
+  const day = HINTS_SCHEDULE[dayKey];
   const tierRows = ['easy','medium','hard']
     .filter(tier => day[tier])
     .map(tier => {
