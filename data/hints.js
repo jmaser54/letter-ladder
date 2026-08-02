@@ -3,363 +3,53 @@
 // puzzles.js - not a bigger exposure than the live game already has.
 const HINTS_SCHEDULE = {
   "2026-07-27": {
-    "easy": {
-      "start": "sea",
-      "final": "stale",
-      "solution": [
-        "sea",
-        "seal",
-        "stale"
-      ]
-    },
-    "medium": {
-      "start": "an",
-      "final": "nation",
-      "solution": [
-        "an",
-        "nan",
-        "anon",
-        "anion",
-        "nation"
-      ]
-    },
-    "hard": {
-      "start": "grid",
-      "final": "badgering",
-      "solution": [
-        "grid",
-        "ridge",
-        "bridge",
-        "brigade",
-        "breading",
-        "badgering"
-      ]
-    }
+    "easy": { "start": "sea", "final": "stale", "solution": ["sea", "seal", "stale"] },
+    "medium": { "start": "an", "final": "nation", "solution": ["an", "nan", "anon", "anion", "nation"] },
+    "hard": { "start": "grid", "final": "badgering", "solution": ["grid", "ridge", "bridge", "brigade", "breading", "badgering"] }
   },
   "2026-07-28": {
-    "easy": {
-      "start": "ice",
-      "final": "since",
-      "solution": [
-        "ice",
-        "nice",
-        "since"
-      ]
-    },
-    "medium": {
-      "start": "an",
-      "final": "dancers",
-      "solution": [
-        "an",
-        "can",
-        "cane",
-        "crane",
-        "dancer",
-        "dancers"
-      ]
-    },
-    "hard": {
-      "start": "nut",
-      "final": "caution",
-      "solution": [
-        "nut",
-        "unto",
-        "count",
-        "toucan",
-        "caution"
-      ]
-    }
+    "easy": { "start": "ice", "final": "since", "solution": ["ice", "nice", "since"] },
+    "medium": { "start": "an", "final": "dancers", "solution": ["an", "can", "cane", "crane", "dancer", "dancers"] },
+    "hard": { "start": "nut", "final": "caution", "solution": ["nut", "unto", "count", "toucan", "caution"] }
   },
   "2026-07-29": {
-    "easy": {
-      "start": "ar",
-      "final": "racer",
-      "solution": [
-        "ar",
-        "are",
-        "care",
-        "racer"
-      ]
-    },
-    "medium": {
-      "start": "by",
-      "final": "bygone",
-      "solution": [
-        "by",
-        "boy",
-        "bony",
-        "ebony",
-        "bygone"
-      ]
-    },
-    "hard": {
-      "start": "drag",
-      "final": "generated",
-      "solution": [
-        "drag",
-        "grade",
-        "garden",
-        "angered",
-        "renegade",
-        "generated"
-      ]
-    }
+    "easy": { "start": "ar", "final": "racer", "solution": ["ar", "are", "care", "racer"] },
+    "medium": { "start": "by", "final": "bygone", "solution": ["by", "boy", "bony", "ebony", "bygone"] },
+    "hard": { "start": "drag", "final": "generated", "solution": ["drag", "grade", "garden", "angered", "renegade", "generated"] }
   },
   "2026-07-30": {
-    "easy": {
-      "start": "in",
-      "final": "diner",
-      "solution": [
-        "in",
-        "din",
-        "rind",
-        "diner"
-      ]
-    },
-    "medium": {
-      "start": "in",
-      "final": "sentient",
-      "solution": [
-        "in",
-        "tin",
-        "tins",
-        "stein",
-        "tennis",
-        "intents",
-        "sentient"
-      ]
-    },
-    "hard": {
-      "start": "go",
-      "final": "gorgeous",
-      "solution": [
-        "go",
-        "ego",
-        "gore",
-        "rogue",
-        "grouse",
-        "gougers",
-        "gorgeous"
-      ]
-    }
+    "easy": { "start": "in", "final": "diner", "solution": ["in", "din", "rind", "diner"] },
+    "medium": { "start": "in", "final": "sentient", "solution": ["in", "tin", "tins", "stein", "tennis", "intents", "sentient"] },
+    "hard": { "start": "go", "final": "gorgeous", "solution": ["go", "ego", "gore", "rogue", "grouse", "gougers", "gorgeous"] }
   },
   "2026-07-31": {
-    "easy": {
-      "start": "it",
-      "final": "think",
-      "solution": [
-        "it",
-        "hit",
-        "thin",
-        "think"
-      ]
-    },
-    "medium": {
-      "start": "act",
-      "final": "clarinet",
-      "solution": [
-        "act",
-        "cart",
-        "cater",
-        "canter",
-        "central",
-        "clarinet"
-      ]
-    },
-    "hard": {
-      "start": "entice",
-      "final": "respecting",
-      "solution": [
-        "entice",
-        "genetic",
-        "erecting",
-        "secreting",
-        "respecting"
-      ]
-    }
+    "easy": { "start": "it", "final": "think", "solution": ["it", "hit", "thin", "think"] },
+    "medium": { "start": "act", "final": "clarinet", "solution": ["act", "cart", "cater", "canter", "central", "clarinet"] },
+    "hard": { "start": "entice", "final": "respecting", "solution": ["entice", "genetic", "erecting", "secreting", "respecting"] }
   },
   "2026-08-01": {
-    "easy": {
-      "start": "oh",
-      "final": "mouth",
-      "solution": [
-        "oh",
-        "hot",
-        "moth",
-        "mouth"
-      ]
-    },
-    "medium": {
-      "start": "elf",
-      "final": "fealty",
-      "solution": [
-        "elf",
-        "flea",
-        "leafy",
-        "fealty"
-      ]
-    },
-    "hard": {
-      "start": "toner",
-      "final": "countryside",
-      "solution": [
-        "toner",
-        "cornet",
-        "trounce",
-        "counters",
-        "countries",
-        "introduces",
-        "countryside"
-      ]
-    }
+    "easy": { "start": "oh", "final": "mouth", "solution": ["oh", "hot", "moth", "mouth"] },
+    "medium": { "start": "elf", "final": "fealty", "solution": ["elf", "flea", "leafy", "fealty"] },
+    "hard": { "start": "toner", "final": "countryside", "solution": ["toner", "cornet", "trounce", "counters", "countries", "introduces", "countryside"] }
   },
   "2026-08-02": {
-    "easy": {
-      "start": "it",
-      "final": "tires",
-      "solution": [
-        "it",
-        "sit",
-        "ties",
-        "tires"
-      ]
-    },
-    "medium": {
-      "start": "at",
-      "final": "tarmac",
-      "solution": [
-        "at",
-        "rat",
-        "cart",
-        "carat",
-        "tarmac"
-      ]
-    },
-    "hard": {
-      "start": "to",
-      "final": "undertows",
-      "solution": [
-        "to",
-        "toe",
-        "note",
-        "tones",
-        "stoner",
-        "snorted",
-        "roundest",
-        "undertows"
-      ]
-    }
+    "easy": { "start": "it", "final": "tires", "solution": ["it", "sit", "ties", "tires"] },
+    "medium": { "start": "at", "final": "tarmac", "solution": ["at", "rat", "cart", "carat", "tarmac"] },
+    "hard": { "start": "to", "final": "undertows", "solution": ["to", "toe", "note", "tones", "stoner", "snorted", "roundest", "undertows"] }
   },
   "2026-08-03": {
-    "easy": {
-      "start": "sip",
-      "final": "spire",
-      "solution": [
-        "sip",
-        "rips",
-        "spire"
-      ]
-    },
-    "medium": {
-      "start": "deform",
-      "final": "performed",
-      "solution": [
-        "deform",
-        "freedom",
-        "reformed",
-        "performed"
-      ]
-    },
-    "hard": {
-      "start": "ma",
-      "final": "exclaimed",
-      "solution": [
-        "ma",
-        "mad",
-        "dame",
-        "medal",
-        "calmed",
-        "medical",
-        "climaxed",
-        "exclaimed"
-      ]
-    }
+    "easy": { "start": "sip", "final": "spire", "solution": ["sip", "rips", "spire"] },
+    "medium": { "start": "deform", "final": "performed", "solution": ["deform", "freedom", "reformed", "performed"] },
+    "hard": { "start": "rad", "final": "correlated", "solution": ["rad", "card", "cared", "traced", "reacted", "decorate", "relocated", "correlated"] }
   },
   "2026-08-04": {
-    "easy": {
-      "start": "us",
-      "final": "bushy",
-      "solution": [
-        "us",
-        "bus",
-        "busy",
-        "bushy"
-      ]
-    },
-    "medium": {
-      "start": "mi",
-      "final": "premier",
-      "solution": [
-        "mi",
-        "rim",
-        "mire",
-        "prime",
-        "empire",
-        "premier"
-      ]
-    },
-    "hard": {
-      "start": "rad",
-      "final": "correlated",
-      "solution": [
-        "rad",
-        "card",
-        "cared",
-        "traced",
-        "reacted",
-        "decorate",
-        "relocated",
-        "correlated"
-      ]
-    }
+    "easy": { "start": "us", "final": "bushy", "solution": ["us", "bus", "busy", "bushy"] },
+    "medium": { "start": "mi", "final": "premier", "solution": ["mi", "rim", "mire", "prime", "empire", "premier"] },
+    "hard": { "start": "ma", "final": "exclaimed", "solution": ["ma", "mad", "dame", "medal", "calmed", "medical", "climaxed", "exclaimed"] }
   },
   "2026-08-05": {
-    "easy": {
-      "start": "as",
-      "final": "scared",
-      "solution": [
-        "as",
-        "sea",
-        "sear",
-        "scare",
-        "scared"
-      ]
-    },
-    "medium": {
-      "start": "pi",
-      "final": "decipher",
-      "solution": [
-        "pi",
-        "pie",
-        "pier",
-        "price",
-        "recipe",
-        "pierced",
-        "decipher"
-      ]
-    },
-    "hard": {
-      "start": "is",
-      "final": "despotic",
-      "solution": [
-        "is",
-        "sip",
-        "pies",
-        "poise",
-        "poised",
-        "deposit",
-        "despotic"
-      ]
-    }
+    "easy": { "start": "as", "final": "scared", "solution": ["as", "sea", "sear", "scare", "scared"] },
+    "medium": { "start": "pi", "final": "decipher", "solution": ["pi", "pie", "pier", "price", "recipe", "pierced", "decipher"] },
+    "hard": { "start": "is", "final": "despotic", "solution": ["is", "sip", "pies", "poise", "poised", "deposit", "despotic"] }
   }
 };
