@@ -340,9 +340,10 @@
     <div class="tagline">Add one letter, scramble to a new word, climb to the top.</div>
     <div class="top-links">
       <a href="about.html">How to play</a>
-      <a href="solutions.html">Yesterday's solution</a>
+      <a href="solutions.html" id="solution-link">Yesterday's solution</a>
       <a href="stats.html">Your stats</a>
       <a href="contact.html">Contact</a>
+      <a href="past-puzzles.html">Past Puzzles</a>
       <a href="https://www.instagram.com/letterladder" target="_blank" rel="noopener" class="logo-link" aria-label="Follow Letter Ladder on Instagram">
         <svg width="22" height="22" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -380,8 +381,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=2"></script>
-<script src="data/puzzles.js?v=1785803232"></script>
-<script src="data/hints.js?v=1785803232"></script>
+<script src="data/puzzles.js?v=1785822718"></script>
+<script src="data/hints.js?v=1785822718"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -395,6 +396,20 @@ function prettyDate(key){
   const [y,m,d] = key.split('-').map(Number);
   const dt = new Date(y, m-1, d);
   return dt.toLocaleDateString(undefined, { weekday:'long', month:'long', day:'numeric' });
+}
+function resolveDateKey(){
+  // Supports "Past Puzzles" archive play via ?archive=YYYY-MM-DD. Only
+  // ever accepts a date that's both a real scheduled puzzle AND strictly
+  // before today - never today's own date (that's just the real game) and
+  // never a future date (which would leak an upcoming puzzle early).
+  const params = new URLSearchParams(window.location.search);
+  const requested = params.get('archive');
+  const today = todayKey();
+  if(requested && /^\d{4}-\d{2}-\d{2}$/.test(requested) && requested < today
+     && PUZZLE_SCHEDULE && PUZZLE_SCHEDULE[requested]){
+    return { key: requested, isArchive: true };
+  }
+  return { key: today, isArchive: false };
 }
 
 // ---------- game logic (ported from the original Flask app.py) ----------
@@ -567,7 +582,7 @@ let bankState = {}; // per tier: { word, order } - the source word the bank's
                      // tiles are drawn from, and their current shuffle order
 const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 let keyboardEnabled = isTouchDevice ? (localStorage.getItem('letterladder:keyboardEnabled') === 'true') : true; // bank-first on mobile, always-on on desktop
-const dateKey = todayKey();
+const { key: dateKey, isArchive: isArchiveMode } = resolveDateKey();
 
 function storageKey(tier){ return `letterladder:${dateKey}:${tier}`; }
 function loadGuesses(tier){
@@ -623,6 +638,7 @@ function bumpStreak(stat, todayKeyStr){
 }
 
 function markPlayedIfNeeded(tier){
+  if(isArchiveMode) return; // archive plays never count toward stats or analytics
   const flagKey = `letterladder:${dateKey}:${tier}:playedCounted`;
   if(localStorage.getItem(flagKey)) return;
   localStorage.setItem(flagKey, '1');
@@ -678,10 +694,36 @@ function buildHintDisplayHtml(tier, L){
   return parts.join('<br>');
 }
 
+function markStartedIfNeeded(tier){
+  if(isArchiveMode) return; // archive plays never count toward stats or analytics
+  const flagKey = `letterladder:${dateKey}:${tier}:startedCounted`;
+  if(localStorage.getItem(flagKey)) return;
+  localStorage.setItem(flagKey, '1');
+
+  if(typeof gtag === 'function'){
+    gtag('event', 'puzzle_started', {
+      tier: tier,
+      puzzle_date: dateKey,
+    });
+  }
+}
+
 function markSolvedIfNeeded(tier, guesses){
+  if(isArchiveMode) return; // archive plays never count toward stats or analytics
   const flagKey = `letterladder:${dateKey}:${tier}:solvedCounted`;
   if(localStorage.getItem(flagKey)) return;
   localStorage.setItem(flagKey, '1');
+
+  // Track puzzle completions in GA4. Guarded since ad blockers commonly
+  // block analytics scripts entirely - that should never be able to
+  // break the actual game if gtag isn't available for any reason.
+  if(typeof gtag === 'function'){
+    gtag('event', 'puzzle_completed', {
+      tier: tier,
+      hints_used: getHintsUsed(tier),
+      puzzle_date: dateKey,
+    });
+  }
 
   const stats = loadStats();
   const stat = stats[tier];
@@ -712,6 +754,11 @@ function markSolvedIfNeeded(tier, guesses){
 // ---------- rendering ----------
 const panel = document.getElementById('panel');
 document.getElementById('date-row').textContent = prettyDate(dateKey);
+if(isArchiveMode){
+  const solutionLink = document.getElementById('solution-link');
+  solutionLink.textContent = 'View solution';
+  solutionLink.href = `solutions.html?date=${dateKey}`;
+}
 
 function getTodaysPuzzle(tier){
   const day = PUZZLE_SCHEDULE[dateKey];
