@@ -42,6 +42,7 @@ PUZZLES_OUTPUT_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "puz
 HINTS_OUTPUT_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "hints.js")
 INDEX_HTML_PATH = os.path.join(os.path.dirname(__file__), "..", "index.html")
 SOLUTIONS_HTML_PATH = os.path.join(os.path.dirname(__file__), "..", "solutions.html")
+PAST_PUZZLES_HTML_PATH = os.path.join(os.path.dirname(__file__), "..", "past-puzzles.html")
 
 START_DATE = date(2026, 7, 27)  # <-- change this to your real launch date
 NUM_DAYS = 10                    # <-- how many days of schedule to generate
@@ -212,6 +213,7 @@ def main():
     # contained whatever was "already past" at generation time - so this
     # is the file that actually needs bumping here now.
     bump_cache_version_in(SOLUTIONS_HTML_PATH, "data/hints.js")
+    bump_cache_version_in(PAST_PUZZLES_HTML_PATH, "data/hints.js")
 
 
 if __name__ == "__main__":
