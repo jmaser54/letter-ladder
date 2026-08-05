@@ -378,8 +378,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=2"></script>
-<script src="data/puzzles.js?v=1785896756"></script>
-<script src="data/hints.js?v=1785896756"></script>
+<script src="data/puzzles.js?v=1785897373"></script>
+<script src="data/hints.js?v=1785897373"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -1537,6 +1537,28 @@ function render(focusInput = false, pendingErrors = null){
       const nextIncomplete = steps.find(len => !newGuesses[len]);
       activeLength = nextIncomplete !== undefined ? nextIncomplete : null;
       render(nextIncomplete !== undefined);
+
+      // On some mobile browsers, removing the previously-focused input (as
+      // part of the re-render above) starts the keyboard-dismiss process,
+      // and immediately focusing the new box right after doesn't always
+      // successfully cancel that already-in-progress dismissal - so it can
+      // silently fail to pop back up even though focus is set correctly.
+      // A brief deferred second attempt gives that transition a moment to
+      // settle first, which reliably brings the keyboard back.
+      if(nextIncomplete !== undefined){
+        setTimeout(()=>{
+          const nextInput = document.getElementById(`rung-input-${nextIncomplete}`);
+          if(nextInput && document.activeElement !== nextInput){
+            const scrollYBefore = window.scrollY;
+            nextInput.focus({ preventScroll: true });
+            requestAnimationFrame(()=>{
+              if(Math.abs(window.scrollY - scrollYBefore) > 5){
+                window.scrollTo(0, scrollYBefore);
+              }
+            });
+          }
+        }, 50);
+      }
     }
 
     function tryCommitViaEnter(){
