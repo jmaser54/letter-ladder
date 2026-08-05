@@ -381,8 +381,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=2"></script>
-<script src="data/puzzles.js?v=1785893523"></script>
-<script src="data/hints.js?v=1785893523"></script>
+<script src="data/puzzles.js?v=1785894273"></script>
+<script src="data/hints.js?v=1785894273"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -756,7 +756,7 @@ const panel = document.getElementById('panel');
 document.getElementById('date-row').textContent = prettyDate(dateKey);
 if(isArchiveMode){
   const solutionLink = document.getElementById('solution-link');
-  solutionLink.textContent = 'View solution';
+  solutionLink.textContent = 'View solutions';
   solutionLink.href = `solutions.html?date=${dateKey}`;
 }
 
@@ -1213,25 +1213,27 @@ function render(focusInput = false, pendingErrors = null){
   }
 
   document.getElementById('clear-btn').addEventListener('click', ()=>{
-    const ladderEl = panel.querySelector('.ladder');
-    if(ladderEl){
-      ladderEl.classList.add('fading-out');
-      setTimeout(()=>{
+    showConfirmModal('Are you sure you want to clear your puzzle?', ()=>{
+      const ladderEl = panel.querySelector('.ladder');
+      if(ladderEl){
+        ladderEl.classList.add('fading-out');
+        setTimeout(()=>{
+          activeLength = null;
+          clearGuesses(activeTier);
+          lastFeedback[activeTier] = null;
+          setLastHintedLength(activeTier, null);
+          bankState[activeTier] = null;
+          render();
+        }, 960);
+      } else {
         activeLength = null;
         clearGuesses(activeTier);
         lastFeedback[activeTier] = null;
         setLastHintedLength(activeTier, null);
         bankState[activeTier] = null;
         render();
-      }, 960);
-    } else {
-      activeLength = null;
-      clearGuesses(activeTier);
-      lastFeedback[activeTier] = null;
-      setLastHintedLength(activeTier, null);
-      bankState[activeTier] = null;
-      render();
-    }
+      }
+    });
   });
 
   const shareBtn = document.getElementById('share-btn');

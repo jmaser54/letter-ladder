@@ -108,7 +108,7 @@ const wantedKey = isSpecificDateRequest ? requestedDate : wantedYesterdayKey;
 const days = pastKeys.includes(wantedKey) ? [wantedKey] : pastKeys;
 
 if(isSpecificDateRequest){
-  document.getElementById('page-heading').textContent = 'Solution';
+  document.getElementById('page-heading').textContent = 'Solutions';
   document.getElementById('page-intro').textContent =
     `One possible path through the ${prettyDate(wantedKey)} puzzles. There's usually more than one route to the summit.`;
 }
