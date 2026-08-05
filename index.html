@@ -378,8 +378,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=2"></script>
-<script src="data/puzzles.js?v=1785895975"></script>
-<script src="data/hints.js?v=1785895975"></script>
+<script src="data/puzzles.js?v=1785896756"></script>
+<script src="data/hints.js?v=1785896756"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -1529,18 +1529,14 @@ function render(focusInput = false, pendingErrors = null){
       saveGuesses(activeTier, newGuesses);
       lastFeedback[activeTier] = null;
 
-      // Auto-advance to the next incomplete box and focus it directly -
-      // matching what iPhone was already doing (turned out to be an
-      // incidental browser quirk carrying focus across the DOM update,
-      // not something this code explicitly controlled) and making that
-      // same experience consistent and intentional on desktop too.
+      // Auto-advance to the next incomplete box - reusing render()'s own
+      // existing focusInput handling (the same path already used when
+      // manually tapping a rung open) rather than a separate focus() call,
+      // since that already correctly preserves scroll position and is the
+      // proven-working way to bring the keyboard back up on mobile.
       const nextIncomplete = steps.find(len => !newGuesses[len]);
       activeLength = nextIncomplete !== undefined ? nextIncomplete : null;
-      render();
-      if(nextIncomplete !== undefined){
-        const nextInput = document.getElementById(`rung-input-${nextIncomplete}`);
-        if(nextInput) nextInput.focus();
-      }
+      render(nextIncomplete !== undefined);
     }
 
     function tryCommitViaEnter(){
