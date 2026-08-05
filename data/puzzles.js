@@ -128,16 +128,16 @@ const PUZZLE_SCHEDULE = {
   },
   "2026-08-05": {
     "easy": {
-      "start": "as",
-      "final": "scared"
+      "start": "can",
+      "final": "arcane"
     },
     "medium": {
-      "start": "pi",
-      "final": "decipher"
+      "start": "man",
+      "final": "mailman"
     },
     "hard": {
-      "start": "is",
-      "final": "despotic"
+      "start": "at",
+      "final": "assertion"
     }
   }
 };

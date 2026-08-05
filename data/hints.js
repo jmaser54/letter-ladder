@@ -325,40 +325,38 @@ const HINTS_SCHEDULE = {
   },
   "2026-08-05": {
     "easy": {
-      "start": "as",
-      "final": "scared",
+      "start": "can",
+      "final": "arcane",
       "solution": [
-        "as",
-        "sea",
-        "sear",
-        "scare",
-        "scared"
+        "can",
+        "cane",
+        "crane",
+        "arcane"
       ]
     },
     "medium": {
-      "start": "pi",
-      "final": "decipher",
+      "start": "man",
+      "final": "mailman",
       "solution": [
-        "pi",
-        "pie",
-        "pier",
-        "price",
-        "recipe",
-        "pierced",
-        "decipher"
+        "man",
+        "main",
+        "mania",
+        "animal",
+        "mailman"
       ]
     },
     "hard": {
-      "start": "is",
-      "final": "despotic",
+      "start": "at",
+      "final": "assertion",
       "solution": [
-        "is",
-        "sip",
-        "pies",
-        "poise",
-        "poised",
-        "deposit",
-        "despotic"
+        "at",
+        "rat",
+        "rate",
+        "orate",
+        "ornate",
+        "treason",
+        "senators",
+        "assertion"
       ]
     }
   }
