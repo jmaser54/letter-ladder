@@ -378,8 +378,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=2"></script>
-<script src="data/puzzles.js?v=1785897373"></script>
-<script src="data/hints.js?v=1785897373"></script>
+<script src="data/puzzles.js?v=1785898295"></script>
+<script src="data/hints.js?v=1785898295"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -1529,36 +1529,16 @@ function render(focusInput = false, pendingErrors = null){
       saveGuesses(activeTier, newGuesses);
       lastFeedback[activeTier] = null;
 
-      // Auto-advance to the next incomplete box - reusing render()'s own
-      // existing focusInput handling (the same path already used when
-      // manually tapping a rung open) rather than a separate focus() call,
-      // since that already correctly preserves scroll position and is the
-      // proven-working way to bring the keyboard back up on mobile.
+      // Auto-advance to the next incomplete box. Explicitly blurring the
+      // old input first, then synchronously re-rendering and focusing the
+      // new one (rather than letting an implicit blur-via-DOM-removal
+      // happen automatically), gives mobile browsers a clearer, more
+      // reliable blur-then-focus transition to recognize for keeping the
+      // on-screen keyboard open across the swap.
       const nextIncomplete = steps.find(len => !newGuesses[len]);
+      if(activeInput) activeInput.blur();
       activeLength = nextIncomplete !== undefined ? nextIncomplete : null;
       render(nextIncomplete !== undefined);
-
-      // On some mobile browsers, removing the previously-focused input (as
-      // part of the re-render above) starts the keyboard-dismiss process,
-      // and immediately focusing the new box right after doesn't always
-      // successfully cancel that already-in-progress dismissal - so it can
-      // silently fail to pop back up even though focus is set correctly.
-      // A brief deferred second attempt gives that transition a moment to
-      // settle first, which reliably brings the keyboard back.
-      if(nextIncomplete !== undefined){
-        setTimeout(()=>{
-          const nextInput = document.getElementById(`rung-input-${nextIncomplete}`);
-          if(nextInput && document.activeElement !== nextInput){
-            const scrollYBefore = window.scrollY;
-            nextInput.focus({ preventScroll: true });
-            requestAnimationFrame(()=>{
-              if(Math.abs(window.scrollY - scrollYBefore) > 5){
-                window.scrollTo(0, scrollYBefore);
-              }
-            });
-          }
-        }, 50);
-      }
     }
 
     function tryCommitViaEnter(){
