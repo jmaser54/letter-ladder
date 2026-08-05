@@ -93,10 +93,6 @@
     flex-direction: column;
   }
 
-  .level-label{
-    text-align:center; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.12em;
-    color: var(--amber); font-weight:700; margin-bottom: 10px; flex-shrink:0;
-  }
 
   .ladder-scroll{
     /* No longer its own internal scroll region - the whole page scrolls
@@ -171,6 +167,7 @@
     box-shadow: 0 0 0 2px var(--amber);
     box-sizing: border-box;
     min-width: 0;
+    transform: scaleX(1.06);
   }
 
   /* Ladders get taller the more rungs a puzzle has, so these tiers shrink
@@ -340,7 +337,7 @@
     <div class="tagline">Add one letter, scramble to a new word, climb to the top.</div>
     <div class="top-links">
       <a href="about.html">How to play</a>
-      <a href="solutions.html" id="solution-link">Yesterday's solutions</a>
+      <a href="solutions.html" id="solution-link">Yesterday's solution</a>
       <a href="stats.html">Your stats</a>
       <a href="past-puzzles.html">Past Puzzles</a>
       <a href="contact.html">Contact</a>
@@ -381,8 +378,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=2"></script>
-<script src="data/puzzles.js?v=1785894273"></script>
-<script src="data/hints.js?v=1785894273"></script>
+<script src="data/puzzles.js?v=1785895297"></script>
+<script src="data/hints.js?v=1785895297"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -1193,7 +1190,6 @@ function render(focusInput = false, pendingErrors = null){
 
   panel.className = `panel ${sizeTier}`;
   panel.innerHTML = `
-    <div class="level-label">${activeTier} puzzle</div>
     <div class="ladder-scroll" id="ladder-scroll"><div class="ladder">${rungsHtml.join('')}</div></div>
     <div class="feedback ${feedbackClassFinal}">${feedbackHtml}</div>
     ${details.map(d=>`<div class="details">${d}</div>`).join('')}
