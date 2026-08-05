@@ -378,8 +378,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=2"></script>
-<script src="data/puzzles.js?v=1785895297"></script>
-<script src="data/hints.js?v=1785895297"></script>
+<script src="data/puzzles.js?v=1785895975"></script>
+<script src="data/hints.js?v=1785895975"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -1529,10 +1529,18 @@ function render(focusInput = false, pendingErrors = null){
       saveGuesses(activeTier, newGuesses);
       lastFeedback[activeTier] = null;
 
-      // No auto-advance - the person always has to click into whichever
-      // box they want to guess next, on purpose.
-      activeLength = null;
+      // Auto-advance to the next incomplete box and focus it directly -
+      // matching what iPhone was already doing (turned out to be an
+      // incidental browser quirk carrying focus across the DOM update,
+      // not something this code explicitly controlled) and making that
+      // same experience consistent and intentional on desktop too.
+      const nextIncomplete = steps.find(len => !newGuesses[len]);
+      activeLength = nextIncomplete !== undefined ? nextIncomplete : null;
       render();
+      if(nextIncomplete !== undefined){
+        const nextInput = document.getElementById(`rung-input-${nextIncomplete}`);
+        if(nextInput) nextInput.focus();
+      }
     }
 
     function tryCommitViaEnter(){
