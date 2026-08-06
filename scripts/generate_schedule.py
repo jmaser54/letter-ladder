@@ -45,7 +45,7 @@ SOLUTIONS_HTML_PATH = os.path.join(os.path.dirname(__file__), "..", "solutions.h
 PAST_PUZZLES_HTML_PATH = os.path.join(os.path.dirname(__file__), "..", "past-puzzles.html")
 
 START_DATE = date(2026, 7, 27)  # <-- change this to your real launch date
-NUM_DAYS = 10                    # <-- how many days of schedule to generate
+NUM_DAYS = 17                    # <-- how many days of schedule to generate
 # ---------------------------------------------------------
 
 # Which tier a puzzle falls into is now based entirely on its
