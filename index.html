@@ -235,6 +235,7 @@
     transition: transform 0.1s ease, opacity 0.15s ease;
   }
   .bank-tile.from-below{ background: var(--amber); }
+  .bank-tile.not-in-above{ opacity: 0.5; }
   .bank-tile:active{ transform: scale(0.9); }
   .bank-tile.used{
     background: rgba(245,239,224,0.08);
@@ -378,8 +379,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=2"></script>
-<script src="data/puzzles.js?v=1786025695"></script>
-<script src="data/hints.js?v=1786025695"></script>
+<script src="data/puzzles.js?v=1786028706"></script>
+<script src="data/hints.js?v=1786028706"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -833,6 +834,18 @@ function getBelowWord(startingWord, guesses, steps, activeLength){
   return startingWord;
 }
 
+function getAboveWord(finalWord, guesses, steps, activeLength){
+  // Purely a visual reference now, never a hard constraint on which tiles
+  // exist (see getBankWord above) - letters not present in the nearest
+  // filled rung above get faded as a hint, but stay fully visible and
+  // clickable, since that guess might itself still change later. Falls
+  // back to the final word if nothing above the active slot is filled in
+  // yet, in which case every tile matches and nothing gets faded.
+  const above = steps.filter(L => L > activeLength && guesses[L]).sort((a,b)=>a-b);
+  if(above.length > 0) return guesses[above[0]];
+  return finalWord;
+}
+
 function computeBelowMatchIndices(order, belowWord){
   // Greedily matches bank tiles (in whatever order they're currently
   // shown, shuffled or not) against the letter counts in belowWord, so
@@ -1163,8 +1176,10 @@ function render(focusInput = false, pendingErrors = null){
       const usedSet = new Set(bankState[activeTier].usedIndices);
       const belowWord = getBelowWord(startingWord, guesses, steps, activeLength);
       const belowMatchSet = computeBelowMatchIndices(order, belowWord);
+      const aboveWord = getAboveWord(finalWord, guesses, steps, activeLength);
+      const aboveMatchSet = computeBelowMatchIndices(order, aboveWord);
       const tilesHtml = order.map((letter, i) =>
-        `<button type="button" class="bank-tile ${belowMatchSet.has(i) ? 'from-below' : ''} ${usedSet.has(i) ? 'used' : ''}" data-letter="${letter}" data-index="${i}" ${usedSet.has(i) ? 'disabled' : ''}>${letter.toUpperCase()}</button>`
+        `<button type="button" class="bank-tile ${belowMatchSet.has(i) ? 'from-below' : ''} ${!aboveMatchSet.has(i) ? 'not-in-above' : ''} ${usedSet.has(i) ? 'used' : ''}" data-letter="${letter}" data-index="${i}" ${usedSet.has(i) ? 'disabled' : ''}>${letter.toUpperCase()}</button>`
       ).join('');
       bankTilesHtml = `<div class="bank-tiles" id="bank-tiles">${tilesHtml}</div>`;
       const backspaceIcon = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h11a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H9l-7-8 7-8z"></path><line x1="13" y1="9" x2="18" y2="15"></line><line x1="18" y1="9" x2="13" y2="15"></line></svg>`;
