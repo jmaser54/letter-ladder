@@ -378,8 +378,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=2"></script>
-<script src="data/puzzles.js?v=1785986855"></script>
-<script src="data/hints.js?v=1785986855"></script>
+<script src="data/puzzles.js?v=1786025695"></script>
+<script src="data/hints.js?v=1786025695"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -807,17 +807,17 @@ function computeInitialUsedIndices(order, typedValue){
 }
 
 function getBankWord(finalWord, guesses, steps, activeLength){
-  // The bank should show whichever already-filled slot is the "next
-  // fence post up" from wherever you're currently working - since every
-  // valid lower word's letters must be a subset of every valid higher
-  // word's letters, that's always the useful reference regardless of
-  // which slot you're building. Falls back to the final word (the given,
-  // longest reference) if nothing above the active slot is filled yet -
-  // this is what keeps it from prematurely switching to a guess the
-  // moment you finish typing it, before you've moved on to a slot that
-  // actually needs it.
-  const above = steps.filter(L => L > activeLength && guesses[L]).sort((a,b)=>a-b);
-  if(above.length > 0) return guesses[above[0]];
+  // The bank's available tiles always reflect the full final word - that's
+  // the one truly immutable constraint given for the puzzle. A filled-in
+  // rung above the active one isn't a safe substitute for that: the game
+  // only validates each guess as a locally-valid single step, not that
+  // the whole chain will end up connecting all the way through, so a
+  // "higher" guess might itself still need changing later. The bank
+  // should never hide a letter the player might legitimately need just
+  // because their current (possibly temporary) guess above doesn't
+  // happen to include it - any above/below relationship is purely a
+  // visual guide (see getBelowWord/computeBelowMatchIndices below), never
+  // a hard constraint on which tiles exist at all.
   return finalWord;
 }
 
