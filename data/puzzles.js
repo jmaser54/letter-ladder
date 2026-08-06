@@ -48,8 +48,8 @@ const PUZZLE_SCHEDULE = {
       "final": "diner"
     },
     "medium": {
-      "start": "in",
-      "final": "sentient"
+      "start": "act",
+      "final": "clarinet"
     },
     "hard": {
       "start": "go",
@@ -62,8 +62,8 @@ const PUZZLE_SCHEDULE = {
       "final": "think"
     },
     "medium": {
-      "start": "act",
-      "final": "clarinet"
+      "start": "in",
+      "final": "sentient"
     },
     "hard": {
       "start": "entice",
@@ -138,6 +138,104 @@ const PUZZLE_SCHEDULE = {
     "hard": {
       "start": "at",
       "final": "assertion"
+    }
+  },
+  "2026-08-06": {
+    "easy": {
+      "start": "he",
+      "final": "house"
+    },
+    "medium": {
+      "start": "is",
+      "final": "despotic"
+    },
+    "hard": {
+      "start": "an",
+      "final": "laminator"
+    }
+  },
+  "2026-08-07": {
+    "easy": {
+      "start": "no",
+      "final": "brown"
+    },
+    "medium": {
+      "start": "is",
+      "final": "scurried"
+    },
+    "hard": {
+      "start": "teal",
+      "final": "relational"
+    }
+  },
+  "2026-08-08": {
+    "easy": {
+      "start": "sat",
+      "final": "tables"
+    },
+    "medium": {
+      "start": "gee",
+      "final": "enlarge"
+    },
+    "hard": {
+      "start": "on",
+      "final": "dominance"
+    }
+  },
+  "2026-08-09": {
+    "easy": {
+      "start": "sun",
+      "final": "tuners"
+    },
+    "medium": {
+      "start": "air",
+      "final": "grandiose"
+    },
+    "hard": {
+      "start": "sine",
+      "final": "cremations"
+    }
+  },
+  "2026-08-10": {
+    "easy": {
+      "start": "pa",
+      "final": "rapid"
+    },
+    "medium": {
+      "start": "diet",
+      "final": "insulated"
+    },
+    "hard": {
+      "start": "sea",
+      "final": "archives"
+    }
+  },
+  "2026-08-11": {
+    "easy": {
+      "start": "mar",
+      "final": "camper"
+    },
+    "medium": {
+      "start": "gem",
+      "final": "magenta"
+    },
+    "hard": {
+      "start": "rots",
+      "final": "ornaments"
+    }
+  },
+  "2026-08-12": {
+    "easy": {
+      "start": "mid",
+      "final": "remind"
+    },
+    "medium": {
+      "start": "raptor",
+      "final": "parroted"
+    },
+    "hard": {
+      "start": "lab",
+      "final": "arboreal"
     }
   }
 };

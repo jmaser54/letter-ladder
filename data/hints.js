@@ -117,16 +117,15 @@ const HINTS_SCHEDULE = {
       ]
     },
     "medium": {
-      "start": "in",
-      "final": "sentient",
+      "start": "act",
+      "final": "clarinet",
       "solution": [
-        "in",
-        "tin",
-        "tins",
-        "stein",
-        "tennis",
-        "intents",
-        "sentient"
+        "act",
+        "cart",
+        "cater",
+        "canter",
+        "central",
+        "clarinet"
       ]
     },
     "hard": {
@@ -155,15 +154,16 @@ const HINTS_SCHEDULE = {
       ]
     },
     "medium": {
-      "start": "act",
-      "final": "clarinet",
+      "start": "in",
+      "final": "sentient",
       "solution": [
-        "act",
-        "cart",
-        "cater",
-        "canter",
-        "central",
-        "clarinet"
+        "in",
+        "tin",
+        "tins",
+        "stein",
+        "tennis",
+        "intents",
+        "sentient"
       ]
     },
     "hard": {
@@ -357,6 +357,262 @@ const HINTS_SCHEDULE = {
         "treason",
         "senators",
         "assertion"
+      ]
+    }
+  },
+  "2026-08-06": {
+    "easy": {
+      "start": "he",
+      "final": "house",
+      "solution": [
+        "he",
+        "she",
+        "shoe",
+        "house"
+      ]
+    },
+    "medium": {
+      "start": "is",
+      "final": "despotic",
+      "solution": [
+        "is",
+        "sip",
+        "pies",
+        "poise",
+        "poised",
+        "deposit",
+        "despotic"
+      ]
+    },
+    "hard": {
+      "start": "an",
+      "final": "laminator",
+      "solution": [
+        "an",
+        "ran",
+        "rain",
+        "train",
+        "martin",
+        "martian",
+        "animator",
+        "laminator"
+      ]
+    }
+  },
+  "2026-08-07": {
+    "easy": {
+      "start": "no",
+      "final": "brown",
+      "solution": [
+        "no",
+        "now",
+        "worn",
+        "brown"
+      ]
+    },
+    "medium": {
+      "start": "is",
+      "final": "scurried",
+      "solution": [
+        "is",
+        "sir",
+        "rise",
+        "cries",
+        "cruise",
+        "curries",
+        "scurried"
+      ]
+    },
+    "hard": {
+      "start": "teal",
+      "final": "relational",
+      "solution": [
+        "teal",
+        "leant",
+        "entail",
+        "elation",
+        "oriental",
+        "rationale",
+        "relational"
+      ]
+    }
+  },
+  "2026-08-08": {
+    "easy": {
+      "start": "sat",
+      "final": "tables",
+      "solution": [
+        "sat",
+        "teas",
+        "baste",
+        "tables"
+      ]
+    },
+    "medium": {
+      "start": "gee",
+      "final": "enlarge",
+      "solution": [
+        "gee",
+        "glee",
+        "eagle",
+        "regale",
+        "enlarge"
+      ]
+    },
+    "hard": {
+      "start": "on",
+      "final": "dominance",
+      "solution": [
+        "on",
+        "one",
+        "once",
+        "coned",
+        "coined",
+        "demonic",
+        "comedian",
+        "dominance"
+      ]
+    }
+  },
+  "2026-08-09": {
+    "easy": {
+      "start": "sun",
+      "final": "tuners",
+      "solution": [
+        "sun",
+        "nuts",
+        "tunes",
+        "tuners"
+      ]
+    },
+    "medium": {
+      "start": "air",
+      "final": "grandiose",
+      "solution": [
+        "air",
+        "rain",
+        "grain",
+        "regain",
+        "searing",
+        "readings",
+        "grandiose"
+      ]
+    },
+    "hard": {
+      "start": "sine",
+      "final": "cremations",
+      "solution": [
+        "sine",
+        "mines",
+        "inseam",
+        "inmates",
+        "semantic",
+        "miscreant",
+        "cremations"
+      ]
+    }
+  },
+  "2026-08-10": {
+    "easy": {
+      "start": "pa",
+      "final": "rapid",
+      "solution": [
+        "pa",
+        "rap",
+        "pair",
+        "rapid"
+      ]
+    },
+    "medium": {
+      "start": "diet",
+      "final": "insulated",
+      "solution": [
+        "diet",
+        "tiled",
+        "listed",
+        "duelist",
+        "insulted",
+        "insulated"
+      ]
+    },
+    "hard": {
+      "start": "sea",
+      "final": "archives",
+      "solution": [
+        "sea",
+        "save",
+        "caves",
+        "craves",
+        "viscera",
+        "archives"
+      ]
+    }
+  },
+  "2026-08-11": {
+    "easy": {
+      "start": "mar",
+      "final": "camper",
+      "solution": [
+        "mar",
+        "ramp",
+        "cramp",
+        "camper"
+      ]
+    },
+    "medium": {
+      "start": "gem",
+      "final": "magenta",
+      "solution": [
+        "gem",
+        "mage",
+        "mange",
+        "magnet",
+        "magenta"
+      ]
+    },
+    "hard": {
+      "start": "rots",
+      "final": "ornaments",
+      "solution": [
+        "rots",
+        "store",
+        "toners",
+        "monster",
+        "monstera",
+        "ornaments"
+      ]
+    }
+  },
+  "2026-08-12": {
+    "easy": {
+      "start": "mid",
+      "final": "remind",
+      "solution": [
+        "mid",
+        "dime",
+        "denim",
+        "remind"
+      ]
+    },
+    "medium": {
+      "start": "raptor",
+      "final": "parroted",
+      "solution": [
+        "raptor",
+        "prorate",
+        "parroted"
+      ]
+    },
+    "hard": {
+      "start": "lab",
+      "final": "arboreal",
+      "solution": [
+        "lab",
+        "bale",
+        "blare",
+        "barrel",
+        "laborer",
+        "arboreal"
       ]
     }
   }
