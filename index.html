@@ -378,8 +378,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=2"></script>
-<script src="data/puzzles.js?v=1785984821"></script>
-<script src="data/hints.js?v=1785984821"></script>
+<script src="data/puzzles.js?v=1785986855"></script>
+<script src="data/hints.js?v=1785986855"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -720,6 +720,21 @@ function markSolvedIfNeeded(tier, guesses){
       hints_used: getHintsUsed(tier),
       puzzle_date: dateKey,
     });
+
+    // Track which specific word was used at each rung length, using the
+    // final settled answer at the moment of completion rather than every
+    // intermediate attempt - this fires exactly once per rung per player
+    // (guarded by the same one-time flag as puzzle_completed above), so
+    // changing an answer back and forth (e.g. table -> bleat -> table)
+    // only ever counts as a single "table" for that position.
+    for(const len of Object.keys(guesses)){
+      gtag('event', 'word_used', {
+        tier: tier,
+        puzzle_date: dateKey,
+        rung_length: Number(len),
+        word: guesses[len],
+      });
+    }
   }
 
   const stats = loadStats();
