@@ -378,8 +378,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=2"></script>
-<script src="data/puzzles.js?v=1785898295"></script>
-<script src="data/hints.js?v=1785898295"></script>
+<script src="data/puzzles.js?v=1785983545"></script>
+<script src="data/hints.js?v=1785983545"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -750,7 +750,14 @@ function markSolvedIfNeeded(tier, guesses){
 
 // ---------- rendering ----------
 const panel = document.getElementById('panel');
-document.getElementById('date-row').textContent = prettyDate(dateKey);
+function weekendLabelSuffix(key){
+  const [y, m, d] = key.split('-').map(Number);
+  const dayOfWeek = new Date(y, m - 1, d).getDay(); // 0 = Sunday, 6 = Saturday
+  if(dayOfWeek === 6) return ' - Savage Saturday';
+  if(dayOfWeek === 0) return ' - Summit Sunday';
+  return '';
+}
+document.getElementById('date-row').textContent = prettyDate(dateKey) + weekendLabelSuffix(dateKey);
 if(isArchiveMode){
   const solutionLink = document.getElementById('solution-link');
   solutionLink.textContent = 'View solutions';
