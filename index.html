@@ -285,6 +285,33 @@
   .confirm-actions{ display:flex; gap:10px; justify-content:center; }
   .confirm-actions button{ flex:1; }
 
+  .howto-overlay{
+    position: fixed; inset: 0; background: rgba(10,16,26,0.6);
+    display: flex; align-items:center; justify-content:center;
+    z-index: 1000; padding: 20px;
+  }
+  .howto-card{
+    position: relative;
+    background: var(--bg-panel); border-radius: 18px; padding: 26px 24px;
+    max-width: 500px; width: 100%; max-height: 80vh; overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .howto-card h2{ font-family:'Fraunces',serif; margin-top:0; }
+  .howto-card ul{ line-height:1.7; }
+  .howto-close{
+    position: absolute; top: 14px; right: 14px;
+    width: 32px; height: 32px; border-radius: 50%; border: none;
+    background: rgba(245,239,224,0.1); color: var(--ink);
+    font-size: 1.1rem; line-height: 1; cursor: pointer;
+    display: flex; align-items:center; justify-content:center;
+  }
+  .howto-close:hover{ background: rgba(245,239,224,0.2); }
+  .howto-example-word{
+    font-family:'Fraunces',serif; background: var(--rung); color:#1B2A41;
+    padding: 2px 8px; border-radius:6px; font-weight:600; text-transform: uppercase;
+    display: inline-block; margin: 3px 0; line-height: 1.4;
+  }
+
   footer{ text-align:center; margin-top: 8px; color: var(--ink-dim); font-size: 0.7rem; flex-shrink:0; }
 
   @media (max-width: 420px){
@@ -378,8 +405,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=2"></script>
-<script src="data/puzzles.js?v=1786160641"></script>
-<script src="data/hints.js?v=1786160641"></script>
+<script src="data/puzzles.js?v=1786165846"></script>
+<script src="data/hints.js?v=1786165846"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -462,6 +489,36 @@ function showConfirmModal(message, onConfirm){
     close();
     onConfirm();
   });
+}
+
+const HOWTO_SEEN_KEY = 'letterladder:howToPlaySeen';
+function showHowToPlayPopupIfNeeded(){
+  if(localStorage.getItem(HOWTO_SEEN_KEY)) return;
+
+  const overlay = document.createElement('div');
+  overlay.className = 'howto-overlay';
+  overlay.innerHTML = `
+    <div class="howto-card">
+      <button type="button" class="howto-close" aria-label="Close">&times;</button>
+      <h2>How to Play</h2>
+      <p>Build a ladder from the bottom to the top. Each rung adds exactly <strong>one letter</strong> to the word below it — you can rearrange the letters however you like, as long as every letter carries up plus the new one.</p>
+      <ul>
+        <li>Words can be guessed in any order</li>
+        <li><span class="howto-example-word">not</span> could climb to <span class="howto-example-word">tone</span>, <span class="howto-example-word">note</span>, or <span class="howto-example-word">torn</span></li>
+        <li>A letter can repeat — <span class="howto-example-word">lead</span> can become <span class="howto-example-word">ladle</span> by adding a second "L"</li>
+        <li>Every word in the ladder must be a real English word</li>
+      </ul>
+      <p>There's usually more than one path to the top — how many can you find?</p>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  function close(){
+    localStorage.setItem(HOWTO_SEEN_KEY, '1');
+    overlay.remove();
+  }
+  bindTapAction(overlay.querySelector('.howto-close'), close);
+  overlay.addEventListener('click', (e)=>{ if(e.target === overlay) close(); });
 }
 
 function joinAnd(items){
@@ -1697,6 +1754,7 @@ document.getElementById('tabs').addEventListener('click', (e)=>{
 });
 
 render();
+showHowToPlayPopupIfNeeded();
 
 </script>
 </body>
