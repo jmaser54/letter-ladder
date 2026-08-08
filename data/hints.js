@@ -486,19 +486,6 @@ const HINTS_SCHEDULE = {
         "tuners"
       ]
     },
-    "medium": {
-      "start": "air",
-      "final": "grandiose",
-      "solution": [
-        "air",
-        "rain",
-        "grain",
-        "regain",
-        "searing",
-        "readings",
-        "grandiose"
-      ]
-    },
     "hard": {
       "start": "sine",
       "final": "cremations",
@@ -510,6 +497,19 @@ const HINTS_SCHEDULE = {
         "semantic",
         "miscreant",
         "cremations"
+      ]
+    },
+    "medium": {
+      "start": "is",
+      "final": "assuming",
+      "solution": [
+        "is",
+        "sin",
+        "sing",
+        "using",
+        "musing",
+        "amusing",
+        "assuming"
       ]
     }
   },
@@ -524,28 +524,28 @@ const HINTS_SCHEDULE = {
         "rapid"
       ]
     },
-    "medium": {
-      "start": "diet",
-      "final": "insulated",
+    "hard": {
+      "start": "lab",
+      "final": "arboreal",
       "solution": [
-        "diet",
-        "tiled",
-        "listed",
-        "duelist",
-        "insulted",
-        "insulated"
+        "lab",
+        "bale",
+        "blare",
+        "barrel",
+        "laborer",
+        "arboreal"
       ]
     },
-    "hard": {
-      "start": "sea",
-      "final": "archives",
+    "medium": {
+      "start": "an",
+      "final": "angelic",
       "solution": [
-        "sea",
-        "save",
-        "caves",
-        "craves",
-        "viscera",
-        "archives"
+        "an",
+        "nag",
+        "gain",
+        "acing",
+        "lacing",
+        "angelic"
       ]
     }
   },
@@ -594,6 +594,18 @@ const HINTS_SCHEDULE = {
         "parroted"
       ]
     },
+    "hard": {
+      "start": "sea",
+      "final": "archives",
+      "solution": [
+        "sea",
+        "save",
+        "caves",
+        "craves",
+        "viscera",
+        "archives"
+      ]
+    },
     "easy": {
       "start": "mid",
       "final": "remind",
@@ -602,18 +614,6 @@ const HINTS_SCHEDULE = {
         "dime",
         "denim",
         "remind"
-      ]
-    },
-    "hard": {
-      "start": "lab",
-      "final": "arboreal",
-      "solution": [
-        "lab",
-        "bale",
-        "blare",
-        "barrel",
-        "laborer",
-        "arboreal"
       ]
     }
   }

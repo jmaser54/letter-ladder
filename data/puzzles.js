@@ -187,13 +187,13 @@ const PUZZLE_SCHEDULE = {
       "start": "sun",
       "final": "tuners"
     },
-    "medium": {
-      "start": "air",
-      "final": "grandiose"
-    },
     "hard": {
       "start": "sine",
       "final": "cremations"
+    },
+    "medium": {
+      "start": "is",
+      "final": "assuming"
     }
   },
   "2026-08-10": {
@@ -201,13 +201,13 @@ const PUZZLE_SCHEDULE = {
       "start": "pa",
       "final": "rapid"
     },
-    "medium": {
-      "start": "diet",
-      "final": "insulated"
-    },
     "hard": {
-      "start": "sea",
-      "final": "archives"
+      "start": "lab",
+      "final": "arboreal"
+    },
+    "medium": {
+      "start": "an",
+      "final": "angelic"
     }
   },
   "2026-08-11": {
@@ -229,13 +229,13 @@ const PUZZLE_SCHEDULE = {
       "start": "raptor",
       "final": "parroted"
     },
+    "hard": {
+      "start": "sea",
+      "final": "archives"
+    },
     "easy": {
       "start": "mid",
       "final": "remind"
-    },
-    "hard": {
-      "start": "lab",
-      "final": "arboreal"
     }
   }
 };
