@@ -825,7 +825,7 @@ const panel = document.getElementById('panel');
 function weekendLabelSuffix(key){
   const [y, m, d] = key.split('-').map(Number);
   const dayOfWeek = new Date(y, m - 1, d).getDay(); // 0 = Sunday, 6 = Saturday
-  if(dayOfWeek === 6) return ' - Savage Saturday';
+  if(dayOfWeek === 6) return ' - Spicy Saturday';
   if(dayOfWeek === 0) return ' - Summit Sunday';
   return '';
 }
