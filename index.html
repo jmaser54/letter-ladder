@@ -405,8 +405,8 @@
      so returning visitors' browsers are guaranteed to fetch the new version
      instead of a cached copy. -->
 <script src="data/words.js?v=2"></script>
-<script src="data/puzzles.js?v=1786243472"></script>
-<script src="data/hints.js?v=1786243472"></script>
+<script src="data/puzzles.js?v=1786279799"></script>
+<script src="data/hints.js?v=1786279799"></script>
 <script>
 // ---------- date helpers ----------
 function todayKey(){
@@ -635,6 +635,7 @@ let lastFeedback = {}; // per-tier: the last shown error, so it survives a
 let bankState = {}; // per tier: { word, order } - the source word the bank's
                      // tiles are drawn from, and their current shuffle order
 const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 let keyboardEnabled = isTouchDevice ? (localStorage.getItem('letterladder:keyboardEnabled') === 'true') : true; // bank-first on mobile, always-on on desktop
 const { key: dateKey, isArchive: isArchiveMode } = resolveDateKey();
 
@@ -1607,14 +1608,18 @@ function render(focusInput = false, pendingErrors = null){
       lastFeedback[activeTier] = null;
 
       // Auto-advance to the next incomplete box - the highest unfilled
-      // one, not the lowest. Explicitly blurring the old input first,
-      // then synchronously re-rendering and focusing the new one (rather
-      // than letting an implicit blur-via-DOM-removal happen
-      // automatically), gives mobile browsers a clearer, more reliable
+      // one, not the lowest. On iOS specifically, explicitly blurring the
+      // old input first, then synchronously re-rendering and focusing
+      // the new one (rather than letting an implicit blur-via-DOM-removal
+      // happen automatically), gives Safari a clearer, more reliable
       // blur-then-focus transition to recognize for keeping the
-      // on-screen keyboard open across the swap.
+      // on-screen keyboard open across the swap. This is scoped to iOS
+      // only, not touch devices generally, since it was specifically
+      // reasoned about and tested against Safari's behavior - other
+      // mobile browsers may not need (or may not respond well to) the
+      // same explicit-blur workaround.
       const nextIncomplete = [...steps].reverse().find(len => !newGuesses[len]);
-      if(activeInput) activeInput.blur();
+      if(isIOS && activeInput) activeInput.blur();
       activeLength = nextIncomplete !== undefined ? nextIncomplete : null;
       render(nextIncomplete !== undefined);
     }
