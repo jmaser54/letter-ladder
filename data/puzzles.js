@@ -188,7 +188,7 @@ const PUZZLE_SCHEDULE = {
       "final": "tuners"
     },
     "hard": {
-      "start": "sine",
+      "start": "mines",
       "final": "cremations"
     },
     "medium": {

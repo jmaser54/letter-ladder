@@ -487,10 +487,9 @@ const HINTS_SCHEDULE = {
       ]
     },
     "hard": {
-      "start": "sine",
+      "start": "mines",
       "final": "cremations",
       "solution": [
-        "sine",
         "mines",
         "inseam",
         "inmates",
