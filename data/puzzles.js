@@ -237,5 +237,89 @@ const PUZZLE_SCHEDULE = {
       "start": "mid",
       "final": "remind"
     }
+  },
+  "2026-08-13": {
+    "medium": {
+      "start": "set",
+      "final": "trumpets"
+    },
+    "easy": {
+      "start": "cab",
+      "final": "scarab"
+    },
+    "hard": {
+      "start": "vine",
+      "final": "traveling"
+    }
+  },
+  "2026-08-14": {
+    "easy": {
+      "start": "elf",
+      "final": "filter"
+    },
+    "medium": {
+      "start": "tide",
+      "final": "dentistry"
+    },
+    "hard": {
+      "start": "intent",
+      "final": "intestine"
+    }
+  },
+  "2026-08-15": {
+    "medium": {
+      "start": "ailing",
+      "final": "violating"
+    },
+    "easy": {
+      "start": "cap",
+      "final": "camper"
+    },
+    "hard": {
+      "start": "unit",
+      "final": "destruction"
+    }
+  },
+  "2026-08-16": {
+    "hard": {
+      "start": "inter",
+      "final": "refractions"
+    },
+    "medium": {
+      "start": "sip",
+      "final": "prestige"
+    },
+    "easy": {
+      "start": "if",
+      "final": "finger"
+    }
+  },
+  "2026-08-17": {
+    "medium": {
+      "start": "core",
+      "final": "contrive"
+    },
+    "easy": {
+      "start": "ask",
+      "final": "casket"
+    },
+    "hard": {
+      "start": "love",
+      "final": "volatile"
+    }
+  },
+  "2026-08-18": {
+    "hard": {
+      "start": "tab",
+      "final": "obstinate"
+    },
+    "easy": {
+      "start": "ad",
+      "final": "heard"
+    },
+    "medium": {
+      "start": "due",
+      "final": "unbathed"
+    }
   }
 };

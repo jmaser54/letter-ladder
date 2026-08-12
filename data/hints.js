@@ -615,5 +615,220 @@ const HINTS_SCHEDULE = {
         "remind"
       ]
     }
+  },
+  "2026-08-13": {
+    "medium": {
+      "start": "set",
+      "final": "trumpets",
+      "solution": [
+        "set",
+        "rest",
+        "terms",
+        "muster",
+        "mutters",
+        "trumpets"
+      ]
+    },
+    "easy": {
+      "start": "cab",
+      "final": "scarab",
+      "solution": [
+        "cab",
+        "crab",
+        "crabs",
+        "scarab"
+      ]
+    },
+    "hard": {
+      "start": "vine",
+      "final": "traveling",
+      "solution": [
+        "vine",
+        "naive",
+        "native",
+        "vintage",
+        "valeting",
+        "traveling"
+      ]
+    }
+  },
+  "2026-08-14": {
+    "easy": {
+      "start": "elf",
+      "final": "filter",
+      "solution": [
+        "elf",
+        "file",
+        "filet",
+        "filter"
+      ]
+    },
+    "medium": {
+      "start": "tide",
+      "final": "dentistry",
+      "solution": [
+        "tide",
+        "tried",
+        "tinder",
+        "trident",
+        "tridents",
+        "dentistry"
+      ]
+    },
+    "hard": {
+      "start": "intent",
+      "final": "intestine",
+      "solution": [
+        "intent",
+        "intents",
+        "sentient",
+        "intestine"
+      ]
+    }
+  },
+  "2026-08-15": {
+    "medium": {
+      "start": "ailing",
+      "final": "violating",
+      "solution": [
+        "ailing",
+        "tailing",
+        "vigilant",
+        "violating"
+      ]
+    },
+    "easy": {
+      "start": "cap",
+      "final": "camper",
+      "solution": [
+        "cap",
+        "pace",
+        "recap",
+        "camper"
+      ]
+    },
+    "hard": {
+      "start": "unit",
+      "final": "destruction",
+      "solution": [
+        "unit",
+        "tunic",
+        "induct",
+        "conduit",
+        "discount",
+        "seduction",
+        "reductions",
+        "destruction"
+      ]
+    }
+  },
+  "2026-08-16": {
+    "hard": {
+      "start": "inter",
+      "final": "refractions",
+      "solution": [
+        "inter",
+        "retina",
+        "retains",
+        "terrains",
+        "serration",
+        "rainforest",
+        "refractions"
+      ]
+    },
+    "medium": {
+      "start": "sip",
+      "final": "prestige",
+      "solution": [
+        "sip",
+        "tips",
+        "spite",
+        "sprite",
+        "respite",
+        "prestige"
+      ]
+    },
+    "easy": {
+      "start": "if",
+      "final": "finger",
+      "solution": [
+        "if",
+        "fin",
+        "fine",
+        "finer",
+        "finger"
+      ]
+    }
+  },
+  "2026-08-17": {
+    "medium": {
+      "start": "core",
+      "final": "contrive",
+      "solution": [
+        "core",
+        "cover",
+        "vector",
+        "convert",
+        "contrive"
+      ]
+    },
+    "easy": {
+      "start": "ask",
+      "final": "casket",
+      "solution": [
+        "ask",
+        "sake",
+        "steak",
+        "casket"
+      ]
+    },
+    "hard": {
+      "start": "love",
+      "final": "volatile",
+      "solution": [
+        "love",
+        "olive",
+        "violet",
+        "violate",
+        "volatile"
+      ]
+    }
+  },
+  "2026-08-18": {
+    "hard": {
+      "start": "tab",
+      "final": "obstinate",
+      "solution": [
+        "tab",
+        "bats",
+        "boast",
+        "batons",
+        "obtains",
+        "botanist",
+        "obstinate"
+      ]
+    },
+    "easy": {
+      "start": "ad",
+      "final": "heard",
+      "solution": [
+        "ad",
+        "had",
+        "head",
+        "heard"
+      ]
+    },
+    "medium": {
+      "start": "due",
+      "final": "unbathed",
+      "solution": [
+        "due",
+        "dune",
+        "tuned",
+        "hunted",
+        "haunted",
+        "unbathed"
+      ]
+    }
   }
 };
