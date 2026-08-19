@@ -321,5 +321,47 @@ const PUZZLE_SCHEDULE = {
       "start": "due",
       "final": "unbathed"
     }
+  },
+  "2026-08-19": {
+    "easy": {
+      "start": "at",
+      "final": "track"
+    },
+    "medium": {
+      "start": "is",
+      "final": "garlics"
+    },
+    "hard": {
+      "start": "air",
+      "final": "terrain"
+    }
+  },
+  "2026-08-20": {
+    "easy": {
+      "start": "as",
+      "final": "years"
+    },
+    "medium": {
+      "start": "dime",
+      "final": "dummies"
+    },
+    "hard": {
+      "start": "ad",
+      "final": "thrashed"
+    }
+  },
+  "2026-08-21": {
+    "easy": {
+      "start": "on",
+      "final": "clone"
+    },
+    "medium": {
+      "start": "cut",
+      "final": "curate"
+    },
+    "hard": {
+      "start": "son",
+      "final": "jointers"
+    }
   }
 };

@@ -830,5 +830,109 @@ const HINTS_SCHEDULE = {
         "unbathed"
       ]
     }
+  },
+  "2026-08-19": {
+    "easy": {
+      "start": "at",
+      "final": "track",
+      "solution": [
+        "at",
+        "cat",
+        "cart",
+        "track"
+      ]
+    },
+    "medium": {
+      "start": "is",
+      "final": "garlics",
+      "solution": [
+        "is",
+        "sir",
+        "airs",
+        "rails",
+        "grails",
+        "garlics"
+      ]
+    },
+    "hard": {
+      "start": "air",
+      "final": "terrain",
+      "solution": [
+        "air",
+        "rain",
+        "train",
+        "retina",
+        "terrain"
+      ]
+    }
+  },
+  "2026-08-20": {
+    "easy": {
+      "start": "as",
+      "final": "years",
+      "solution": [
+        "as",
+        "say",
+        "easy",
+        "years"
+      ]
+    },
+    "medium": {
+      "start": "dime",
+      "final": "dummies",
+      "solution": [
+        "dime",
+        "mimed",
+        "medium",
+        "dummies"
+      ]
+    },
+    "hard": {
+      "start": "ad",
+      "final": "thrashed",
+      "solution": [
+        "ad",
+        "had",
+        "head",
+        "heard",
+        "shared",
+        "trashed",
+        "thrashed"
+      ]
+    }
+  },
+  "2026-08-21": {
+    "easy": {
+      "start": "on",
+      "final": "clone",
+      "solution": [
+        "on",
+        "one",
+        "cone",
+        "clone"
+      ]
+    },
+    "medium": {
+      "start": "cut",
+      "final": "curate",
+      "solution": [
+        "cut",
+        "cute",
+        "acute",
+        "curate"
+      ]
+    },
+    "hard": {
+      "start": "son",
+      "final": "jointers",
+      "solution": [
+        "son",
+        "nose",
+        "noise",
+        "nosier",
+        "rejoins",
+        "jointers"
+      ]
+    }
   }
 };
