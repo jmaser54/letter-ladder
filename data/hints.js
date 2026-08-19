@@ -728,11 +728,11 @@ const HINTS_SCHEDULE = {
       "final": "refractions",
       "solution": [
         "inter",
-        "retina",
-        "retains",
-        "terrains",
-        "serration",
-        "rainforest",
+        "cretin",
+        "noticer",
+        "reaction",
+        "fornicate",
+        "refraction",
         "refractions"
       ]
     },
