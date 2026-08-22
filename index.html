@@ -2020,10 +2020,9 @@ function render(focusInput = false, pendingErrors = null){
   `;
   suppressBlurCommit = false;
 
-  const lastHintedLength = getLastHintedLength(activeTier);
-  if(lastHintedLength !== null && !guesses[lastHintedLength]){
+  if(activeLength !== null && !guesses[activeLength] && getHintInfo(activeTier, activeLength).count > 0){
     const hd = document.getElementById('hint-display');
-    if(hd) hd.innerHTML = buildHintDisplayHtml(activeTier, lastHintedLength);
+    if(hd) hd.innerHTML = buildHintDisplayHtml(activeTier, activeLength);
   }
 
   document.getElementById('clear-btn').addEventListener('click', ()=>{
