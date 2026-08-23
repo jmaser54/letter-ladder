@@ -74,6 +74,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     font-size: 2rem;
     letter-spacing: -0.01em;
     margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .brand-logo{
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    flex-shrink: 0;
   }
   .brand .rung-i{ color: var(--amber); }
   .top-links{
@@ -527,7 +536,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 <div class="wrap">
   <header>
-    <h1 class="brand">Letter Ladder</h1>
+    <h1 class="brand"><img src="/og-image.png" alt="" class="brand-logo">Letter Ladder</h1>
     <div class="timer-widget" id="timer-widget"></div>
     <div class="top-links">
       <a href="about.html">How to play</a>
@@ -1516,9 +1525,14 @@ function buildShareText(){
         const frozenElapsed = localStorage.getItem(timerElapsedKey(tier));
         if(frozenElapsed !== null){
           const totalSeconds = Number(frozenElapsed) / 1000;
-          timeSuffix = totalSeconds < 60
-            ? `${totalSeconds.toFixed(1)}s`
-            : `${Math.floor(totalSeconds / 60)}m ${Math.round(totalSeconds % 60)}s`;
+          if(totalSeconds < 60){
+            timeSuffix = `${totalSeconds.toFixed(1)}s`;
+          } else if(totalSeconds < 3600){
+            timeSuffix = `${Math.floor(totalSeconds / 60)}m ${Math.round(totalSeconds % 60)}s`;
+          } else {
+            const totalMinutes = Math.floor(totalSeconds / 60);
+            timeSuffix = `${Math.floor(totalMinutes / 60)}h ${totalMinutes % 60}m ${Math.round(totalSeconds % 60)}s`;
+          }
         }
       }
       let line;
@@ -1813,9 +1827,16 @@ function render(focusInput = false, pendingErrors = null){
             winMessage = `Puzzle completed in ${elapsedSecondsTenths} seconds`;
           } else {
             const totalSeconds = Math.round(elapsedMs / 1000);
-            const minutes = Math.floor(totalSeconds / 60);
             const seconds = totalSeconds % 60;
-            winMessage = `Puzzle completed in ${minutes} minute${minutes === 1 ? '' : 's'} ${seconds} second${seconds === 1 ? '' : 's'}`;
+            if(totalSeconds < 3600){
+              const minutes = Math.floor(totalSeconds / 60);
+              winMessage = `Puzzle completed in ${minutes} minute${minutes === 1 ? '' : 's'} ${seconds} second${seconds === 1 ? '' : 's'}`;
+            } else {
+              const totalMinutes = Math.floor(totalSeconds / 60);
+              const hours = Math.floor(totalMinutes / 60);
+              const minutes = totalMinutes % 60;
+              winMessage = `Puzzle completed in ${hours} hour${hours === 1 ? '' : 's'} ${minutes} minute${minutes === 1 ? '' : 's'} ${seconds} second${seconds === 1 ? '' : 's'}`;
+            }
           }
         }
       }
