@@ -8,20 +8,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-K8X9ZNZP');</script>
 <!-- End Google Tag Manager -->
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XVRY6X34NX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XVRY6X34NX');
-</script>
 
 <meta charset="UTF-8">
 <meta property="og:title" content="Letter Ladder">
 <meta property="og:description" content="A daily word puzzle - add one letter at a time to climb from a short word to a long one.">
 <meta property="og:image" content="https://letterladder.io/og-image.png">
 <meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="700">
+<meta property="og:image:height" content="700">
 <meta property="og:url" content="https://letterladder.io/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary">
@@ -1730,7 +1724,7 @@ function triggerTierWinConfetti(){
 function showSummitBanner(){
   const banner = document.createElement('div');
   banner.className = 'summit-banner';
-  banner.textContent = "Well done! You've constructed all three of today's ladders!";
+  banner.textContent = "Well done! You've completed all three of today's ladders!";
   document.body.appendChild(banner);
   setTimeout(()=> banner.remove(), 4000);
 }
