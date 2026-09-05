@@ -1686,6 +1686,11 @@ function migrateGuestProgressToAccount(newUsername){
 // per-account document IDs, and the lastSolvedDate check below is what
 // actually prevents double-counting stats.
 function backfillGuestStatsAndScores(newUsername){
+  // Grab the anonymous UID saved just before account creation — used to
+  // delete the old guest score docs so they don't persist alongside the
+  // new real-account entries on the leaderboard.
+  const anonUidToClean = sessionStorage.getItem('letterladder:anonUidForCleanup') || null;
+  if(anonUidToClean) sessionStorage.removeItem('letterladder:anonUidForCleanup');
   // loadStats()/saveStats() both read and write the module-level
   // STATS_KEY constant, which is fixed to the OLD 'guest' scope at this
   // point in execution (accountScope only re-evaluates on the page's
@@ -1726,6 +1731,15 @@ function backfillGuestStatsAndScores(newUsername){
       // relying solely on migration to have already copied it over.
       localStorage.setItem(`letterladder:${newUsername}:${dateKey}:${tier}:solvedCounted`, '1');
       submitCurrentScore(tier, newUsername);
+      // Delete the old guest score doc so it doesn't persist alongside
+      // the new real-account entry on the leaderboard.
+      if(anonUidToClean && window.LetterLadderAuth && window.LetterLadderAuth.deleteDoc){
+        try{
+          window.LetterLadderAuth.deleteDoc(
+            window.LetterLadderAuth.doc(window.LetterLadderAuth.db, 'scores', `${anonUidToClean}_${dateKey}_${tier}`)
+          );
+        }catch(e){}
+      }
     }
   }
   if(TIERS.every(isTierGenuinelyWon) && stats.total.lastSolvedDate !== dateKey){
@@ -2091,6 +2105,11 @@ function showAccountForm(mode){
     }
     errorEl.textContent = '';
     const emailField = overlay.querySelector('#acct-email-field');
+    // Save anon UID before account creation so backfill can delete old guest docs
+    const currentUserBeforeCreate = window.LetterLadderAuth.getCurrentUser();
+    if(currentUserBeforeCreate && currentUserBeforeCreate.isAnonymous){
+      sessionStorage.setItem('letterladder:anonUidForCleanup', currentUserBeforeCreate.uid);
+    }
     const result = isLogin
       ? await window.LetterLadderAuth.login(username, password)
       : await window.LetterLadderAuth.createAccount(username, password, emailField ? emailField.value : '');
