@@ -2214,12 +2214,18 @@ function showLeaderboardPromptIfNeeded(tier){
   if(isArchiveMode) return;
   if(!window.LetterLadderAuth) return;
   const savedUsername = localStorage.getItem('letterladder:accountUsername');
-  if(hasRealAccount()){
-    submitCurrentScore(tier, savedUsername);
+
+  // Belt-and-suspenders: check both localStorage AND Firebase auth state.
+  // If either indicates a real account, submit under the real username.
+  const currentUser = window.LetterLadderAuth.getCurrentUser();
+  const isRealFirebaseUser = currentUser && !currentUser.isAnonymous;
+
+  if(hasRealAccount() || isRealFirebaseUser){
+    const username = savedUsername || (isRealFirebaseUser ? currentUser.displayName : null);
+    if(username) submitCurrentScore(tier, username);
     return;
   }
   // Guests automatically play as guest and submit — no popup.
-  // Account creation is available from the menu whenever they want it.
   window.LetterLadderAuth.playAsGuest().then(() => submitCurrentScore(tier, 'Guest'));
 }
 
