@@ -495,9 +495,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           renderAccountWidget(auth.currentUser);
         } else {
           // Validate username
-          const BANNED = ['fuck','bitch','bastard','cunt','kike','nigger','nigga','asshole','faggot'];
+          const BANNED = ['fuck','bitch','bastard','cunt','kike','nigger','nigga','asshole','faggot','.com','.net','.org','.edu','.io','.xyz','gmail'];
           const lower = username.toLowerCase();
           if(username.length > 20){ errorEl.textContent = 'Username must be 20 characters or fewer.'; return; }
+          if(username.includes('.')){ errorEl.textContent = 'Usernames cannot contain periods.'; return; }
           if(BANNED.some(b => lower.includes(b))){ errorEl.textContent = 'Please choose a different username.'; return; }
           const existing = await findPlayerByUsername(username);
           if(existing){ errorEl.textContent = 'That username is already taken.'; return; }
@@ -505,6 +506,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           const email = (overlay.querySelector('#auth-email') || {}).value || '';
           const trimmedEmail = email.trim();
           const registeredEmail = trimmedEmail || usernameToSyntheticEmail(username);
+          // Save the anonymous UID before account creation so the backfill
+          // can delete the old guest score docs from the leaderboard.
+          if(auth.currentUser && auth.currentUser.isAnonymous){
+            sessionStorage.setItem('letterladder:anonUidForCleanup', auth.currentUser.uid);
+          }
+
           const cred = await createUserWithEmailAndPassword(auth, registeredEmail, password);
           const playerDoc = {
             username: username.trim(),

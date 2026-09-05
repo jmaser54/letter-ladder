@@ -674,7 +674,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     signInAnonymously, signOut, onAuthStateChanged, sendPasswordResetEmail
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import {
-    getFirestore, collection, doc, setDoc, getDoc, addDoc,
+    getFirestore, collection, doc, setDoc, getDoc, addDoc, deleteDoc,
     query, where, orderBy, limit, getDocs
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -729,12 +729,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
   const BANNED_USERNAME_SUBSTRINGS = [
     'fuck', 'bitch', 'bastard', 'cunt', 'kike', 'nigger', 'nigga', 'asshole', 'faggot',
+    '.com', '.net', '.org', '.edu', '.io', '.xyz', 'gmail',
   ];
 
   async function createAccount(username, password, recoveryEmail){
     const trimmedUsername = username.trim();
     if(trimmedUsername.length > 20){
       return { success: false, error: 'Username must be 20 characters or fewer.' };
+    }
+    if(trimmedUsername.includes('.')){
+      return { success: false, error: 'Usernames cannot contain periods.' };
     }
     const lowerUsername = trimmedUsername.toLowerCase();
     if(BANNED_USERNAME_SUBSTRINGS.some(word => lowerUsername.includes(word))){
@@ -849,16 +853,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         isGuest: !user || user.isAnonymous,
         createdAt: Date.now(),
       };
-      if(user && !user.isAnonymous){
-        // Deterministic ID per (uid, date, tier) - this is what actually
-        // prevents duplicate leaderboard entries for the same person's
-        // same puzzle, no matter how many separate sessions or devices
-        // submit it. A later submission correctly overwrites an earlier
-        // one for the same puzzle, rather than creating a second entry.
+      if(user){
+        // Use a deterministic doc ID for ALL users (real and anonymous),
+        // keyed by their Firebase UID. For real accounts this prevents
+        // duplicates across sessions/devices. For anonymous users it also
+        // prevents duplicates, AND it means the backfill can find and
+        // delete the old guest doc when they later create a real account.
         await setDoc(doc(db, 'scores', `${user.uid}_${date}_${tier}`), scoreData);
       } else {
-        // Guests have no persistent identity to deduplicate against, so
-        // they keep the previous auto-ID behavior unchanged.
         await addDoc(collection(db, 'scores'), scoreData);
       }
       return { success: true };
@@ -873,7 +875,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     createAccount, login, playAsGuest, logOut, submitScore, requestPasswordReset,
     getCurrentUser: () => auth.currentUser,
     onAuthReady: (callback) => onAuthStateChanged(auth, callback),
-    db, doc, setDoc, getDoc, collection, query, where, orderBy, limit, getDocs,
+    db, doc, setDoc, getDoc, deleteDoc, collection, query, where, orderBy, limit, getDocs,
   };
 </script>
 </head>
@@ -4026,6 +4028,25 @@ let ownerCheckDone = false;
         sessionStorage.removeItem('letterladder:pendingGuestBackfill');
         try{
           backfillGuestStatsAndScores(pendingBackfill);
+          // Delete old anonymous-UID score docs so guest entries don't
+          // persist alongside the real account entries on the leaderboard.
+          const anonUid = sessionStorage.getItem('letterladder:anonUidForCleanup');
+          if(anonUid){
+            sessionStorage.removeItem('letterladder:anonUidForCleanup');
+            for(const tier of TIERS){
+              try{
+                const oldDocRef = window.LetterLadderAuth.doc(
+                  window.LetterLadderAuth.db, 'scores', `${anonUid}_${dateKey}_${tier}`
+                );
+                // deleteDoc is available via the Firestore module already
+                // imported in the auth module — access it via LetterLadderAuth
+                // if exposed, otherwise skip silently.
+                if(window.LetterLadderAuth.deleteDoc){
+                  await window.LetterLadderAuth.deleteDoc(oldDocRef);
+                }
+              }catch(e){}
+            }
+          }
         }catch(e){}
       }
 
