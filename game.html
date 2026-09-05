@@ -3901,10 +3901,16 @@ window.addEventListener('pagehide', ()=>{
 });
 
 render(!isTouchDevice);
-// Resume timer on page load only if it was already running before
-// (accumulated time exists). Never auto-start a fresh timer at load —
-// that only happens when the user navigates to a puzzle explicitly.
-if(hasEverStartedTimer(activeTier)){
+// Start or resume the timer on page load:
+// - If it was already running before (resume from navigating away), restart it
+// - If the user chose timed mode and this puzzle hasn't been started/solved yet, start fresh
+// Never auto-start for puzzles the user hasn't navigated to yet (that broke the per-tier timing)
+const timerAlreadyRunning = hasEverStartedTimer(activeTier);
+const timerFresh = getTimerChoice() === 'timed'
+  && !isArchiveMode
+  && !localStorage.getItem(timerElapsedKey(activeTier))
+  && !localStorage.getItem(timerAccumulatedKey(activeTier));
+if(timerAlreadyRunning || timerFresh){
   startTimerIfNeeded(activeTier);
 }
 showMigrationWelcomeBannerIfNeeded();
