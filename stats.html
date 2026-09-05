@@ -8,14 +8,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-K8X9ZNZP');</script>
 <!-- End Google Tag Manager -->
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XVRY6X34NX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XVRY6X34NX');
-</script>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
@@ -36,28 +28,40 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     color: var(--ink); font-family:'Inter',system-ui,sans-serif;
   }
   .wrap{ max-width: 560px; margin:0 auto; }
-  h1{ font-family:'Fraunces',serif; font-weight:700; font-size:2rem; margin-bottom:4px; }
+  h1{ font-family:'Fraunces',serif; font-weight:700; font-size:2rem; margin-bottom:18px; }
   a{ color: var(--amber); }
   .back{ display:inline-block; margin-bottom: 22px; color: var(--ink-dim); text-decoration:none; touch-action: manipulation; }
   .back:hover{ color: var(--amber); }
   .intro{ color: var(--ink-dim); margin-bottom: 24px; font-size: 0.92rem; }
 
-  .stat-card{ background: var(--bg-panel); border-radius:18px; padding: 22px 22px; margin-bottom:18px; box-shadow: 0 20px 50px rgba(0,0,0,0.35); }
+  .stat-card{ background: var(--bg-panel); border-radius:18px; padding: 14px 22px; margin-bottom:12px; box-shadow: 0 20px 50px rgba(0,0,0,0.35); }
   .stat-card.total{ border: 1.5px solid rgba(232,163,61,0.35); }
-  .stat-title{ font-family:'Fraunces',serif; font-weight:700; font-size:1.15rem; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+  .stat-title{ font-family:'Fraunces',serif; font-weight:700; font-size:1.02rem; margin-bottom:9px; display:flex; align-items:center; gap:8px; }
   .stat-title .tier-dot{ width:10px; height:10px; border-radius:50%; display:inline-block; }
   .tier-dot.easy{ background:#6FBF8B; }
   .tier-dot.medium{ background:#E8A33D; }
   .tier-dot.hard{ background:#D9705F; }
   .tier-dot.total{ background:#F5EFE0; }
 
-  .stat-grid{ display:grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .stat-grid{ display:grid; grid-template-columns: repeat(2, 1fr); gap: 9px; }
   .stat-box{ text-align:center; }
-  .stat-value{ font-family:'Fraunces',serif; font-weight:700; font-size:1.6rem; color: var(--amber); }
-  .stat-label{ font-size:0.72rem; color: var(--ink-dim); text-transform:uppercase; letter-spacing:0.06em; margin-top:2px; }
-  .streak-note{ margin-top:12px; font-size:0.72rem; color: var(--ink-dim); font-style:italic; font-weight:700; text-align:center; }
+  .stat-value{ font-family:'Fraunces',serif; font-weight:700; font-size:1.25rem; color: var(--amber); }
+  .stat-label{ font-size:0.68rem; color: var(--ink-dim); text-transform:uppercase; letter-spacing:0.06em; margin-top:1px; }
+  .streak-note{ margin-top:8px; font-size:0.72rem; color: var(--ink-dim); font-style:italic; font-weight:700; text-align:center; }
 
   .empty-state{ text-align:center; color: var(--ink-dim); padding: 40px 20px; background: var(--bg-panel); border-radius:18px; }
+
+  .summary-card{ background: var(--bg-panel); border-radius:18px; padding: 22px; margin-bottom:18px; box-shadow: 0 20px 50px rgba(0,0,0,0.35); }
+  .summary-table{ width:100%; border-collapse: collapse; font-size: 0.88rem; }
+  .summary-table th{
+    text-align:left; font-family:'Fraunces',serif; font-weight:700; font-size:0.92rem;
+    color: var(--ink); padding-bottom:10px; border-bottom: 1px solid rgba(245,239,224,0.12);
+  }
+  .summary-table td{ padding: 10px 0; border-bottom: 1px solid rgba(245,239,224,0.08); }
+  .summary-table tr:last-child td{ border-bottom:none; }
+  .summary-table td:not(:first-child), .summary-table th:not(:first-child){ text-align:right; }
+  .summary-table .level-cell{ display:flex; align-items:center; gap:8px; font-weight:600; }
+  .summary-table .total-row td{ font-weight:700; color: var(--amber); }
 
   .confirm-overlay{
     position: fixed; inset: 0; background: rgba(10,16,26,0.6);
@@ -84,15 +88,58 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 <div class="wrap">
-  <a class="back" href="index.html">← Back to game</a>
+  <a class="back" href="game.html">← Back to game</a>
   <h1>Your Stats</h1>
-  <div class="intro">One point per letter for each completed ladder. Each hint subtracts 5 points from your final score.</div>
+  <div id="summary-table-container"></div>
   <div id="stats-list"></div>
   <div style="text-align:center; margin-top: 10px;">
     <button id="reset-btn" style="background:rgba(245,239,224,0.08); color:var(--ink-dim); border:none; border-radius:10px; padding:10px 18px; font-family:'Inter',sans-serif; font-size:0.85rem; cursor:pointer;">Reset my stats</button>
   </div>
 </div>
 
+<script>
+// Matches index.html's exact scoping scheme - the same synchronous,
+// immediately-available flag is used here too, since this page has no
+// Firebase connection of its own and doesn't need one for this.
+const accountScope = localStorage.getItem('letterladder:accountUsername') || 'guest';
+const STATS_KEY = `letterladder:${accountScope}:stats`;
+
+function blankStat(){
+  return { played:0, solved:0, currentStreak:0, maxStreak:0, lastSolvedDate:null };
+}
+function loadStats(){
+  try{
+    // Same one-time recovery as index.html - stats accumulated before
+    // account-scoping existed lived under this same, unscoped key.
+    if(accountScope !== 'guest' && localStorage.getItem(STATS_KEY) === null){
+      const legacyRaw = localStorage.getItem('letterladder:stats');
+      if(legacyRaw){
+        localStorage.setItem(STATS_KEY, legacyRaw);
+      }
+    }
+    const raw = localStorage.getItem(STATS_KEY);
+    if(raw){
+      const parsed = JSON.parse(raw);
+      for(const key of ['easy','medium','hard','total']){
+        parsed[key] = Object.assign(blankStat(), parsed[key] || {});
+      }
+      return parsed;
+    }
+  }catch(e){}
+  return { easy: blankStat(), medium: blankStat(), hard: blankStat(), total: blankStat() };
+}
+// The <script type="module"> block later in this file has a completely
+// separate top-level scope from this classic script - it can never see
+// a bare const/let declared here, no matter how it's referenced. This
+// module script needs accountScope, STATS_KEY, blankStat, and loadStats
+// directly, so they're explicitly attached to window here to bridge
+// the two script contexts.
+window.accountScope = accountScope;
+window.STATS_KEY = STATS_KEY;
+window.blankStat = blankStat;
+window.loadStats = loadStats;
+
+</script>
 <script>
 function showConfirmModal(message, onConfirm){
   const overlay = document.createElement('div');
@@ -118,64 +165,248 @@ function showConfirmModal(message, onConfirm){
 
 document.getElementById('reset-btn').addEventListener('click', () => {
   showConfirmModal('Are you sure you want to reset your stats? This action cannot be undone.', ()=>{
-    localStorage.removeItem('letterladder:stats');
+    localStorage.removeItem(STATS_KEY);
     location.reload();
   });
 });
 </script>
 
 <script>
-function blankStat(){
-  return { played:0, solved:0, currentStreak:0, maxStreak:0, lastSolvedDate:null, score:0 };
-}
-function loadStats(){
-  try{
-    const raw = localStorage.getItem('letterladder:stats');
-    if(raw){
-      const parsed = JSON.parse(raw);
-      for(const key of ['easy','medium','hard','total']){
-        parsed[key] = Object.assign(blankStat(), parsed[key] || {});
-      }
-      return parsed;
+function renderStatsPage(stats){
+  const container = document.getElementById('stats-list');
+  const totalEverPlayed = stats.easy.played + stats.medium.played + stats.hard.played;
+
+  if(totalEverPlayed === 0){
+    container.innerHTML = `<div class="empty-state">No puzzles played yet on this device.</div>`;
+  } else {
+    function solvePct(stat){
+      return stat.played === 0 ? 0 : Math.round((stat.solved / stat.played) * 100);
     }
-  }catch(e){}
-  return { easy: blankStat(), medium: blankStat(), hard: blankStat(), total: blankStat() };
+    function renderCard(label, dotClass, stat, isTotal){
+      const streakNote = isTotal ? `<div class="streak-note">Complete all 3 puzzles to maintain this streak</div>` : '';
+      return `
+        <div class="stat-card ${isTotal ? 'total' : ''}">
+          <div class="stat-title"><span class="tier-dot ${dotClass}"></span>${label}</div>
+          <div class="stat-grid">
+            <div class="stat-box"><div class="stat-value">${stat.played}</div><div class="stat-label">Played</div></div>
+            <div class="stat-box"><div class="stat-value">${solvePct(stat)}%</div><div class="stat-label">Solved</div></div>
+            <div class="stat-box"><div class="stat-value">${stat.currentStreak}</div><div class="stat-label">Current Streak</div></div>
+            <div class="stat-box"><div class="stat-value">${stat.maxStreak}</div><div class="stat-label">Max Streak</div></div>
+          </div>
+          ${streakNote}
+        </div>`;
+    }
+
+    container.innerHTML = [
+      renderCard('Easy', 'easy', stats.easy, false),
+      renderCard('Medium', 'medium', stats.medium, false),
+      renderCard('Hard', 'hard', stats.hard, false),
+      renderCard('Total', 'total', stats.total, true),
+    ].join('');
+  }
 }
 
-const stats = loadStats();
-const container = document.getElementById('stats-list');
+renderStatsPage(loadStats());
+</script>
 
-const totalEverPlayed = stats.easy.played + stats.medium.played + stats.hard.played;
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-if(totalEverPlayed === 0){
-  container.innerHTML = `<div class="empty-state">No puzzles played yet on this device.</div>`;
-} else {
-  function solvePct(stat){
-    return stat.played === 0 ? 0 : Math.round((stat.solved / stat.played) * 100);
+  // This module script has a fully separate top-level scope from the
+  // classic <script> blocks earlier in this file - accountScope,
+  // STATS_KEY, blankStat, and loadStats are all genuinely defined there,
+  // not here, so they're pulled in from window explicitly.
+  const { accountScope, STATS_KEY, blankStat, loadStats } = window;
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCBnp4e0ea-eWy4x2WLtTyNyV5r5TpdNdM",
+    authDomain: "letter-ladder-c6b15.firebaseapp.com",
+    projectId: "letter-ladder-c6b15",
+    storageBucket: "letter-ladder-c6b15.firebasestorage.app",
+    messagingSenderId: "131656230098",
+    appId: "1:131656230098:web:2b752fc4fa953f3557b90b",
+  };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // The exact time-formatting logic used by index.html's Share Results
+  // button, duplicated verbatim here since this is a separate static
+  // HTML file with no shared JS module system to import it from directly.
+  function formatTime(ms){
+    if(ms === null) return '—';
+    const totalSeconds = ms / 1000;
+    if(totalSeconds < 60){
+      return `${totalSeconds.toFixed(1)}s`;
+    } else if(totalSeconds < 3600){
+      return `${Math.floor(totalSeconds / 60)}m ${Math.round(totalSeconds % 60)}s`;
+    } else {
+      const totalMinutes = Math.floor(totalSeconds / 60);
+      return `${Math.floor(totalMinutes / 60)}h ${totalMinutes % 60}m ${Math.round(totalSeconds % 60)}s`;
+    }
   }
-  function renderCard(label, dotClass, stat, isTotal){
-    const streakNote = isTotal ? `<div class="streak-note">Complete all 3 puzzles to maintain this streak</div>` : '';
-    return `
-      <div class="stat-card ${isTotal ? 'total' : ''}">
-        <div class="stat-title"><span class="tier-dot ${dotClass}"></span>${label}</div>
-        <div class="stat-grid">
-          <div class="stat-box"><div class="stat-value">${stat.played}</div><div class="stat-label">Played</div></div>
-          <div class="stat-box"><div class="stat-value">${solvePct(stat)}%</div><div class="stat-label">Solved</div></div>
-          <div class="stat-box"><div class="stat-value">${stat.currentStreak}</div><div class="stat-label">Current Streak</div></div>
-          <div class="stat-box"><div class="stat-value">${stat.maxStreak}</div><div class="stat-label">Max Streak</div></div>
-          <div class="stat-box" style="grid-column: span 2;"><div class="stat-value">${stat.score}</div><div class="stat-label">Score</div></div>
-        </div>
-        ${streakNote}
-      </div>`;
+
+  // Sums three possibly-null values, staying null if any one of them is
+  // null - matches the spec's "Total = Easy + Medium + Hard" rule, but a
+  // sum across an incomplete set of tiers wouldn't be a meaningful total.
+  function sumOrNull(a, b, c){
+    if(a === null || b === null || c === null) return null;
+    return a + b + c;
   }
 
-  container.innerHTML = [
-    renderCard('Total', 'total', stats.total, true),
-    renderCard('Easy', 'easy', stats.easy, false),
-    renderCard('Medium', 'medium', stats.medium, false),
-    renderCard('Hard', 'hard', stats.hard, false),
-  ].join('');
-}
+  async function fetchTierTimeStats(uid, tier){
+    const myQ = query(collection(db, 'scores'), where('uid', '==', uid), where('tier', '==', tier));
+    const globalQ = query(collection(db, 'scores'), where('tier', '==', tier));
+    const [mySnap, globalSnap] = await Promise.all([getDocs(myQ), getDocs(globalQ)]);
+    const myTimes = mySnap.docs.map(d => d.data().timeMs).filter(t => typeof t === 'number');
+    const globalTimes = globalSnap.docs.map(d => d.data().timeMs).filter(t => typeof t === 'number');
+
+    return {
+      best: myTimes.length ? Math.min(...myTimes) : null,
+      average: myTimes.length ? myTimes.reduce((a,b) => a+b, 0) / myTimes.length : null,
+      globalAverage: globalTimes.length ? globalTimes.reduce((a,b) => a+b, 0) / globalTimes.length : null,
+    };
+  }
+
+  async function renderTimeSummaryTable(user){
+    const container = document.getElementById('summary-table-container');
+    try{
+      const [easyStats, mediumStats, hardStats] = await Promise.all([
+        fetchTierTimeStats(user.uid, 'easy'),
+        fetchTierTimeStats(user.uid, 'medium'),
+        fetchTierTimeStats(user.uid, 'hard'),
+      ]);
+
+      // Per the spec, the Total row sums the three tiers' own already-
+      // calculated values directly, rather than being recalculated
+      // independently from the underlying score documents.
+      const totalStats = {
+        best: sumOrNull(easyStats.best, mediumStats.best, hardStats.best),
+        average: sumOrNull(easyStats.average, mediumStats.average, hardStats.average),
+        globalAverage: sumOrNull(easyStats.globalAverage, mediumStats.globalAverage, hardStats.globalAverage),
+      };
+
+      function row(label, dotClass, stats){
+        return `
+          <tr class="${dotClass === 'total' ? 'total-row' : ''}">
+            <td><span class="level-cell"><span class="tier-dot ${dotClass}"></span>${label}</span></td>
+            <td>${formatTime(stats.best)}</td>
+            <td>${formatTime(stats.average)}</td>
+            <td>${formatTime(stats.globalAverage)}</td>
+          </tr>`;
+      }
+
+      container.innerHTML = `
+        <div class="summary-card">
+          <table class="summary-table">
+            <thead>
+              <tr><th>Level</th><th>Best Time</th><th>Average Time</th><th>Global Average</th></tr>
+            </thead>
+            <tbody>
+              ${row('Easy', 'easy', easyStats)}
+              ${row('Medium', 'medium', mediumStats)}
+              ${row('Hard', 'hard', hardStats)}
+              ${row('Total', 'total', totalStats)}
+            </tbody>
+          </table>
+        </div>`;
+
+      return easyStats.best !== null || mediumStats.best !== null || hardStats.best !== null;
+    }catch(e){
+      console.error('Time summary failed to load:', e);
+      return false;
+    }
+  }
+
+  // Matches index.html's same "only pull when local looks genuinely
+  // empty" rule, so a fresh device correctly pulls real stats down from
+  // the cloud without ever risking overwriting newer local changes on a
+  // device that already has some.
+  let ownerCheckDone = false;
+  onAuthStateChanged(auth, async (user) => {
+    console.log('DIAG stats.html: onAuthStateChanged fired, user=', user ? user.uid : null, 'isAnonymous=', user && user.isAnonymous);
+    if(!user || user.isAnonymous) return;
+
+    console.log('DIAG stats.html: accountScope=', accountScope, 'STATS_KEY=', STATS_KEY);
+
+    if(!ownerCheckDone && accountScope !== 'guest'){
+      ownerCheckDone = true;
+      try{
+        const ownerKey = `letterladder:${accountScope}:ownerUid`;
+        const storedOwnerUid = localStorage.getItem(ownerKey);
+        console.log('DIAG stats.html: ownership check - storedOwnerUid=', storedOwnerUid, 'current uid=', user.uid);
+        if(storedOwnerUid && storedOwnerUid !== user.uid){
+          const prefix = `letterladder:${accountScope}:`;
+          const keysToRemove = [];
+          for(let i = 0; i < localStorage.length; i++){
+            const key = localStorage.key(i);
+            if(key && key.startsWith(prefix)) keysToRemove.push(key);
+          }
+          keysToRemove.forEach(k => localStorage.removeItem(k));
+          console.log('DIAG stats.html: ownership mismatch - wiped', keysToRemove.length, 'stale keys');
+        }
+        localStorage.setItem(ownerKey, user.uid);
+      }catch(e){
+        console.error('DIAG stats.html: ownership check threw -', e.message || e);
+      }
+    }
+
+    try{
+      const snap = await getDoc(doc(db, 'playerStats', user.uid));
+      console.log('DIAG stats.html: playerStats doc exists=', snap.exists());
+      if(snap.exists()){
+        const cloudStats = snap.data();
+        console.log('DIAG stats.html: cloud data=', JSON.stringify(cloudStats));
+        let localStats;
+        try{ localStats = JSON.parse(localStorage.getItem(STATS_KEY) || 'null'); }catch(e){ localStats = null; }
+        console.log('DIAG stats.html: local data before merge=', JSON.stringify(localStats));
+        if(!localStats){
+          localStorage.setItem(STATS_KEY, JSON.stringify(cloudStats));
+          console.log('DIAG stats.html: local was empty, wrote cloud data directly');
+        } else {
+          const merged = {};
+          for(const tier of ['easy', 'medium', 'hard', 'total']){
+            const localTier = localStats[tier] || {};
+            const cloudTier = cloudStats[tier] || {};
+            const cloudIsNewer = (cloudTier.lastSolvedDate || '') > (localTier.lastSolvedDate || '');
+            const winner = cloudIsNewer ? cloudTier : localTier;
+            merged[tier] = {
+              played: winner.played || 0,
+              solved: winner.solved || 0,
+              currentStreak: winner.currentStreak || 0,
+              lastSolvedDate: winner.lastSolvedDate || null,
+              maxStreak: Math.max(localTier.maxStreak || 0, cloudTier.maxStreak || 0),
+            };
+          }
+          localStorage.setItem(STATS_KEY, JSON.stringify(merged));
+          console.log('DIAG stats.html: merged result=', JSON.stringify(merged));
+        }
+        renderStatsPage(loadStats());
+        console.log('DIAG stats.html: renderStatsPage called with final data=', JSON.stringify(loadStats()));
+      }
+    }catch(e){
+      console.error('DIAG stats.html: playerStats pull/merge threw -', e.code || e.message || e);
+    }
+
+    const hasRealScoreData = await renderTimeSummaryTable(user);
+    // If the summary table just proved (from real score documents) that
+    // this account has genuinely played before, the detailed section
+    // below it should never keep showing a flatly contradictory "no
+    // puzzles played" message - even if this account's separate,
+    // synced aggregate stats record is itself empty or missing (e.g. an
+    // older account whose play history predates that sync ever
+    // succeeding). There's no reliable played/solved/streak breakdown
+    // to show instead here, so this just removes the false claim rather
+    // than fabricating numbers.
+    if(hasRealScoreData){
+      const listContainer = document.getElementById('stats-list');
+      if(listContainer.innerHTML.includes('No puzzles played yet')){
+        listContainer.innerHTML = `<div class="empty-state">Your streak data will appear once your stats finish syncing across devices.</div>`;
+      }
+    }
+  });
 </script>
 </body>
 </html>

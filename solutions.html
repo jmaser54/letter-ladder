@@ -52,7 +52,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 <div class="wrap">
-  <a class="back" href="index.html">← Back to game</a>
+  <a class="back" href="game.html">← Back to game</a>
   <h1 id="page-heading">Puzzle Solution</h1>
   <div class="intro" id="page-intro">One possible solution to the puzzle. There's usually more than one viable path.</div>
   <div id="solutions-list"></div>
@@ -78,6 +78,17 @@ const tierNames = { easy: 'Easy', medium: 'Medium', hard: 'Hard' };
 const params = new URLSearchParams(window.location.search);
 const requestedDate = params.get('date');
 const requestedTier = params.get('tier');
+
+function todayKey(){
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+if(requestedDate && requestedDate !== todayKey()){
+  document.querySelector('.back').href = `game.html?archive=${requestedDate}`;
+}
 
 const day = requestedDate && HINTS_SCHEDULE ? HINTS_SCHEDULE[requestedDate] : null;
 const puzzle = day && requestedTier ? day[requestedTier] : null;
