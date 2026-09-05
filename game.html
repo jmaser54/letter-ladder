@@ -3901,7 +3901,12 @@ window.addEventListener('pagehide', ()=>{
 });
 
 render(!isTouchDevice);
-startTimerIfNeeded(activeTier); // resume timer on page load / return from another page
+// Resume timer on page load only if it was already running before
+// (accumulated time exists). Never auto-start a fresh timer at load —
+// that only happens when the user navigates to a puzzle explicitly.
+if(hasEverStartedTimer(activeTier)){
+  startTimerIfNeeded(activeTier);
+}
 showMigrationWelcomeBannerIfNeeded();
 showMigrationLinkBannerIfNeeded();
 
@@ -3979,6 +3984,17 @@ let ownerCheckDone = false;
       }
 
       renderAccountWidget();
+
+      // If the user just created an account on the landing page, run the
+      // full guest→account backfill: re-count stats and re-submit today's
+      // scores under the new account name instead of 'Guest'.
+      const pendingBackfill = sessionStorage.getItem('letterladder:pendingGuestBackfill');
+      if(pendingBackfill){
+        sessionStorage.removeItem('letterladder:pendingGuestBackfill');
+        try{
+          backfillGuestStatsAndScores(pendingBackfill);
+        }catch(e){}
+      }
 
       // Set the Firebase UID as the GA4 user_id for this session.
       // This links analytics events to a specific account without sending

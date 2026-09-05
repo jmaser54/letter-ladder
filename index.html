@@ -517,9 +517,33 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             await setDoc(doc(db, 'playerRecovery', cred.user.uid), { recoveryEmail: trimmedEmail });
           }
           localStorage.setItem('letterladder:accountUsername', username.trim());
+
+          // Migrate all guest-scoped localStorage keys to the new account
+          // scope right now, before navigating to the game page. This
+          // transfers today's puzzle progress (guesses, timer state) so
+          // it isn't lost when the account scope changes.
+          const guestPrefix = 'letterladder:guest:';
+          const newPrefix = `letterladder:${username.trim()}:`;
+          const keysToMigrate = [];
+          for(let i = 0; i < localStorage.length; i++){
+            const k = localStorage.key(i);
+            if(k && k.startsWith(guestPrefix)) keysToMigrate.push(k);
+          }
+          for(const oldKey of keysToMigrate){
+            const newKey = newPrefix + oldKey.slice(guestPrefix.length);
+            localStorage.setItem(newKey, localStorage.getItem(oldKey));
+            // Keep the guest key too — game.html's backfill reads it to
+            // know what scores to re-submit under the new account name.
+          }
+
+          // Signal game.html to run the guest→account backfill on load
+          // (stats counting + score re-submission under the real username).
+          sessionStorage.setItem('letterladder:pendingGuestBackfill', username.trim());
+
           overlay.remove();
-          renderPlayButtons(cred.user);
-          renderAccountWidget(cred.user);
+          // Navigate to game.html so the full auth/game module loads and
+          // runs the backfill via backfillGuestStatsAndScores.
+          window.location.href = 'game.html';
         }
       }catch(err){
         const msg = err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password'
