@@ -2184,7 +2184,28 @@ const LEADERBOARD_PROMPT_DISMISSED_KEY = 'letterladder:leaderboardPromptDismisse
 
 async function submitCurrentScore(tier, displayName){
   if(!window.LetterLadderAuth) return;
-  const timeMs = Number(localStorage.getItem(timerElapsedKey(tier)) || 0);
+  const timerChoice = getTimerChoice();
+
+  // If the timer was never frozen for this tier but the user is timed,
+  // freeze it now before reading — covers edge cases where the win path
+  // didn't call pauseTimer first.
+  if(timerChoice === 'timed' && !localStorage.getItem(timerElapsedKey(tier))){
+    const current = getCurrentElapsedMs(tier);
+    if(current > 0){
+      localStorage.setItem(timerElapsedKey(tier), String(current));
+    }
+  }
+
+  const rawElapsed = localStorage.getItem(timerElapsedKey(tier));
+  const timeMs = timerChoice === 'timed' ? Number(rawElapsed || 0) : null;
+
+  // Never submit a timed score of 0 — that's impossible for a real solve
+  // and always indicates a bug (timer never started, wrong scope, etc.).
+  // Untimed scores are submitted with timeMs:null and won't rank on timed leaderboards.
+  if(timerChoice === 'timed' && (timeMs === 0 || timeMs === null)){
+    return;
+  }
+
   const hintsUsed = getHintsUsed(tier);
   await window.LetterLadderAuth.submitScore({ date: dateKey, tier, timeMs, hintsUsed, displayName });
 }
