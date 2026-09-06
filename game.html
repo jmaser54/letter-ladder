@@ -1685,7 +1685,7 @@ function migrateGuestProgressToAccount(newUsername){
 // already-attributed score is a harmless overwrite given deterministic,
 // per-account document IDs, and the lastSolvedDate check below is what
 // actually prevents double-counting stats.
-function backfillGuestStatsAndScores(newUsername){
+async function backfillGuestStatsAndScores(newUsername){
   // Grab the anonymous UID saved just before account creation — used to
   // delete the old guest score docs so they don't persist alongside the
   // new real-account entries on the leaderboard.
@@ -1730,12 +1730,12 @@ function backfillGuestStatsAndScores(newUsername){
       // Same protection for "solved" - explicitly set here rather than
       // relying solely on migration to have already copied it over.
       localStorage.setItem(`letterladder:${newUsername}:${dateKey}:${tier}:solvedCounted`, '1');
-      submitCurrentScore(tier, newUsername);
+      await submitCurrentScore(tier, newUsername);
       // Delete the old guest score doc so it doesn't persist alongside
       // the new real-account entry on the leaderboard.
       if(anonUidToClean && window.LetterLadderAuth && window.LetterLadderAuth.deleteDoc){
         try{
-          window.LetterLadderAuth.deleteDoc(
+          await window.LetterLadderAuth.deleteDoc(
             window.LetterLadderAuth.doc(window.LetterLadderAuth.db, 'scores', `${anonUidToClean}_${dateKey}_${tier}`)
           );
         }catch(e){}
@@ -2121,7 +2121,7 @@ function showAccountForm(mode){
     localStorage.setItem('letterladder:activeTier', 'easy');
     if(!isLogin){
       migrateGuestProgressToAccount(result.username);
-      backfillGuestStatsAndScores(result.username);
+      await backfillGuestStatsAndScores(result.username);
     }
 
     // Pull this account's usual timer preference from the cloud, so
@@ -4046,26 +4046,7 @@ let ownerCheckDone = false;
       if(pendingBackfill){
         sessionStorage.removeItem('letterladder:pendingGuestBackfill');
         try{
-          backfillGuestStatsAndScores(pendingBackfill);
-          // Delete old anonymous-UID score docs so guest entries don't
-          // persist alongside the real account entries on the leaderboard.
-          const anonUid = sessionStorage.getItem('letterladder:anonUidForCleanup');
-          if(anonUid){
-            sessionStorage.removeItem('letterladder:anonUidForCleanup');
-            for(const tier of TIERS){
-              try{
-                const oldDocRef = window.LetterLadderAuth.doc(
-                  window.LetterLadderAuth.db, 'scores', `${anonUid}_${dateKey}_${tier}`
-                );
-                // deleteDoc is available via the Firestore module already
-                // imported in the auth module — access it via LetterLadderAuth
-                // if exposed, otherwise skip silently.
-                if(window.LetterLadderAuth.deleteDoc){
-                  await window.LetterLadderAuth.deleteDoc(oldDocRef);
-                }
-              }catch(e){}
-            }
-          }
+          await backfillGuestStatsAndScores(pendingBackfill);
         }catch(e){}
       }
 
