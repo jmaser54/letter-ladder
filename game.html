@@ -439,30 +439,28 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .leaderboard-form-hint{ color: var(--ink-dim); font-size: 0.76rem; margin: -6px 0 12px 0; }
 
   .howto-overlay{
-    position: fixed; inset: 0; background: rgba(10,16,26,0.6);
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
     display: flex; align-items:center; justify-content:center;
-    z-index: 1000; padding: 20px;
+    z-index: 1000; padding: 16px;
   }
   .howto-card{
     position: relative;
-    background: var(--bg-panel); border-radius: 18px; padding: 26px 24px;
-    max-width: 500px; width: 100%; max-height: 80vh; overflow-y: auto;
+    background: var(--bg-panel); border-radius: 18px; padding: 28px 24px;
+    max-width: 380px; width: 100%;
     box-shadow: 0 20px 60px rgba(0,0,0,0.5);
   }
   .howto-card h2{ font-family:'Fraunces',serif; margin-top:0; }
   .howto-card ul{ line-height:1.7; }
   .howto-close{
-    position: absolute; top: 14px; right: 14px;
-    width: 32px; height: 32px; border-radius: 50%; border: none;
-    background: rgba(245,239,224,0.1); color: var(--ink);
-    font-size: 1.1rem; line-height: 1; cursor: pointer;
-    display: flex; align-items:center; justify-content:center;
+    position: absolute; top: 12px; right: 12px;
+    background: none; border: none; color: var(--ink-dim); font-size: 1.4rem;
+    cursor: pointer; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; touch-action: manipulation; padding: 0;
   }
   .howto-close:hover{ background: rgba(245,239,224,0.2); }
   .howto-example-word{
-    font-family:'Fraunces',serif; background: var(--rung); color:#1B2A41;
-    padding: 2px 8px; border-radius:6px; font-weight:600; text-transform: uppercase;
-    display: inline-block; margin: 3px 0; line-height: 1.4;
+    display: inline-block; background: var(--rung-empty);
+    border-radius: 6px; padding: 1px 7px; font-weight: 600; font-size: 0.9em;
   }
 
   .timer-widget{
