@@ -167,11 +167,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
   .play-date{
     color: var(--ink-dim);
-    font-size: 0.89rem;  /* 0.99rem × 0.9 — 10% smaller than button font */
+    font-size: 0.98rem;  /* 0.89rem × 1.10 — 10% larger */
     font-weight: 700;
     letter-spacing: 0.02em;
     text-align: center;
     margin-top: 22px;
+  }
+  .play-date-attribution{
+    color: var(--ink-dim);
+    font-size: 0.93rem;  /* 0.98rem × 0.95 — 5% smaller than date */
+    font-style: italic;
+    text-align: center;
+    margin-top: 4px;
   }
 
   /* How to Play overlay — identical structure to index.html */
@@ -270,6 +277,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <!-- filled by JS based on auth state -->
     </div>
     <div class="play-date" id="play-date"></div>
+    <div class="play-date-attribution" id="play-date-attribution"></div>
   </main>
 
   <footer>
@@ -314,6 +322,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     return d.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
   }
   document.getElementById('play-date').textContent = todayFormatted();
+
+  // Date-specific attributions — keyed by YYYY-MM-DD
+  const DATE_ATTRIBUTIONS = {
+    '2026-09-08': "Today's EASY submitted by Redditor Ray2024",
+  };
+  const todayKey = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD in local time
+  const attrEl = document.getElementById('play-date-attribution');
+  attrEl.textContent = DATE_ATTRIBUTIONS[todayKey] || '';
 
   // ── navigation helpers ─────────────────────────────────────────────────────
   function goToGame(timerChoice){
