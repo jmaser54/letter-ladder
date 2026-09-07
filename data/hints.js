@@ -1501,5 +1501,246 @@ const HINTS_SCHEDULE = {
         "readiness"
       ]
     }
+  },
+  "2026-09-07": {
+    "easy": {
+      "start": "if",
+      "final": "fixer",
+      "solution": [
+        "if",
+        "fir",
+        "fire",
+        "fixer"
+      ]
+    },
+    "medium": {
+      "start": "bid",
+      "final": "builder",
+      "solution": [
+        "bid",
+        "bird",
+        "bride",
+        "bridle",
+        "builder"
+      ]
+    },
+    "hard": {
+      "start": "gee",
+      "final": "designer",
+      "solution": [
+        "gee",
+        "gene",
+        "green",
+        "gender",
+        "genders",
+        "designer"
+      ]
+    }
+  },
+  "2026-09-08": {
+    "easy": {
+      "start": "at",
+      "final": "water",
+      "solution": [
+        "at",
+        "tar",
+        "tear",
+        "water"
+      ]
+    },
+    "medium": {
+      "start": "ale",
+      "final": "clapped",
+      "solution": [
+        "ale",
+        "pale",
+        "apple",
+        "lapped",
+        "clapped"
+      ]
+    },
+    "hard": {
+      "start": "at",
+      "final": "tractor",
+      "solution": [
+        "at",
+        "rat",
+        "cart",
+        "actor",
+        "carrot",
+        "tractor"
+      ]
+    }
+  },
+  "2026-09-09": {
+    "easy": {
+      "start": "am",
+      "final": "tamed",
+      "solution": [
+        "am",
+        "mat",
+        "meat",
+        "tamed"
+      ]
+    },
+    "medium": {
+      "start": "so",
+      "final": "rosary",
+      "solution": [
+        "so",
+        "soy",
+        "rosy",
+        "sorry",
+        "rosary"
+      ]
+    },
+    "hard": {
+      "start": "ors",
+      "final": "oranges",
+      "solution": [
+        "ors",
+        "oars",
+        "sonar",
+        "organs",
+        "oranges"
+      ]
+    }
+  },
+  "2026-09-10": {
+    "easy": {
+      "start": "peen",
+      "final": "penned",
+      "solution": [
+        "peen",
+        "penne",
+        "penned"
+      ]
+    },
+    "medium": {
+      "start": "duo",
+      "final": "abound",
+      "solution": [
+        "duo",
+        "udon",
+        "bound",
+        "abound"
+      ]
+    },
+    "hard": {
+      "start": "tag",
+      "final": "originate",
+      "solution": [
+        "tag",
+        "gnat",
+        "grant",
+        "rating",
+        "orating",
+        "rigatoni",
+        "originate"
+      ]
+    }
+  },
+  "2026-09-11": {
+    "easy": {
+      "start": "pa",
+      "final": "clamp",
+      "solution": [
+        "pa",
+        "pal",
+        "lamp",
+        "clamp"
+      ]
+    },
+    "medium": {
+      "start": "pea",
+      "final": "pirates",
+      "solution": [
+        "pea",
+        "pear",
+        "spare",
+        "praise",
+        "pirates"
+      ]
+    },
+    "hard": {
+      "start": "me",
+      "final": "heroism",
+      "solution": [
+        "me",
+        "hem",
+        "home",
+        "homer",
+        "homier",
+        "heroism"
+      ]
+    }
+  },
+  "2026-09-12": {
+    "easy": {
+      "start": "go",
+      "final": "forge",
+      "solution": [
+        "go",
+        "fog",
+        "frog",
+        "forge"
+      ]
+    },
+    "medium": {
+      "start": "en",
+      "final": "tinkle",
+      "solution": [
+        "en",
+        "ten",
+        "lent",
+        "inlet",
+        "tinkle"
+      ]
+    },
+    "hard": {
+      "start": "rue",
+      "final": "flounder",
+      "solution": [
+        "rue",
+        "rude",
+        "under",
+        "refund",
+        "founder",
+        "flounder"
+      ]
+    }
+  },
+  "2026-09-13": {
+    "easy": {
+      "start": "or",
+      "final": "boxer",
+      "solution": [
+        "or",
+        "ore",
+        "robe",
+        "boxer"
+      ]
+    },
+    "medium": {
+      "start": "tad",
+      "final": "tadpole",
+      "solution": [
+        "tad",
+        "date",
+        "dealt",
+        "plated",
+        "tadpole"
+      ]
+    },
+    "hard": {
+      "start": "louden",
+      "final": "convulsed",
+      "solution": [
+        "louden",
+        "unloved",
+        "unsolved",
+        "convulsed"
+      ]
+    }
   }
 };
