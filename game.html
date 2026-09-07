@@ -2122,10 +2122,11 @@ function showAccountForm(mode){
     }
     localStorage.setItem('letterladder:accountUsername', result.username);
     localStorage.setItem('letterladder:activeTier', 'easy');
-    if(!isLogin){
-      migrateGuestProgressToAccount(result.username);
-      await backfillGuestStatsAndScores(result.username);
-    }
+    // Migrate and backfill for both login AND create account — if the user
+    // played as a guest before logging in, their scores and stats should
+    // transfer to their account either way.
+    migrateGuestProgressToAccount(result.username);
+    await backfillGuestStatsAndScores(result.username);
 
     // Pull this account's usual timer preference from the cloud, so
     // someone who always plays timed doesn't stay stuck on whatever was

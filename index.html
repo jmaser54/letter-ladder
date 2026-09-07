@@ -504,11 +504,29 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         if(isLogin){
           const player = await findPlayerByUsername(username);
           const registeredEmail = (player && player.authEmail) || usernameToSyntheticEmail(username);
+          // Save anon UID before signing in so backfill can delete old guest docs
+          if(auth.currentUser && auth.currentUser.isAnonymous){
+            sessionStorage.setItem('letterladder:anonUidForCleanup', auth.currentUser.uid);
+          }
           await signInWithEmailAndPassword(auth, registeredEmail, password);
-          localStorage.setItem('letterladder:accountUsername', player ? player.username : username);
+          const loggedInUsername = player ? player.username : username;
+          localStorage.setItem('letterladder:accountUsername', loggedInUsername);
+          // Migrate guest localStorage keys and signal game.html to backfill
+          // scores/stats — same as the create account path.
+          const guestPrefix = 'letterladder:guest:';
+          const newPrefix = `letterladder:${loggedInUsername}:`;
+          const keysToMigrate = [];
+          for(let i = 0; i < localStorage.length; i++){
+            const k = localStorage.key(i);
+            if(k && k.startsWith(guestPrefix)) keysToMigrate.push(k);
+          }
+          for(const oldKey of keysToMigrate){
+            const newKey = newPrefix + oldKey.slice(guestPrefix.length);
+            localStorage.setItem(newKey, localStorage.getItem(oldKey));
+          }
+          sessionStorage.setItem('letterladder:pendingGuestBackfill', loggedInUsername);
           overlay.remove();
-          renderPlayButtons(auth.currentUser);
-          renderAccountWidget(auth.currentUser);
+          window.location.href = 'game.html';
         } else {
           // Validate username
           const BANNED = ['fuck','bitch','bastard','cunt','kike','nigger','nigga','asshole','faggot','.com','.net','.org','.edu','.io','.xyz','gmail'];
