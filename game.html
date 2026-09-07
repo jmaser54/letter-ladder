@@ -520,7 +520,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     font-family:'Fraunces',serif; font-weight:700; font-variant-numeric: tabular-nums;
     color: var(--amber); font-size: 0.95rem;
   }
-  .timer-emoji{ font-size: 0.9em; line-height: 1; }
+  .timer-emoji{ font-size: 1.575em; line-height: 1; } /* 0.9em × 1.75 = 1.575em — 75% larger */
   .timer-display{ min-width: 2.4em; text-align: left; }
   .timer-tooltip{
     position: absolute; top: 100%; right: 0; margin-top: 6px;
@@ -1441,7 +1441,12 @@ function renderTimerWidget(){
   }
 
   const choice = getTimerChoice();
-  const timerOffIndicator = `<span style="position:relative;display:inline-flex;align-items:center;justify-content:center;"><span class="timer-emoji">⏱️</span><span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-54%) rotate(0deg);font-size:1.25em;font-weight:900;color:#111;line-height:1;pointer-events:none;">/</span></span>`;
+  const timerOffIndicator = `<span style="position:relative;display:inline-flex;align-items:center;justify-content:center;">
+    <span class="timer-emoji">⏱️</span>
+    <svg style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;overflow:visible;" width="36" height="36" viewBox="-18 -18 36 36">
+      <line x1="-16" y1="14" x2="16" y2="-14" stroke="#111" stroke-width="4" stroke-linecap="round"/>
+    </svg>
+  </span>`;
   let displayContent = timerOffIndicator;
   if(choice === 'timed'){
     const frozenElapsed = localStorage.getItem(timerElapsedKey(activeTier));
