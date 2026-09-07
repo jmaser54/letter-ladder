@@ -604,12 +604,12 @@ const PUZZLE_SCHEDULE = {
   },
   "2026-09-08": {
     "easy": {
-      "start": "at",
-      "final": "water"
+      "start": "ow",
+      "final": "cower"
     },
     "medium": {
-      "start": "ale",
-      "final": "clapped"
+      "start": "he",
+      "final": "hoarse"
     },
     "hard": {
       "start": "at",

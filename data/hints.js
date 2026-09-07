@@ -1539,25 +1539,14 @@ const HINTS_SCHEDULE = {
   },
   "2026-09-08": {
     "easy": {
-      "start": "at",
-      "final": "water",
-      "solution": [
-        "at",
-        "tar",
-        "tear",
-        "water"
-      ]
+      "start": "ow",
+      "final": "cower",
+      "solution": ["ow","cow","crow","cower"]
     },
     "medium": {
-      "start": "ale",
-      "final": "clapped",
-      "solution": [
-        "ale",
-        "pale",
-        "apple",
-        "lapped",
-        "clapped"
-      ]
+      "start": "he",
+      "final": "hoarse",
+      "solution": ["he","she","shoe","horse","hoarse"]
     },
     "hard": {
       "start": "at",
