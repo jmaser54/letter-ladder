@@ -1714,33 +1714,85 @@ const HINTS_SCHEDULE = {
     "easy": {
       "start": "or",
       "final": "boxer",
-      "solution": [
-        "or",
-        "ore",
-        "robe",
-        "boxer"
-      ]
+      "solution": ["or","ore","robe","boxer"]
     },
     "medium": {
       "start": "tad",
       "final": "tadpole",
-      "solution": [
-        "tad",
-        "date",
-        "dealt",
-        "plated",
-        "tadpole"
-      ]
+      "solution": ["tad","date","dealt","plated","tadpole"]
     },
     "hard": {
       "start": "louden",
       "final": "convulsed",
-      "solution": [
-        "louden",
-        "unloved",
-        "unsolved",
-        "convulsed"
-      ]
+      "solution": ["louden","unloved","unsolved","convulsed"]
+    }
+  },
+  "2026-09-14": {
+    "easy": {
+      "start": "at",
+      "final": "water",
+      "solution": ["at","tar","tear","water"]
+    },
+    "medium": {
+      "start": "ale",
+      "final": "clapped",
+      "solution": ["ale","pale","apple","lapped","clapped"]
+    },
+    "hard": {
+      "start": "louden",
+      "final": "convulsed",
+      "solution": ["louden","unloved","unsolved","convulsed"]
+    }
+  },
+  "2026-09-15": {
+    "easy": {
+      "start": "ad",
+      "final": "dread",
+      "solution": ["ad","add","dead","dread"]
+    },
+    "medium": {
+      "start": "us",
+      "final": "plumes",
+      "solution": ["us","pus","plus","pulse","plumes"]
+    },
+    "hard": {
+      "start": "us",
+      "final": "supreme",
+      "solution": ["us","sum","muse","serum","resume","supreme"]
+    }
+  },
+  "2026-09-16": {
+    "easy": {
+      "start": "is",
+      "final": "spine",
+      "solution": ["is","sin","snip","spine"]
+    },
+    "medium": {
+      "start": "is",
+      "final": "stride",
+      "solution": ["is","sir","sire","rides","stride"]
+    },
+    "hard": {
+      "start": "is",
+      "final": "perusing",
+      "solution": ["is","sin","sing","using","genius","reusing","perusing"]
+    }
+  },
+  "2026-09-17": {
+    "easy": {
+      "start": "to",
+      "final": "boast",
+      "solution": ["to","bot","boat","boast"]
+    },
+    "medium": {
+      "start": "so",
+      "final": "drowns",
+      "solution": ["so","sow","rows","sword","drowns"]
+    },
+    "hard": {
+      "start": "anti",
+      "final": "fornicate",
+      "solution": ["anti","antic","action","faction","fraction","fornicate"]
     }
   }
 };

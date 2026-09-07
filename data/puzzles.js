@@ -685,5 +685,61 @@ const PUZZLE_SCHEDULE = {
       "start": "louden",
       "final": "convulsed"
     }
+  },
+  "2026-09-14": {
+    "easy": {
+      "start": "at",
+      "final": "water"
+    },
+    "medium": {
+      "start": "ale",
+      "final": "clapped"
+    },
+    "hard": {
+      "start": "louden",
+      "final": "convulsed"
+    }
+  },
+  "2026-09-15": {
+    "easy": {
+      "start": "ad",
+      "final": "dread"
+    },
+    "medium": {
+      "start": "us",
+      "final": "plumes"
+    },
+    "hard": {
+      "start": "us",
+      "final": "supreme"
+    }
+  },
+  "2026-09-16": {
+    "easy": {
+      "start": "is",
+      "final": "spine"
+    },
+    "medium": {
+      "start": "is",
+      "final": "stride"
+    },
+    "hard": {
+      "start": "is",
+      "final": "perusing"
+    }
+  },
+  "2026-09-17": {
+    "easy": {
+      "start": "to",
+      "final": "boast"
+    },
+    "medium": {
+      "start": "so",
+      "final": "drowns"
+    },
+    "hard": {
+      "start": "anti",
+      "final": "fornicate"
+    }
   }
 };
