@@ -2120,12 +2120,12 @@ function showAccountForm(mode){
       errorEl.textContent = result.error;
       return;
     }
+    // Migrate guest localStorage keys BEFORE updating accountUsername,
+    // so migrateGuestProgressToAccount sees accountScope as 'guest'.
+    migrateGuestProgressToAccount(result.username);
     localStorage.setItem('letterladder:accountUsername', result.username);
     localStorage.setItem('letterladder:activeTier', 'easy');
-    // Migrate and backfill for both login AND create account — if the user
-    // played as a guest before logging in, their scores and stats should
-    // transfer to their account either way.
-    migrateGuestProgressToAccount(result.username);
+    // Backfill scores and stats — runs for both login and create account.
     await backfillGuestStatsAndScores(result.username);
 
     // Pull this account's usual timer preference from the cloud, so
@@ -3305,6 +3305,10 @@ function render(focusInput = false, pendingErrors = null){
   const shuffleBtn = document.getElementById('shuffle-btn');
   if(shuffleBtn){
     bindTapAction(shuffleBtn, ()=>{
+      // Blur any focused input so partial text doesn't get highlighted
+      if(document.activeElement && document.activeElement.blur){
+        document.activeElement.blur();
+      }
       const order = bankState[activeTier].order;
       const stableIds = bankState[activeTier].stableIds;
       // Fisher-Yates shuffle, in place - stableIds must move in lockstep
