@@ -617,9 +617,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           sessionStorage.setItem('letterladder:pendingGuestBackfill', username.trim());
 
           overlay.remove();
-          // Navigate to game.html so the full auth/game module loads and
-          // runs the backfill via backfillGuestStatsAndScores.
-          window.location.href = 'game.html';
+          // Stay on landing page — backfill runs when user navigates to game.html via Play.
+          renderAccountWidget(auth.currentUser);
+          renderPlayButtons(auth.currentUser);
         }
       }catch(err){
         const msg = err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password'
