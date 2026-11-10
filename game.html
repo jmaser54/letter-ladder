@@ -32,7 +32,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <title>Letter Ladder</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Same stylesheet URL as index.html, so it is already cached when Play is tapped. -->
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- Share-modal fonts: loaded without blocking the first paint. -->
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <style>
   :root{
     --bg: #1B2A41;
@@ -372,7 +375,47 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     font-style:italic; flex-shrink:0; min-height: 0;
   }
   .hint-display .hint-letters{ color: var(--amber); font-style:normal; font-weight:600; letter-spacing:0.04em; }
-  .share-status{ text-align:center; margin-top:8px; font-size:0.8rem; color: var(--blue); font-weight:600; flex-shrink:0; }
+  /* Share modal — Variant B (share-modal-redesign.html), classes prefixed sm- */
+  .sm-scrim{ position:fixed; inset:0; z-index:1000; background:rgba(20,33,50,.66); display:flex; align-items:center; justify-content:center; padding:18px 14px; }
+  .sm-modal{ position:relative; width:100%; max-width:344px; background:#24384F; border:1px solid rgba(245,239,224,0.14); border-radius:24px; box-shadow:0 26px 60px rgba(0,0,0,.5); padding:22px 18px 18px; animation:sm-pop .32s cubic-bezier(.2,.9,.3,1.15); max-height:100%; overflow-y:auto; font-family:"Archivo", system-ui, -apple-system, sans-serif; color:#F5EFE0; -webkit-font-smoothing:antialiased; }
+  @keyframes sm-pop{ from{ transform:scale(.96) translateY(10px); opacity:0 } to{ transform:none; opacity:1 } }
+  @media (prefers-reduced-motion: reduce){ .sm-modal{ animation:none } }
+  .sm-close-x{ position:absolute; top:12px; right:12px; width:32px; height:32px; border-radius:50%; border:1px solid rgba(245,239,224,0.14); background:rgba(36,56,79,.85); color:#9FB3C8; font-size:17px; line-height:1; cursor:pointer; display:grid; place-items:center; z-index:2; padding:0; }
+  .sm-close-x:hover{ color:#F5EFE0; }
+  .sm-head{ padding-right:26px; }
+  .sm-wordmark-row{ display:flex; align-items:center; gap:12px; }
+  .sm-logo{ width:46px; height:46px; border-radius:50%; flex:none; border:2px solid #E8A33D; object-fit:cover; background:#1B2A41; }
+  .sm-wordmark{ font-weight:900; color:#F5EFE0; letter-spacing:.015em; line-height:.98; text-transform:uppercase; font-size:31px; }
+  .sm-result{ text-align:center; margin-top:14px; }
+  .sm-meta-row{ display:flex; align-items:center; justify-content:center; gap:10px; }
+  .sm-pill{ font-size:10.5px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; background:#E8A33D; color:#1B2A41; padding:4px 9px; border-radius:999px; flex:none; }
+  .sm-big-time{ font-family:"IBM Plex Mono", monospace; font-size:29px; font-weight:700; line-height:1; letter-spacing:-.02em; }
+  .sm-big-time small{ font-size:12px; color:#9FB3C8; font-weight:500; }
+  .sm-challenge{ font-size:15px; font-weight:700; margin-top:7px; }
+  .sm-challenge span{ color:#E8A33D; }
+  .sm-date{ font-size:12.5px; color:#9FB3C8; margin-top:5px; }
+  .sm-card{ margin-top:16px; border-radius:16px; overflow:hidden; text-align:left; background:#1B2A41; border:1px solid rgba(245,239,224,0.14); }
+  .sm-card-body{ padding:14px 15px 13px; }
+  .sm-card-top{ display:flex; justify-content:space-between; align-items:center; gap:8px; font-family:"IBM Plex Mono", monospace; font-size:10.5px; font-weight:600; color:#9FB3C8; letter-spacing:.05em; padding-bottom:10px; }
+  .sm-ladder{ display:flex; flex-direction:column; gap:5px; --sm-tile:25px; }
+  .sm-rung{ display:flex; align-items:center; gap:5px; }
+  .sm-rung-num{ font-family:"IBM Plex Mono", monospace; font-size:10px; color:#9FB3C8; width:13px; text-align:right; flex:none; }
+  .sm-tile{ width:var(--sm-tile); height:var(--sm-tile); border-radius:6px; display:grid; place-items:center; font-family:"IBM Plex Mono", monospace; font-size:calc(var(--sm-tile) * 0.5); font-weight:700; }
+  .sm-tile.anchor{ background:#E8A33D; color:#1B2A41; }
+  .sm-tile.filled{ background:#F5EFE0; color:#1B2A41; font-family:"Archivo", sans-serif; font-size:calc(var(--sm-tile) * 0.48); }
+  .sm-play-bar{ display:flex; align-items:center; justify-content:center; gap:8px; background:#E8A33D; color:#1B2A41; text-decoration:none; font-size:16.5px; font-weight:900; letter-spacing:.01em; padding:14px 12px; text-align:center; }
+  .sm-play-bar:hover{ background:#f0b356; }
+  .sm-actions{ margin-top:16px; display:grid; gap:9px; }
+  .sm-btn{ font:inherit; font-weight:800; font-size:15px; cursor:pointer; border-radius:12px; padding:14px 14px; border:1px solid transparent; display:flex; align-items:center; justify-content:center; gap:8px; width:100%; }
+  .sm-btn-primary{ background:#E8A33D; color:#1B2A41; }
+  .sm-btn-primary:active{ transform:scale(.99); }
+  .sm-btn-row{ display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+  .sm-btn-row.single{ grid-template-columns:1fr; }
+  .sm-btn-secondary{ background:rgba(245,239,224,.05); color:#F5EFE0; border-color:rgba(245,239,224,0.14); padding:11px 8px; font-size:13.5px; }
+  .sm-btn-secondary:hover{ border-color:#9FB3C8; }
+  .sm-toast{ position:fixed; left:50%; bottom:20px; transform:translate(-50%,16px); background:#F5EFE0; color:#1B2A41; padding:11px 17px; border-radius:999px; font-family:"Archivo", sans-serif; font-size:13.5px; font-weight:700; box-shadow:0 10px 28px rgba(0,0,0,.45); opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease; z-index:1001; max-width:88%; text-align:center; white-space:nowrap; }
+  .sm-toast.show{ opacity:1; transform:translate(-50%,0); }
+  @media (prefers-reduced-motion: reduce){ .sm-toast{ transition:none } }
 
   .view-solution-link{
     display:table; margin: 20px auto 8px auto;
@@ -381,6 +424,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     touch-action: manipulation;
   }
   .view-solution-link:hover{ color: var(--amber); border-color: var(--amber); }
+  .share-results-link{ margin: 14px auto 4px auto; }
+  .leaderboard-rank{ text-align:center; margin: 4px 0 18px; font-size:0.88rem; color: var(--ink-dim); }
+  .leaderboard-rank-text{ color: var(--ink); font-size:0.95rem; }
+  .leaderboard-rank-link{ margin-top: 14px; }
+  .leaderboard-rank-link a{ color: var(--ink-dim); text-decoration:none; border-bottom:1px dotted var(--ink-dim); touch-action: manipulation; }
+  .leaderboard-rank-link a:hover{ color: var(--amber); border-color: var(--amber); }
+  .timer-lock{ color: var(--ink-dim); margin-left: -1px; flex-shrink: 0; }
+  .timer-widget-btn--locked .timer-display{ min-width: 0; }
+  .checking-word{ color: var(--ink-dim); font-size: 0.88rem; }
+  .practice-note{ text-align:center; margin: 4px 12px 10px; font-size:0.88rem; color: var(--ink-dim); font-style: italic; }
 
   .empty-state{ text-align:center; color: var(--ink-dim); padding: 30px 0; }
 
@@ -551,6 +604,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .footer-attribution a{ color: var(--ink-dim); border-bottom: 1px dotted rgba(159,179,200,0.5); }
   .footer-nav{ font-size: 0.82rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 4px; }
   .footer-sep{ color: var(--ink-dim); opacity: 0.5; }
+  /* Footer: two deliberate rows - Leaderboard + social icons (cream), then About/Contact/Privacy (smaller, dim). */
+  footer .footer-row{ display:flex; justify-content:center; align-items:center; flex-wrap:nowrap; white-space:nowrap; }
+  footer .footer-primary{ font-size:0.95rem; gap:0 8px; margin-bottom:6px; }
+  footer .footer-primary a{ color:#F5EFE0; border-bottom:1px dotted rgba(245,239,224,0.6); }
+  footer .footer-primary a.footer-icon{ border-bottom:none; display:inline-flex; padding:6px; }
+  footer .footer-secondary{ font-size:0.78rem; gap:0 4px; }
+  footer .footer-secondary a{ color:#9FB3C8; border-bottom:1px dotted #9FB3C8; }
+  footer .footer-row a:hover{ color:#E8A33D; border-color:#E8A33D; }
+  footer .footer-row .footer-sep{ color:#9FB3C8; opacity:0.5; }
 
   @media (max-width: 420px){
     .rung{ min-width: calc(var(--rung-minw, 140px) * 0.8); }
@@ -678,7 +740,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import {
     getFirestore, collection, doc, setDoc, getDoc, getDocFromServer, addDoc, deleteDoc,
-    query, where, orderBy, limit, getDocs
+    query, where, orderBy, limit, getDocs, writeBatch
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -801,6 +863,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       // recoveryEmail is no longer stored on this doc.
       const registeredEmail = (player && player.authEmail) || usernameToSyntheticEmail(username);
       const cred = await signInWithEmailAndPassword(auth, registeredEmail, password);
+      // Accounts whose players doc went missing get it recreated here, so
+      // their leaderboard setting has a real document behind it.
+      try{ await ensurePlayerDoc(cred.user, (player && player.username) || username.trim()); }catch(e){ console.error('[leaderboard] could not check/backfill players doc on sign-in:', e); }
       return { success: true, uid: cred.user.uid, username: (player && player.username) || username.trim() };
     }catch(error){
       return { success: false, error: friendlyAuthError(error) };
@@ -852,6 +917,82 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     localStorage.removeItem('letterladder:lastViewedDateKey');
   }
 
+  // ── Leaderboard visibility: one source of truth ──────────────────────
+  // A signed-in player's times are public unless they turned the profile
+  // toggle off (players/{uid}.leaderboardVisible === false). A missing
+  // players doc means "never opted out" - it is recreated here (same
+  // fields createAccount writes, plus leaderboardVisible: true). The game
+  // page and profile.html both use this rule, so the toggle always shows
+  // what the next solve will be filed as.
+  const LB_PREF_KEY = uid => `letterladder:leaderboardVisible:${uid}`;
+  async function ensurePlayerDoc(user, usernameHint){
+    if(!user || user.isAnonymous) return { status: 'skipped' };
+    const ref = doc(db, 'players', user.uid);
+    const snap = await getDocFromServer(ref);          // throws on network/rules failure
+    if(snap.exists()) return { status: 'exists', data: snap.data() };
+    const username = (usernameHint || '').trim();
+    if(!username){
+      console.error('[leaderboard] players doc is missing and no username is known on this device - not recreated', user.uid);
+      return { status: 'missing' };
+    }
+    const created = Date.parse(user.metadata && user.metadata.creationTime);
+    const data = {
+      username,
+      usernameLower: normalizeUsername(username),
+      createdAt: Number.isFinite(created) ? created : Date.now(),
+      authEmail: user.email || usernameToSyntheticEmail(username),
+      leaderboardVisible: true,
+    };
+    await setDoc(ref, data, { merge: true });
+    console.warn(`[leaderboard] players doc for "${username}" was missing - recreated with leaderboardVisible: true`);
+    return { status: 'backfilled', data };
+  }
+  // Decides `visible` for a signed-in player's new leaderboard entry.
+  async function leaderboardVisibilityFor(user, usernameHint){
+    let lastError = null;
+    for(let attempt = 0; attempt < 2; attempt++){      // one retry
+      try{
+        const r = await ensurePlayerDoc(user, usernameHint);
+        if(r.status === 'exists'){
+          const visible = r.data.leaderboardVisible !== false;
+          try{ localStorage.setItem(LB_PREF_KEY(user.uid), String(visible)); }catch(e){}
+          return { visible, reason: visible ? 'players doc read' : 'players doc read - player turned the leaderboard toggle off' };
+        }
+        if(r.status === 'backfilled'){
+          try{ localStorage.setItem(LB_PREF_KEY(user.uid), 'true'); }catch(e){}
+          return { visible: true, reason: 'players doc was missing - backfilled' };
+        }
+        return { visible: true, reason: 'players doc missing and could not be backfilled - default visible' };
+      }catch(e){ lastError = e; }
+    }
+    // Read failed twice: use the setting last seen on this device (so an
+    // opted-out player stays hidden), otherwise the default - visible.
+    let cached = null;
+    try{ cached = localStorage.getItem(LB_PREF_KEY(user.uid)); }catch(e){}
+    if(cached !== null){
+      console.error(`[leaderboard] players doc read FAILED after retry - entry written visible=${cached} (last known setting on this device)`, lastError);
+      return { visible: cached === 'true', reason: 'read failed after retry - used last known setting' };
+    }
+    console.error('[leaderboard] players doc read FAILED after retry - entry written VISIBLE (default)', lastError);
+    return { visible: true, reason: 'read failed after retry - default visible' };
+  }
+  // Once a day per account: republish any hidden entries of a player who
+  // never opted out (repairs entries filed hidden by the old default).
+  async function repairHiddenEntries(user, usernameHint){
+    if(!user || user.isAnonymous) return null;
+    const pref = await leaderboardVisibilityFor(user, usernameHint);
+    if(!pref.visible) return { republished: 0, reason: 'player opted out' };
+    const snap = await getDocs(query(collection(db, 'leaderboardEntries'), where('uid', '==', user.uid), where('visible', '==', false)));
+    const hidden = snap.docs;
+    for(let i = 0; i < hidden.length; i += 499){
+      const batch = writeBatch(db);
+      hidden.slice(i, i + 499).forEach(d => batch.update(d.ref, { visible: true }));
+      await batch.commit();
+    }
+    if(hidden.length) console.warn(`[leaderboard] republished ${hidden.length} hidden entr${hidden.length === 1 ? 'y' : 'ies'} (player never opted out)`);
+    return { republished: hidden.length, reason: pref.reason };
+  }
+
   // Writes one completed-puzzle score as a new document, structured so
   // the leaderboard display (a later phase) can query "every score for
   // this exact puzzle date + tier, sorted fastest first."
@@ -887,6 +1028,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     getCurrentUser: () => auth.currentUser,
     onAuthReady: (callback) => onAuthStateChanged(auth, callback),
     db, doc, setDoc, getDoc, getDocFromServer, deleteDoc, collection, query, where, orderBy, limit, getDocs,
+    ensurePlayerDoc, leaderboardVisibilityFor, repairHiddenEntries,
   };
 </script>
 </head>
@@ -920,25 +1062,55 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 
   <footer>
-    <div class="footer-nav">
+    <div class="footer-row footer-primary">
+      <a href="leaderboard.html">Leaderboard</a>
+      <span class="footer-sep">&middot;</span>
+      <a class="footer-icon" href="https://www.instagram.com/letterladder" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.3"/><circle cx="17.6" cy="6.4" r="1.1" fill="currentColor" stroke="none"/></svg></a>
+      <span class="footer-sep">&middot;</span>
+      <a class="footer-icon" href="https://facebook.com/people/Letter-Ladder/61593469157230/" target="_blank" rel="noopener" aria-label="Facebook" title="Facebook"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M12 1a11 11 0 1 0 0 22a11 11 0 1 0 0-22zM13.6 23V14.4h2.6l.45-3.1H13.6V9.5c0-.9.3-1.6 1.6-1.6h1.6V5.2c-.3 0-1.2-.12-2.3-.12-2.3 0-3.9 1.4-3.9 4v2.2H8V14.4h2.6V23z"/></svg></a>
+    </div>
+    <div class="footer-row footer-secondary">
       <a href="about.html">About</a>
       <span class="footer-sep">&middot;</span>
       <a href="contact.html">Contact</a>
       <span class="footer-sep">&middot;</span>
       <a href="privacy.html">Privacy Policy</a>
-      <span class="footer-sep">&middot;</span>
-      <a href="https://www.instagram.com/letterladder" target="_blank" rel="noopener">Instagram</a>
     </div>
   </footer>
 </div>
 
 <!-- Bump the ?v= number below any time you update puzzles.js or the game logic,
      so returning visitors' browsers are guaranteed to fetch the new version
-     instead of a cached copy. -->
-<script src="data/words.js?v=5"></script>
+     instead of a cached copy. The dictionary (data/words.js, ~1.9 MB) is not
+     loaded here: it loads after the game is interactive - see
+     DICTIONARY_SRC below (and keep index.html's prefetch link on the same ?v=). -->
 <script src="data/puzzles.js?v=1793974992"></script>
 <script src="data/hints.js?v=1793974992"></script>
 <script>
+// ---------- dictionary (loaded off the critical path) ----------
+// The word list is only needed to check a submitted guess, so it is fetched
+// once the ladder is up instead of blocking the first paint. A guess
+// submitted before it arrives waits for it ("Checking word…").
+const DICTIONARY_SRC = 'data/words.js?v=5';
+let dictionaryRequested = false;
+const dictionaryWaiters = [];
+function dictionaryReady(){ return typeof WORD_SET !== 'undefined'; }
+function loadDictionary(){
+  if(dictionaryRequested || dictionaryReady()) return;
+  dictionaryRequested = true;
+  const el = document.createElement('script');
+  el.src = DICTIONARY_SRC;
+  el.onload = () => { while(dictionaryWaiters.length) dictionaryWaiters.shift()(); };
+  el.onerror = () => { dictionaryRequested = false; setTimeout(loadDictionary, 2000); }; // retry on a network blip
+  document.head.appendChild(el);
+}
+function whenDictionaryReady(fn){
+  if(dictionaryReady()) return fn();
+  dictionaryWaiters.push(fn);
+  loadDictionary();
+}
+setTimeout(loadDictionary, 4000); // backstop in case startup stalls
+
 // ---------- date helpers ----------
 function bumpGuessCount(tier, L){
   const key = `letterladder:${accountScope}:${dateKey}:${tier}:guessCount:${L}`;
@@ -1135,7 +1307,8 @@ function getHintLetterOrder(word){
   const lower = word.toLowerCase();
   const sorted = lower.split('');
   sorted.sort();
-  if(!WORD_SET.has(sorted.join(''))){
+  const isWord = w => dictionaryReady() ? WORD_SET.has(w) : true; // unknown yet: shuffle to be safe
+  if(!isWord(sorted.join(''))){
     return sorted;
   }
   let attempt = sorted.slice();
@@ -1144,7 +1317,7 @@ function getHintLetterOrder(word){
       const k = Math.floor(Math.random() * (j + 1));
       [attempt[j], attempt[k]] = [attempt[k], attempt[j]];
     }
-    if(!WORD_SET.has(attempt.join(''))) return attempt;
+    if(!isWord(attempt.join(''))) return attempt;
   }
   // Vanishingly unlikely to ever be reached, but don't loop forever.
   return attempt;
@@ -1361,7 +1534,15 @@ const { key: dateKey, isArchive: isArchiveMode } = resolveDateKey();
 // This is the single source of truth for date-change detection.
 const LAST_VIEWED_DATE_KEY = 'letterladder:lastViewedDateKey';
 const lastViewedDate = localStorage.getItem(LAST_VIEWED_DATE_KEY);
-if(!isArchiveMode && lastViewedDate && lastViewedDate !== dateKey){
+// "Play today's puzzle" links (game.html?play=today) are an explicit request
+// for today's puzzle: start the new day on Easy right here instead of
+// redirecting to the landing page.
+const explicitPlayToday = new URLSearchParams(window.location.search).get('play') === 'today';
+if(!isArchiveMode && explicitPlayToday && lastViewedDate !== dateKey){
+  localStorage.setItem(LAST_VIEWED_DATE_KEY, dateKey);
+  activeTier = 'easy';
+  localStorage.setItem('letterladder:activeTier', 'easy');
+} else if(!isArchiveMode && lastViewedDate && lastViewedDate !== dateKey){
   // Date has changed — send to landing page before anything renders.
   // Update the stored date first so a normal same-day reload after
   // reaching the landing page doesn't trigger another redirect.
@@ -1494,10 +1675,14 @@ function renderTimerWidget(){
     const displayTime = frozenElapsed !== null
       ? formatDurationForShare(Number(frozenElapsed))
       : formatElapsed(getCurrentElapsedMs(activeTier));
-    const tooltipText = 'Timer: On — click to turn off';
+    // Once solved, the time is the player's locked result for the day (not a
+    // live clock) - shown with a small lock, including in practice mode.
+    const locked = frozenElapsed !== null;
+    const tooltipText = locked ? 'Your time for today is locked in' : 'Timer: On — click to turn off';
+    const lockIcon = locked ? `<svg class="timer-lock" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 10V7a5 5 0 0 1 10 0v3h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h1zm2 0h6V7a3 3 0 0 0-6 0v3z"/></svg>` : '';
     widget.innerHTML = `
-      <button type="button" class="timer-widget-btn" aria-label="${tooltipText}">
-        <span class="timer-emoji">⏱️</span><span class="timer-display">${displayTime}</span>
+      <button type="button" class="timer-widget-btn${locked ? ' timer-widget-btn--locked' : ''}" aria-label="${locked ? `Time locked in: ${displayTime}` : tooltipText}">
+        <span class="timer-emoji">⏱️</span><span class="timer-display">${displayTime}</span>${lockIcon}
         <span class="timer-tooltip">${tooltipText}</span>
       </button>
     `;
@@ -2017,6 +2202,30 @@ function recordHintUsed(tier){
 function getHintsUsed(tier){
   return parseInt(localStorage.getItem(`letterladder:${accountScope}:${dateKey}:${tier}:hintsUsed`) || '0', 10);
 }
+// Practice mode: a puzzle solved today can be cleared and re-solved, but its
+// result is locked - time, rank, stats and the shared result never change.
+function wasSolvedToday(tier){
+  return !isArchiveMode
+    && !!localStorage.getItem(`letterladder:${accountScope}:${dateKey}:${tier}:solvedCounted`)
+    && !localStorage.getItem(`letterladder:${accountScope}:${dateKey}:${tier}:solutionRevealedAsLoss`);
+}
+function isPracticeMode(tier){ return wasSolvedToday(tier) && !isTierComplete(tier); }
+function lockedTimeMs(tier){
+  if(getTimerChoice() !== 'timed') return null;
+  const frozen = localStorage.getItem(timerElapsedKey(tier));
+  return frozen !== null ? Number(frozen) : null;
+}
+function practiceNoteText(tier){
+  const ms = lockedTimeMs(tier);
+  return ms !== null
+    ? `Your time for today is locked in at ${formatDurationForShare(ms)} — this is just practice.`
+    : `You've already solved today's puzzle — this is just practice.`;
+}
+// Hints as they stood when the puzzle was solved (practice hints don't count).
+function hintsForShare(tier){
+  const atSolve = localStorage.getItem(`letterladder:${accountScope}:${dateKey}:${tier}:hintsAtSolve`);
+  return atSolve !== null ? parseInt(atSolve, 10) : getHintsUsed(tier);
+}
 
 function getHintInfo(tier, L){
   try{
@@ -2318,8 +2527,9 @@ async function submitCurrentScore(tier, displayName, forceIfElapsed = false){
   // Submit if: display toggle is timed, OR forceIfElapsed=true and a real elapsed time exists.
   // Never submit a 0 or null time — that's always a bug.
   const shouldSubmit = (timerChoice === 'timed' || (forceIfElapsed && timeMs !== null && timeMs > 0));
-  if(!shouldSubmit) return;
-  if(!timeMs || timeMs === 0) return;
+  const lbWhere = `${tier} ${dateKey}`;
+  if(!shouldSubmit){ console.info(`[leaderboard] ${lbWhere}: not submitted - timer is off`); return; }
+  if(!timeMs || timeMs === 0){ console.error(`[leaderboard] ${lbWhere}: not submitted - no recorded time`); return; }
 
   const hintsUsed = getHintsUsed(tier);
   const user = window.LetterLadderAuth.getCurrentUser();
@@ -2332,40 +2542,32 @@ async function submitCurrentScore(tier, displayName, forceIfElapsed = false){
   await window.LetterLadderAuth.submitScore({ date: dateKey, tier, timeMs, hintsUsed, displayName });
 
   // Also write to the leaderboardEntries display layer (timed only)
-  if(uid && window.LetterLadderAuth.setDoc && window.LetterLadderAuth.doc && window.LetterLadderAuth.db){
+  if(!uid){
+    console.error(`[leaderboard] ${lbWhere}: entry NOT written - not signed in to Firebase${isGuest && displayName !== 'Guest' ? ` (this device remembers account "${displayName}" but its sign-in has ended; the time is submitted when they sign in again)` : ''}`);
+    return;
+  }
+  if(window.LetterLadderAuth.setDoc && window.LetterLadderAuth.doc && window.LetterLadderAuth.db){
+    const entryRef = window.LetterLadderAuth.doc(window.LetterLadderAuth.db, 'leaderboardEntries', `${uid}_${dateKey}_${tier}`);
+    let visible = true, reason = 'guest (guests are shown by default)';
     try{
-      // Default to NOT visible — safe failure mode for a privacy setting.
-      // Only show publicly if we can positively confirm the user has opted in.
-      let visible = false;
-      if(isGuest){
-        // Guests have no profile toggle — always show their times publicly
-        visible = true;
-      } else {
-        try{
-          // Use getDocFromServer (not getDoc) to bypass the Firestore SDK cache.
-          // If we used the cached version, a recently-changed toggle preference
-          // might not be reflected yet, causing scores to be written with the
-          // wrong visibility. This is a privacy-critical read.
-          const playerSnap = await window.LetterLadderAuth.getDocFromServer(
-            window.LetterLadderAuth.doc(window.LetterLadderAuth.db, 'players', uid)
-          );
-          if(playerSnap.exists()){
-            visible = playerSnap.data().leaderboardVisible !== false;
-          }
-          // If doc doesn't exist: visible stays false (safe default)
-        }catch(e){
-          // Read failed — keep visible=false (safe default)
-          console.error('Could not read leaderboard preference, defaulting to hidden:', e);
-        }
+      if(!isGuest){
+        // Signed-in player: visible unless they turned the profile toggle
+        // off. Missing players doc → recreated first; read failure → retry,
+        // then last known setting, then visible (logged loudly).
+        ({ visible, reason } = await window.LetterLadderAuth.leaderboardVisibilityFor(user, displayName));
       }
-      const entryId = `${uid}_${dateKey}_${tier}`;
-      await window.LetterLadderAuth.setDoc(
-        window.LetterLadderAuth.doc(window.LetterLadderAuth.db, 'leaderboardEntries', entryId),
-        { ...scoreData, visible, createdAt: Date.now() },
-        { merge: false }
-      );
+      // One entry per player per puzzle: the first solve of the day is the
+      // one on the board (times are locked), so never try to replace it.
+      const existing = await window.LetterLadderAuth.getDoc(entryRef).catch(() => null);
+      if(existing && existing.exists()){
+        const prev = existing.data();
+        console.info(`[leaderboard] ${lbWhere}: entry NOT written - already on the board with ${formatDurationForShare(prev.timeMs)} (visible=${prev.visible}); the first solve of the day counts`);
+        return;
+      }
+      await window.LetterLadderAuth.setDoc(entryRef, { ...scoreData, visible, createdAt: Date.now() }, { merge: false });
+      console.info(`[leaderboard] ${lbWhere}: entry written for "${displayName}" - ${formatDurationForShare(timeMs)}, visible=${visible} (${reason})`);
     }catch(e){
-      console.error('Failed to write leaderboardEntries:', e);
+      console.error(`[leaderboard] ${lbWhere}: entry write FAILED for "${displayName}" (visible=${visible}, ${reason}):`, e);
     }
   }
 }
@@ -2383,6 +2585,7 @@ function showLeaderboardPromptIfNeeded(tier){
   if(hasRealAccount() || isRealFirebaseUser){
     const username = savedUsername || (isRealFirebaseUser ? currentUser.displayName : null);
     if(username) submitCurrentScore(tier, username);
+    else console.error(`[leaderboard] ${tier} ${dateKey}: not submitted - signed in but no username is known on this device`);
     return;
   }
   // Guests automatically play as guest and submit — no popup.
@@ -2394,6 +2597,7 @@ function markSolvedIfNeeded(tier, guesses){
   const flagKey = `letterladder:${accountScope}:${dateKey}:${tier}:solvedCounted`;
   if(localStorage.getItem(flagKey)) return;
   localStorage.setItem(flagKey, '1');
+  localStorage.setItem(`letterladder:${accountScope}:${dateKey}:${tier}:hintsAtSolve`, String(getHintsUsed(tier)));
 
   const hasEverStarted = localStorage.getItem(timerStartKey(tier)) !== null || localStorage.getItem(timerAccumulatedKey(tier)) !== null;
   if(hasEverStarted){
@@ -2482,6 +2686,8 @@ function markSolvedIfNeeded(tier, guesses){
   if(getTimerChoice() === 'timed'){
     showLeaderboardPromptIfNeeded(tier);
   }
+
+  scheduleShareModal(tier);
 
   scheduleDailyProgressSync(); // updates the timestamp if this genuinely changed anything
   clearTimeout(dailyProgressSyncTimeout);
@@ -2838,31 +3044,316 @@ function formatDurationForShare(ms){
   }
 }
 
-function buildShareText(){
+// Spoiler-free share text: date, one line per puzzle finished today (time
+// if timed, hints used), streak for signed-in players, challenge, and a
+// short clean link (the tracked link travels separately - see SHARE_URL).
+const SHARE_LINK_TEXT = 'letterladder.io';
+// Short tracked link for native shares: s/index.html forwards to
+// /?utm_source=share&utm_medium=social&utm_campaign=share_results.
+const SHARE_URL = 'https://letterladder.io/s/';
+function shareResultLines(){
   const tierLabels = { easy: 'Easy', medium: 'Medium', hard: 'Hard' };
-  const lines = [];
+  const [y, m, d] = dateKey.split('-').map(Number);
+  const dateLabel = new Date(y, m - 1, d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const lines = [`Letter Ladder — ${dateLabel}`];
   const timerChoice = getTimerChoice();
+  let anyTime = false;
   for(const tier of TIERS){
-    const puzzle = getTodaysPuzzle(tier);
-    if(!puzzle) continue;
-    if(isTierGenuinelyWon(tier)){
-      const hints = getHintsUsed(tier);
-      const hintStr = hints > 0 ? ` ${'💡'.repeat(hints)}` : '';
-
-      let timePart = '';
-      if(timerChoice === 'timed'){
-        const frozenElapsed = localStorage.getItem(timerElapsedKey(tier));
-        if(frozenElapsed !== null){
-          timePart = ` ${formatDurationForShare(Number(frozenElapsed))}`;
-        }
+    if(!getTodaysPuzzle(tier) || !(isTierGenuinelyWon(tier) || wasSolvedToday(tier))) continue; // only puzzles actually finished (incl. cleared for practice)
+    let result = 'solved';
+    if(timerChoice === 'timed'){
+      const frozenElapsed = localStorage.getItem(timerElapsedKey(tier));
+      if(frozenElapsed !== null){
+        result = formatDurationForShare(Number(frozenElapsed));
+        anyTime = true;
       }
+    }
+    const hints = hintsForShare(tier);
+    const hintPart = hints > 0 ? ` (${hints} hint${hints === 1 ? '' : 's'})` : '';
+    lines.push(`${tierLabels[tier]}: ${result}${hintPart}`);
+  }
+  if(hasRealAccount()){
+    const total = loadStats().total;
+    const live = total.lastSolvedDate === todayKey() || total.lastSolvedDate === dateKeyMinusOneDay(todayKey());
+    const streak = live ? (total.currentStreak || 0) : 0;
+    if(streak > 0) lines.push(`🔥 Streak: ${streak} day${streak === 1 ? '' : 's'}`);
+  }
+  lines.push(anyTime ? 'Can you beat my times?' : 'Can you solve it?');
+  return lines;
+}
+// Text for Copy text / clipboard: ends with the clean link.
+function buildShareText(){ return [...shareResultLines(), SHARE_LINK_TEXT].join('\n'); }
 
-      lines.push(`✅ ${tierLabels[tier]}${timePart}${hintStr}`);
-    } else {
-      lines.push(`✖️ ${tierLabels[tier]}`);
+// Data for one finished puzzle's share card (modal and image).
+function shareCardData(tier){
+  const puzzle = getTodaysPuzzle(tier);
+  const [y, m, d] = dateKey.split('-').map(Number);
+  const dt = new Date(y, m - 1, d);
+  const frozen = getTimerChoice() === 'timed' ? localStorage.getItem(timerElapsedKey(tier)) : null;
+  const hints = hintsForShare(tier);
+  const rungs = [];                                   // top (final, hidden) to bottom (start)
+  rungs.push({ hidden: puzzle.final.length });
+  for(let L = puzzle.final.length - 1; L > puzzle.start.length; L--) rungs.push({ checks: L });
+  rungs.push({ word: puzzle.start.toUpperCase() });
+  return {
+    tierLabel: { easy: 'Easy', medium: 'Medium', hard: 'Hard' }[tier],
+    time: frozen !== null ? formatDurationForShare(Number(frozen)) : null,
+    longDate: dt.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' }),
+    cardDate: dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase(),
+    hintsText: hints === 0 ? 'NO HINTS USED' : `${hints} HINT${hints === 1 ? '' : 'S'} USED`,
+    rungs,
+    maxLen: puzzle.final.length,
+  };
+}
+
+// Shown once after each puzzle is finished — Variant B of the share-modal
+// redesign: wordmark header, centred result, spoiler-free ladder card
+// (start word visible, middle rungs as checks, final word hidden as ?),
+// "Share my result" (image card via the native share sheet), Copy text,
+// Next puzzle, close.
+let ladderCelebrationActive = false;
+let shareModalAfterCelebration = null;
+// One rule for every tier: the share modal opens ~1.2s after the win
+// celebration has fully finished (the last confetti piece has landed, or the
+// ladder climb and its "completed all three" banner are over).
+const SHARE_MODAL_AFTER_CELEBRATION_MS = 1200;
+let celebrationEndsAt = 0;
+function scheduleShareModal(tier){
+  // Short wait first so a ladder climb started by this same solve (it
+  // begins on the next tick) has registered before deciding.
+  setTimeout(() => {
+    if(ladderCelebrationActive){ shareModalAfterCelebration = tier; return; }
+    const wait = Math.max(0, celebrationEndsAt - Date.now()) + SHARE_MODAL_AFTER_CELEBRATION_MS;
+    setTimeout(() => {
+      if(ladderCelebrationActive){ shareModalAfterCelebration = tier; return; }
+      showShareModal(tier);
+    }, wait);
+  }, 100);
+}
+function showShareModal(tier){
+  tier = tier || activeTier;
+  if(isArchiveMode || document.querySelector('.sm-scrim') || !getTodaysPuzzle(tier)) return;
+  const data = shareCardData(tier);
+  const nextTier = { easy: 'medium', medium: 'hard' }[tier];
+  const timeHtml = data.time ? data.time.replace(/([a-z]+)/g, '<small>$1</small>') : 'Solved';
+  const ladderHtml = data.rungs.map((r, i) => {
+    const num = data.rungs.length - i;
+    let tiles = '';
+    if(r.hidden) tiles = '<span class="sm-tile anchor">?</span>'.repeat(r.hidden);
+    else if(r.checks) tiles = '<span class="sm-tile filled">✓</span>'.repeat(r.checks);
+    else tiles = [...r.word].map(ch => `<span class="sm-tile anchor">${ch}</span>`).join('');
+    return `<div class="sm-rung"><span class="sm-rung-num">${num}</span>${tiles}</div>`;
+  }).join('');
+  const overlay = document.createElement('div');
+  overlay.className = 'sm-scrim';
+  overlay.innerHTML = `
+    <div class="sm-modal" role="dialog" aria-modal="true" aria-label="Share your result">
+      <button class="sm-close-x" type="button" aria-label="Close">×</button>
+      <div class="sm-head">
+        <div class="sm-wordmark-row">
+          <img class="sm-logo" src="og-image.png" alt="Letter Ladder logo">
+          <div class="sm-wordmark">Letter<br>Ladder</div>
+        </div>
+        <div class="sm-result">
+          <div class="sm-meta-row">
+            <span class="sm-pill">${data.tierLabel}</span>
+            <span class="sm-big-time">${timeHtml}</span>
+          </div>
+          <div class="sm-challenge">${data.time ? 'Can you beat <span>my times</span>?' : 'Can you <span>solve it</span>?'}</div>
+          <div class="sm-date">${data.longDate}</div>
+        </div>
+      </div>
+      <div class="sm-card">
+        <div class="sm-card-body">
+          <div class="sm-card-top"><span>${data.cardDate}</span><span>${data.hintsText}</span></div>
+          <div class="sm-ladder">${ladderHtml}</div>
+        </div>
+        <a class="sm-play-bar" href="https://letterladder.io/?utm_source=share&amp;utm_medium=social&amp;utm_campaign=share_results" target="_blank" rel="noopener">Play at letterladder.io <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="sm-actions">
+        <button class="sm-btn sm-btn-primary sm-share-btn" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v12m0-12L8 7m4-4l4 4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 13v7h14v-7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Share my result
+        </button>
+        <div class="sm-btn-row ${nextTier ? '' : 'single'}">
+          <button class="sm-btn sm-btn-secondary sm-copy-btn" type="button">Copy text</button>
+          ${nextTier ? '<button class="sm-btn sm-btn-secondary sm-next-btn" type="button">Next puzzle →</button>' : ''}
+        </div>
+      </div>
+    </div>
+    <div class="sm-toast" role="status" aria-live="polite"></div>
+  `;
+  document.body.appendChild(overlay);
+
+  // Fit the tiles to the card width (long Hard ladders on small phones).
+  const ladderEl = overlay.querySelector('.sm-ladder');
+  const avail = ladderEl.clientWidth - 18;            // minus rung number + gap
+  const tilePx = Math.max(12, Math.min(25, Math.floor((avail - (data.maxLen - 1) * 5) / data.maxLen)));
+  ladderEl.style.setProperty('--sm-tile', tilePx + 'px');
+
+  const toastEl = overlay.querySelector('.sm-toast');
+  let toastTimer = null;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2600);
+  }
+  async function copyText(){
+    try{
+      await navigator.clipboard.writeText(buildShareText());
+      toast('Copied — paste it anywhere');
+    }catch(e){
+      toast('Copy blocked here — try Share instead');
     }
   }
-  return `Letter Ladder #${puzzleDayNumber()} 🪜\n\n${lines.join('\n')}\n\n${SITE_URL}`;
+  function close(){ overlay.remove(); }
+  bindTapAction(overlay.querySelector('.sm-close-x'), close);
+  bindTapAction(overlay.querySelector('.sm-copy-btn'), copyText);
+  const nextBtn = overlay.querySelector('.sm-next-btn');
+  if(nextBtn) bindTapAction(nextBtn, () => { close(); switchToTier(nextTier); });
+  bindTapAction(overlay.querySelector('.sm-share-btn'), async () => {
+    if(!(isTouchDevice && navigator.share)){ copyText(); return; }
+    const text = shareResultLines().join('\n');
+    let shareData = { text, url: SHARE_URL };
+    try{
+      const blob = await buildShareCardImage(data);
+      const file = new File([blob], 'letter-ladder.png', { type: 'image/png' });
+      if(navigator.canShare && navigator.canShare({ files: [file] })) shareData = { files: [file], text, url: SHARE_URL };
+    }catch(e){ /* image unavailable: share text + link */ }
+    try{ await navigator.share(shareData); }catch(e){ /* share sheet cancelled */ }
+  });
+  setTimeout(() => {
+    overlay.addEventListener('click', (e) => { if(e.target === overlay) close(); });
+  }, 0);
+}
+
+// Draws the share card (Variant B: wordmark, result, ladder card, play bar)
+// to a PNG, matching the modal. Returns a Blob.
+async function buildShareCardImage(data){
+  const fonts = ['900 31px Archivo', '800 16px Archivo', '700 15px Archivo', '700 29px "IBM Plex Mono"', '600 10px "IBM Plex Mono"'];
+  try{ await Promise.all(fonts.map(f => document.fonts.load(f))); }catch(e){}
+  const logo = await new Promise(resolve => { const img = new Image(); img.onload = () => resolve(img); img.onerror = () => resolve(null); img.src = 'og-image.png'; });
+  const W = 344, PAD = 18, CARD_PAD = 15, GAP = 5;
+  const innerW = W - PAD * 2;
+  const tile = Math.max(12, Math.min(25, Math.floor((innerW - 2 - CARD_PAD * 2 - 18 - (data.maxLen - 1) * GAP) / data.maxLen)));
+  const ladderH = data.rungs.length * tile + (data.rungs.length - 1) * GAP;
+  const cardTop = 22 + 62 + 14 + 29 + 7 + 18 + 5 + 16 + 16;          // header + result block
+  const cardH = 14 + 13 + 10 + ladderH + 13 + 48;
+  const H = cardTop + cardH + 18;
+  const scale = 3;
+  const canvas = document.createElement('canvas');
+  canvas.width = W * scale; canvas.height = H * scale;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(scale, scale);
+  const rr = (x, y, w, h, r) => { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); };
+  // Panel
+  ctx.fillStyle = '#24384F'; rr(0, 0, W, H, 24); ctx.fill();
+  ctx.strokeStyle = 'rgba(245,239,224,0.14)'; ctx.lineWidth = 1; rr(0.5, 0.5, W - 1, H - 1, 24); ctx.stroke();
+  // Wordmark row
+  const logoX = PAD, logoY = 22 + 8;
+  ctx.save(); ctx.beginPath(); ctx.arc(logoX + 23, logoY + 23, 23, 0, Math.PI * 2); ctx.fillStyle = '#1B2A41'; ctx.fill(); ctx.clip();
+  if(logo) ctx.drawImage(logo, logoX, logoY, 46, 46);
+  ctx.restore();
+  ctx.beginPath(); ctx.arc(logoX + 23, logoY + 23, 22, 0, Math.PI * 2); ctx.strokeStyle = '#E8A33D'; ctx.lineWidth = 2; ctx.stroke();
+  ctx.fillStyle = '#F5EFE0'; ctx.font = '900 31px Archivo, sans-serif'; ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left';
+  ctx.fillText('LETTER', logoX + 58, 22 + 27);
+  ctx.fillText('LADDER', logoX + 58, 22 + 57);
+  // Result: pill + time
+  let y = 22 + 62 + 14;
+  ctx.font = '800 10.5px Archivo, sans-serif';
+  const pillText = data.tierLabel.toUpperCase();
+  const pillW = ctx.measureText(pillText).width + 18 + pillText.length * 1;
+  ctx.font = '700 29px "IBM Plex Mono", monospace';
+  const timeText = data.time || 'Solved';
+  const timeW = ctx.measureText(timeText).width;
+  const rowW = pillW + 10 + timeW;
+  let x = (W - rowW) / 2;
+  ctx.fillStyle = '#E8A33D'; rr(x, y + 6, pillW, 20, 10); ctx.fill();
+  ctx.fillStyle = '#1B2A41'; ctx.font = '800 10.5px Archivo, sans-serif'; ctx.textAlign = 'center'; ctx.fillText(pillText, x + pillW / 2, y + 20);
+  ctx.fillStyle = '#F5EFE0'; ctx.font = '700 29px "IBM Plex Mono", monospace'; ctx.textAlign = 'left'; ctx.fillText(timeText, x + pillW + 10, y + 26);
+  // Challenge (amber emphasis) and date
+  y += 29 + 7 + 14;
+  const parts = data.time ? [['Can you beat ', '#F5EFE0'], ['my times', '#E8A33D'], ['?', '#F5EFE0']] : [['Can you ', '#F5EFE0'], ['solve it', '#E8A33D'], ['?', '#F5EFE0']];
+  ctx.font = '700 15px Archivo, sans-serif';
+  const cw = parts.reduce((w, [t]) => w + ctx.measureText(t).width, 0);
+  x = (W - cw) / 2;
+  for(const [t, c] of parts){ ctx.fillStyle = c; ctx.fillText(t, x, y); x += ctx.measureText(t).width; }
+  y += 4 + 14;
+  ctx.fillStyle = '#9FB3C8'; ctx.font = '500 12.5px Archivo, sans-serif'; ctx.textAlign = 'center'; ctx.fillText(data.longDate, W / 2, y);
+  // Card
+  const cx = PAD, cy = cardTop, cwid = innerW;
+  ctx.save(); rr(cx, cy, cwid, cardH, 16); ctx.clip();
+  ctx.fillStyle = '#1B2A41'; ctx.fillRect(cx, cy, cwid, cardH);
+  ctx.font = '600 10.5px "IBM Plex Mono", monospace'; ctx.fillStyle = '#9FB3C8';
+  ctx.textAlign = 'left'; ctx.fillText(data.cardDate, cx + CARD_PAD, cy + 14 + 10);
+  ctx.textAlign = 'right'; ctx.fillText(data.hintsText, cx + cwid - CARD_PAD, cy + 14 + 10);
+  let ry = cy + 14 + 13 + 10;
+  data.rungs.forEach((r, i) => {
+    const num = data.rungs.length - i;
+    ctx.fillStyle = '#9FB3C8'; ctx.font = '500 10px "IBM Plex Mono", monospace'; ctx.textAlign = 'right';
+    ctx.fillText(String(num), cx + CARD_PAD + 13, ry + tile / 2 + 3.5);
+    const cells = r.hidden ? Array(r.hidden).fill(['?', 'anchor']) : r.checks ? Array(r.checks).fill(['✓', 'filled']) : [...r.word].map(ch => [ch, 'anchor']);
+    let tx = cx + CARD_PAD + 18;
+    for(const [ch, kind] of cells){
+      ctx.fillStyle = kind === 'anchor' ? '#E8A33D' : '#F5EFE0'; rr(tx, ry, tile, tile, 6); ctx.fill();
+      ctx.fillStyle = '#1B2A41'; ctx.textAlign = 'center';
+      ctx.font = kind === 'anchor' ? `700 ${tile * 0.5}px "IBM Plex Mono", monospace` : `700 ${tile * 0.48}px Archivo, sans-serif`;
+      ctx.fillText(ch, tx + tile / 2, ry + tile / 2 + tile * 0.17);
+      tx += tile + GAP;
+    }
+    ry += tile + GAP;
+  });
+  const barY = cy + cardH - 48;
+  ctx.fillStyle = '#E8A33D'; ctx.fillRect(cx, barY, cwid, 48);
+  ctx.fillStyle = '#1B2A41'; ctx.font = '900 16.5px Archivo, sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('Play at letterladder.io →', cx + cwid / 2, barY + 30);
+  ctx.restore();
+  ctx.strokeStyle = 'rgba(245,239,224,0.14)'; ctx.lineWidth = 1; rr(cx + 0.5, cy + 0.5, cwid - 1, cardH - 1, 16); ctx.stroke();
+  return await new Promise((resolve, reject) => canvas.toBlob(b => b ? resolve(b) : reject(new Error('toBlob failed')), 'image/png'));
+}
+
+// Post-solve leaderboard placement for timed solves: "Completed in 30.1s —
+// ranked #6 on today's Easy" (rank among today's visible leaderboard entries
+// for that difficulty), with "View leaderboard" on the line below.
+const leaderboardRankCache = {};
+function fillLeaderboardRank(){
+  const tier = activeTier;
+  const frozen = localStorage.getItem(timerElapsedKey(tier));
+  if(!document.getElementById('leaderboard-rank') || frozen === null) return;
+  const myTime = Number(frozen);
+  const key = `${dateKey}:${tier}`;
+  const label = { easy: 'Easy', medium: 'Medium', hard: 'Hard' }[tier];
+  // The result goes on its own line; "View leaderboard" is always its own
+  // line below (never a separator). The time shows right away and the rank
+  // is added once the leaderboard query answers.
+  function show(rank){
+    const el = document.getElementById('leaderboard-rank-text');
+    if(!el || activeTier !== tier) return;
+    el.textContent = rank
+      ? `Completed in ${formatDurationForShare(myTime)} — ranked #${rank} on today's ${label}`
+      : `Completed in ${formatDurationForShare(myTime)}`;
+  }
+  if(leaderboardRankCache[key]) return show(leaderboardRankCache[key]);
+  show(null);
+  const A = window.LetterLadderAuth;
+  if(!A || !A.getDocs) return;
+  A.getDocs(A.query(A.collection(A.db, 'leaderboardEntries'), A.where('date', '==', dateKey), A.where('tier', '==', tier), A.where('visible', '==', true)))
+    .then(snap => {
+      const me = A.getCurrentUser();
+      const myUid = me ? me.uid : null;
+      let faster = 0;
+      snap.docs.forEach(d => { const r = d.data(); if(r.uid !== myUid && typeof r.timeMs === 'number' && r.timeMs < myTime) faster++; });
+      leaderboardRankCache[key] = faster + 1;
+      show(faster + 1);
+    })
+    .catch(() => {});
+}
+
+// "Missed a day?" link: count of puzzles from days before today.
+function pastPuzzleCount(){
+  const today = todayKey();
+  return Object.keys(PUZZLE_SCHEDULE).filter(k => k < today).reduce((n, k) => n + Object.keys(PUZZLE_SCHEDULE[k]).length, 0);
 }
 
 async function buildShareImage(){
@@ -2957,10 +3448,13 @@ function spawnConfetti(pieceCount){
     piece.className = 'confetti-piece';
     piece.style.left = (Math.random()*100) + 'vw';
     piece.style.background = colors[Math.floor(Math.random()*colors.length)];
-    piece.style.animationDuration = (2.2 + Math.random()*1.6) + 's';
-    piece.style.animationDelay = (Math.random()*0.4) + 's';
+    const duration = 2.2 + Math.random()*1.6, delay = Math.random()*0.4;
+    piece.style.animationDuration = duration + 's';
+    piece.style.animationDelay = delay + 's';
     document.body.appendChild(piece);
     setTimeout(()=> piece.remove(), 4200);
+    // The share modal waits until the last piece has finished falling.
+    celebrationEndsAt = Math.max(celebrationEndsAt, Date.now() + Math.ceil((duration + delay) * 1000));
   }
 }
 
@@ -2971,14 +3465,14 @@ function triggerTierWinConfetti(){
   spawnConfetti(35);
 }
 
-function showSummitBanner(){
+function showSummitBanner(onDone){
   const banner = document.createElement('div');
   banner.className = 'summit-banner';
   const streak = loadStats().total.currentStreak || 0;
   const streakLine = streak > 0 ? `<br>🔥 ${streak} day streak!` : '';
   banner.innerHTML = `Well done! You&#39;ve completed all three of today&#39;s ladders!${streakLine}`;
   document.body.appendChild(banner);
-  setTimeout(()=> banner.remove(), 4000);
+  setTimeout(()=>{ banner.remove(); if(onDone) onDone(); }, 4000);
 }
 
 function triggerLadderClimbCelebration(finalWord){
@@ -2991,7 +3485,8 @@ function triggerLadderClimbCelebration(finalWord){
   // full word reappears in the box a short pause after they've all
   // exited, right before the usual winning banner shows.
   const anchorEl = document.getElementById('final-word-rung');
-  if(!anchorEl){ if(!isArchiveMode) showSummitBanner(); return; } // safety fallback
+  if(!anchorEl){ if(!isArchiveMode) showSummitBanner(); return; } // safety fallback (no share modal wait)
+  ladderCelebrationActive = true; // the share modal waits until this finishes
 
   const rect = anchorEl.getBoundingClientRect();
   const originalText = anchorEl.textContent;
@@ -3053,7 +3548,16 @@ function triggerLadderClimbCelebration(finalWord){
   setTimeout(()=>{
     overlay.remove();
     anchorEl.textContent = originalText;
-    if(!isArchiveMode) showSummitBanner();
+    // The celebration ends when the "completed all three" banner goes away;
+    // the share modal (which would cover it) follows a moment later.
+    const finish = () => {
+      ladderCelebrationActive = false;
+      if(shareModalAfterCelebration){
+        const t = shareModalAfterCelebration; shareModalAfterCelebration = null;
+        setTimeout(() => showShareModal(t), SHARE_MODAL_AFTER_CELEBRATION_MS);
+      }
+    };
+    if(!isArchiveMode) showSummitBanner(finish); else finish();
   }, exitDuration + pauseAfterExit);
 }
 
@@ -3111,6 +3615,7 @@ function render(focusInput = false, pendingErrors = null){
   if(isRevealedLoss){
     feedback = '';
     feedbackClass = 'revealed';
+    nextTierForButton = { easy: 'medium', medium: 'hard' }[activeTier] || null;
   } else if(allFilled){
     // Guarantee "played" is always counted before "solved" ever can be -
     // this covers puzzles that were already fully filled in from before
@@ -3327,9 +3832,14 @@ function render(focusInput = false, pendingErrors = null){
     </div>
   `;
 
-  const anyTierSolvedToday = TIERS.some(tier => getTodaysPuzzle(tier) && isTierComplete(tier));
 
   panel.className = `panel ${sizeTier}`;
+  // Post-solve, top to bottom: result line, View leaderboard, Next puzzle,
+  // Share results, Clear, View solution, then "Missed a day?" at the bottom.
+  const showRankLine = isWon && !isArchiveMode && getTimerChoice() === 'timed' && localStorage.getItem(timerElapsedKey(activeTier)) !== null;
+  const showShareLink = isWon && !isArchiveMode && !!localStorage.getItem(`letterladder:${accountScope}:${dateKey}:${activeTier}:solvedCounted`);
+  const practiceNoteHtml = (!isWon && !isRevealedLoss && isPracticeMode(activeTier)) ? `<div class="practice-note" id="practice-note">${practiceNoteText(activeTier)}</div>` : '';
+  const pastPuzzlesLinkHtml = `<div style="text-align:center;margin:6px 0 10px;"><a href="past-puzzles.html" id="past-puzzles-link" style="font-size:0.88rem;color:var(--ink-dim);text-decoration:none;border-bottom:1px dotted var(--ink-dim);touch-action:manipulation;">Missed a day? Play ${pastPuzzleCount()} past puzzles here</a></div>`;
   // Replacing the panel's contents destroys the currently focused input.
   // On desktop (where the input is genuinely focused) that fires a blur,
   // which would otherwise be mistaken for the person clicking away and
@@ -3342,20 +3852,22 @@ function render(focusInput = false, pendingErrors = null){
     <div class="ladder-scroll" id="ladder-scroll"><div class="ladder">${rungsHtml.join('')}</div></div>
     <div class="feedback ${feedbackClassFinal}">${feedbackHtml}</div>
     <div class="hint-display" id="hint-display"></div>
+    ${showRankLine ? `<div class="leaderboard-rank" id="leaderboard-rank"><div class="leaderboard-rank-text" id="leaderboard-rank-text"></div><div class="leaderboard-rank-link"><a href="leaderboard.html" id="leaderboard-rank-link">View leaderboard</a></div></div>` : ''}
     <div class="actions-row" style="justify-content:center;">
       ${nextTierForButton ? `<button class="btn-primary" id="next-puzzle-btn" type="button" style="font-size:1.19rem;padding:13px 23px;">Next puzzle</button>` : ''}
     </div>
-    ${isWon && anyTierSolvedToday ? `<div style="text-align:center;margin:6px 0 10px;"><a href="#" id="share-link" style="font-size:0.88rem;color:var(--ink-dim);text-decoration:none;border-bottom:1px dotted var(--ink-dim);touch-action:manipulation;">Share results</a></div>` : ''}
+    ${showShareLink ? `<a href="#" id="share-results-link" class="view-solution-link share-results-link">Share results</a>` : ''}
+    ${practiceNoteHtml}
     ${bankHtml}
     ${primaryActionsHtml}
     ${`<div class="actions-row" style="flex-direction:column;align-items:center;gap:10px;">
       ${activeLength != null ? kbToggleHtml : ''}
-      ${!isWon && anyTierSolvedToday ? `<a href="#" id="share-link" style="font-size:0.88rem;color:var(--ink-dim);text-decoration:none;border-bottom:1px dotted var(--ink-dim);touch-action:manipulation;">Share results</a>` : ''}
     </div>`}
     <a href="#" id="solution-link" class="view-solution-link">View solution</a>
-    <div class="share-status" id="share-status"></div>
+    ${pastPuzzlesLinkHtml}
   `;
   suppressBlurCommit = false;
+  fillLeaderboardRank();
 
   if(activeLength !== null && !guesses[activeLength] && getHintInfo(activeTier, activeLength).count > 0){
     const hd = document.getElementById('hint-display');
@@ -3367,63 +3879,32 @@ function render(focusInput = false, pendingErrors = null){
     clearBtnEl.addEventListener('pointerdown', (e)=>{ e.preventDefault(); });
     bindTapAction(clearBtnEl, ()=>{
       showConfirmModal('Are you sure you want to clear your puzzle?', ()=>{
-        const ladderEl = panel.querySelector('.ladder');
-        if(ladderEl){
-          ladderEl.classList.add('fading-out');
-          setTimeout(()=>{
-            activeLength = null;
-            clearGuesses(activeTier);
-            lastFeedback[activeTier] = null;
-            setLastHintedLength(activeTier, null);
-            bankState[activeTier] = null;
-            render();
-          }, 960);
-        } else {
-          activeLength = null;
-          clearGuesses(activeTier);
-          lastFeedback[activeTier] = null;
-          setLastHintedLength(activeTier, null);
-          bankState[activeTier] = null;
-          render();
-        }
+        // Clear right away (previously the rungs greyed out for ~1s first).
+        activeLength = null;
+        clearGuesses(activeTier);
+        lastFeedback[activeTier] = null;
+        setLastHintedLength(activeTier, null);
+        bankState[activeTier] = null;
+        render();
       });
-    });
-  }
-
-  const shareBtn = document.getElementById('share-link');
-  if(shareBtn){
-    shareBtn.addEventListener('click', async (e)=>{
-      e.preventDefault();
-      const shareText = buildShareText();
-      const statusEl = document.getElementById('share-status');
-
-      // Text-only share - bundling the image in alongside the text
-      // resulted in both showing up together in the native share sheet
-      // (e.g. a Messages share getting the image attachment AND the text
-      // caption at once), which felt redundant rather than helpful.
-      if(navigator.share){
-        try{
-          await navigator.share({ text: shareText });
-        }catch(e){
-          // person cancelled the native share sheet - not an error, do nothing
-        }
-      } else {
-        try{
-          await navigator.clipboard.writeText(shareText);
-          if(statusEl) statusEl.textContent = 'Copied to clipboard!';
-        }catch(e){
-          if(statusEl) statusEl.textContent = shareText;
-        }
-      }
     });
   }
 
   const solutionLink = document.getElementById('solution-link');
   if(solutionLink){
-    solutionLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      handleViewSolutionClick();
-    });
+    // bindTapAction (not a plain click listener): pressing the link must not
+    // first blur a focused rung box - that blur commits and re-renders the
+    // panel, replacing this link before the click lands, so the first click
+    // used to do nothing.
+    solutionLink.addEventListener('click', (e) => e.preventDefault());
+    bindTapAction(solutionLink, handleViewSolutionClick);
+  }
+
+  const shareResultsLink = document.getElementById('share-results-link');
+  if(shareResultsLink){
+    // Quiet way back to the share modal after it was dismissed.
+    shareResultsLink.addEventListener('click', (e) => e.preventDefault());
+    bindTapAction(shareResultsLink, () => showShareModal(activeTier));
   }
 
   const nextPuzzleBtn = document.getElementById('next-puzzle-btn');
@@ -3699,6 +4180,16 @@ function render(focusInput = false, pendingErrors = null){
         // anything, no error needed for an abandoned/empty attempt.
         activeLength = null;
         render();
+        return;
+      }
+
+      if(!dictionaryReady()){
+        // Word list still downloading (only possible in the first moments
+        // of a cold load): hold this guess and check it once it arrives.
+        committed = false;
+        const fb = panel.querySelector('.feedback');
+        if(fb && !fb.textContent.trim()) fb.innerHTML = '<span class="checking-word">Checking word…</span>';
+        whenDictionaryReady(() => { if(activeInput.isConnected) commit(viaEnter); });
         return;
       }
 
@@ -4053,11 +4544,11 @@ function showHowToPlayPopup(){
       <p>Fill in the missing words by adding exactly one letter to the word below. Rearrange the letters as needed to make a new word.</p>
       <ul>
         <li>For example, <span class="howto-example-word">not</span> could become <span class="howto-example-word">tone</span>, <span class="howto-example-word">note</span>, or <span class="howto-example-word">torn</span></li>
-        <li>Words can be guessed in any order</li>
         <li>A letter can repeat — <span class="howto-example-word">lead</span> could become <span class="howto-example-word">ladle</span> by adding a second "L"</li>
         <li>Every word must be a real English word</li>
       </ul>
       <p style="margin-top:1em;margin-bottom:0;">New puzzles drop daily at 12am EST.</p>
+      <p style="margin:0.8em 0 0;"><a href="how-to-play.html" style="color:var(--ink-dim);text-decoration:none;border-bottom:1px dotted var(--ink-dim);touch-action:manipulation;">Read the full rules</a></p>
     </div>
   `;
   document.body.appendChild(overlay);
@@ -4126,7 +4617,32 @@ window.addEventListener('pagehide', ()=>{
 // state contamination like the toohotforapenguin/Umbrellaboy dailyProgress bug.
 // A brief loading state prevents a flash of wrong-account content.
 const puzzlePanelEl = document.getElementById('panel');
-if(puzzlePanelEl) puzzlePanelEl.style.visibility = 'hidden';
+// Until the real game is drawn: show the puzzle's empty ladder (start and
+// final words only - no guesses, so nothing account-specific) to reserve its
+// space, and keep the footer hidden so it can't jump up to the top.
+function renderLoadingSkeleton(){
+  const puzzle = getTodaysPuzzle(activeTier);
+  if(!puzzle || !puzzlePanelEl) return false;
+  const startingWord = puzzle.start, finalWord = puzzle.final;
+  const totalRungs = finalWord.length - startingWord.length + 1;
+  // Same sizing as render()
+  const sizeTier = totalRungs >= 9 ? 'rungs-xl' : totalRungs >= 7 ? 'rungs-lg' : totalRungs >= 5 ? 'rungs-md' : '';
+  const tierCfg = { '': { fontPx: 21.6, minWidthPx: 165 }, 'rungs-md': { fontPx: 18.4, minWidthPx: 115 }, 'rungs-lg': { fontPx: 16, minWidthPx: 100 }, 'rungs-xl': { fontPx: 14.4, minWidthPx: 88 } }[sizeTier];
+  const n = finalWord.length;
+  const widthPx = Math.round(Math.max(tierCfg.minWidthPx, n * tierCfg.fontPx * 0.6 + (n - 1) * tierCfg.fontPx * 0.14 + tierCfg.fontPx * 3.4));
+  const box = `width:${widthPx}px; max-width:${widthPx}px; min-width:0;`;
+  const rows = [`<div class="rung-row"><div class="rung-count">${n}</div><div class="rung anchor" style="${box}">${finalWord}</div></div>`];
+  for(let L = n - 1; L > startingWord.length; L--){
+    rows.push(`<div class="rung-row"><div class="rung-count">${L}</div><div class="rung empty" style="${box}">${'&nbsp;'.repeat(L)}</div></div>`);
+  }
+  rows.push(`<div class="rung-row"><div class="rung-count">${startingWord.length}</div><div class="rung anchor" style="${box}">${startingWord}</div></div>`);
+  puzzlePanelEl.className = `panel ${sizeTier}`;
+  puzzlePanelEl.innerHTML = `<div class="ladder-scroll"><div class="ladder">${rows.join('')}</div></div>`;
+  return true;
+}
+const siteFooterEl = document.querySelector('footer');
+if(siteFooterEl) siteFooterEl.style.visibility = 'hidden';
+if(puzzlePanelEl && !renderLoadingSkeleton()) puzzlePanelEl.style.visibility = 'hidden';
 showMigrationWelcomeBannerIfNeeded();
 showMigrationLinkBannerIfNeeded();
 
@@ -4238,6 +4754,15 @@ let ownerCheckDone = false;
               accountScope = authoritativeUsername;
             }
           }
+          // Leaderboard health check, once a day per account (in the
+          // background): recreate a missing players doc, and republish
+          // entries filed hidden for a player who never opted out.
+          const repairKey = `letterladder:leaderboardRepairChecked:${player.uid}`;
+          if(localStorage.getItem(repairKey) !== todayKey()){
+            window.LetterLadderAuth.repairHiddenEntries(player, localStorage.getItem('letterladder:accountUsername'))
+              .then(() => localStorage.setItem(repairKey, todayKey()))
+              .catch(e => console.error('[leaderboard] daily check failed:', e));
+          }
         }catch(e){
           // Firestore read failed — fall back to localStorage username.
           // This is less safe but allows offline use.
@@ -4311,12 +4836,14 @@ let ownerCheckDone = false;
       // Only now is it safe to render the puzzle from localStorage.
       const puzzlePanelEl2 = document.getElementById('panel');
       if(puzzlePanelEl2) puzzlePanelEl2.style.visibility = '';
+      if(siteFooterEl) siteFooterEl.style.visibility = '';
       render(!isTouchDevice);
 
       // Mark initialization complete — visibilitychange/pagehide may now
       // safely call syncStatsToCloud. Before this point, accountScope may
       // have been wrong and a sync would have written contaminated data.
       accountScopeReady = true;
+      setTimeout(loadDictionary, 0); // game is interactive: now fetch the word list
 
       // ── Step 6: Timer startup ─────────────────────────────────────────────
       if(!isArchiveMode){
@@ -4382,8 +4909,10 @@ let ownerCheckDone = false;
     // Still render the puzzle so guests can play — accountScope stays 'guest'.
     const puzzlePanelEl3 = document.getElementById('panel');
     if(puzzlePanelEl3) puzzlePanelEl3.style.visibility = '';
+    if(siteFooterEl) siteFooterEl.style.visibility = '';
     render(!isTouchDevice);
     accountScopeReady = true; // guest session — no cloud sync risk
+    setTimeout(loadDictionary, 0); // game is interactive: now fetch the word list
     if(!isArchiveMode){
       const staleSegment = localStorage.getItem(timerStartKey(activeTier));
       if(staleSegment !== null) localStorage.removeItem(timerStartKey(activeTier));
